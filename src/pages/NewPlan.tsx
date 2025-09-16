@@ -74,9 +74,9 @@ export default function NewPlan() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6">
         {/* Main Form */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="space-y-6">
           {/* Basic Information */}
           <Card className="bg-gradient-card shadow-card border-0">
             <CardHeader>
@@ -227,67 +227,26 @@ export default function NewPlan() {
               </Tabs>
             </CardContent>
           </Card>
-        </div>
 
-        {/* Summary Sidebar */}
-        <div className="space-y-6">
-          <Card className="bg-gradient-card shadow-card border-0 sticky top-6">
-            <CardHeader>
-              <CardTitle className="text-lg">计划摘要</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <Label className="text-sm font-medium">计划名称</Label>
-                <p className="text-sm text-muted-foreground mt-1">
-                  {formData.name || "未命名计划"}
-                </p>
-              </div>
-              
-              <div>
-                <Label className="text-sm font-medium">关联测试</Label>
-                <p className="text-sm text-muted-foreground mt-1">
-                  已选择 {formData.selectedTests.length} 个测试
-                </p>
-              </div>
-              
-              <div>
-                <Label className="text-sm font-medium">调度方式</Label>
-                <p className="text-sm text-muted-foreground mt-1">
-                  {formData.scheduleType === 'manual' && '手动运行'}
-                  {formData.scheduleType === 'scheduled' && '定时运行'}
-                  {formData.scheduleType === 'event' && '事件触发'}
-                </p>
-              </div>
-              
-              {formData.scheduleType === 'scheduled' && formData.cronExpression && (
-                <div>
-                  <Label className="text-sm font-medium">Cron 表达式</Label>
-                  <p className="text-sm text-muted-foreground mt-1 font-mono">
-                    {formData.cronExpression}
-                  </p>
-                </div>
-              )}
-              
-              <div className="pt-4 space-y-2">
-                <Button 
-                  onClick={handleSave} 
-                  className="w-full"
-                  disabled={!formData.name || formData.selectedTests.length === 0}
-                >
-                  <Save className="h-4 w-4 mr-2" />
-                  保存计划
-                </Button>
-                <Button 
-                  variant="outline" 
-                  onClick={() => navigate('/plans')}
-                  className="w-full"
-                >
-                  <X className="h-4 w-4 mr-2" />
-                  取消
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+          {/* Action Buttons */}
+          <div className="flex gap-4 pt-6">
+            <Button 
+              onClick={handleSave} 
+              className="flex-1"
+              disabled={!formData.name || formData.selectedTests.length === 0}
+            >
+              <Save className="h-4 w-4 mr-2" />
+              保存计划
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={() => navigate('/plans')}
+              className="flex-1"
+            >
+              <X className="h-4 w-4 mr-2" />
+              取消
+            </Button>
+          </div>
         </div>
       </div>
     </div>
