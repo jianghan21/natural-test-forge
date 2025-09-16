@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
+import { useNavigate } from "react-router-dom"
 import { 
   TestTube, 
   Play, 
@@ -18,6 +19,8 @@ import {
 } from "lucide-react"
 
 export default function Dashboard() {
+  const navigate = useNavigate()
+  
   const todayTests = [
     {
       id: 1,
@@ -112,9 +115,10 @@ export default function Dashboard() {
             variant="secondary" 
             className="bg-white/20 hover:bg-white/30 text-white border-white/30 hover:scale-105 transition-all duration-200 shadow-lg"
             size="lg"
+            onClick={() => navigate('/new-test')}
           >
             <Plus className="h-5 w-5 mr-2" />
-            创建第一个计划
+            创建第一个测试
           </Button>
         </div>
       </div>
