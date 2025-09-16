@@ -100,8 +100,8 @@ export default function Dashboard() {
   return (
     <div className="p-6 space-y-8 animate-fade-in">
       {/* Welcome Section */}
-      <div className="bg-gradient-primary rounded-xl p-8 text-white shadow-elevated hover:shadow-glow transition-all duration-500 group">
-        <h1 className="text-3xl font-bold mb-3 group-hover:scale-105 transition-transform duration-300">
+      <div className="bg-gradient-primary rounded-xl p-8 text-white shadow-elevated hover:shadow-glow transition-all duration-500 group overflow-hidden">
+        <h1 className="text-3xl font-bold mb-3 transition-transform duration-300">
           欢迎使用 TestFlow AI
         </h1>
         <p className="text-white/90 mb-6 text-lg leading-relaxed">
@@ -115,14 +115,6 @@ export default function Dashboard() {
           >
             <Plus className="h-5 w-5 mr-2" />
             创建第一个计划
-          </Button>
-          <Button 
-            variant="outline" 
-            className="border-white/30 text-white hover:bg-white/10 hover:scale-105 transition-all duration-200"
-            size="lg"
-          >
-            <TestTube className="h-5 w-5 mr-2" />
-            创建第一条测试
           </Button>
         </div>
       </div>
