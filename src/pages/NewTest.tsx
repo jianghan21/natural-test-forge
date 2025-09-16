@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Progress } from "@/components/ui/progress"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { 
   Plus, 
   Upload, 
@@ -23,16 +24,21 @@ import {
   Eye,
   Loader2,
   AlertCircle,
-  Code
+  Code,
+  Trash2
 } from "lucide-react"
 
 type WorkflowStep = 'form' | 'generating' | 'reviewing' | 'scripting' | 'running' | 'completed'
 
 interface TestCase {
   id: string
+  caseNumber: string
+  module: string
   title: string
-  steps: string[]
+  steps: string
   expected: string
+  priority: 'P0' | 'P1' | 'P2' | 'P3'
+  testType: '功能测试' | '性能测试' | '界面测试' | '兼容性测试'
 }
 
 export default function NewTest() {
@@ -54,6 +60,8 @@ export default function NewTest() {
   const [testCases, setTestCases] = useState<TestCase[]>([])
   const [generatedScript, setGeneratedScript] = useState("")
   const [runningResults, setRunningResults] = useState<Array<{id: string, status: 'pending' | 'running' | 'passed' | 'failed', title: string}>>([])
+  const [editingCase, setEditingCase] = useState<TestCase | null>(null)
+  const [isEditing, setIsEditing] = useState(false)
 
   const addLabel = () => {
     if (newLabel.trim() && !labels.includes(newLabel.trim())) {
@@ -86,21 +94,33 @@ export default function NewTest() {
           const mockTestCases: TestCase[] = [
             {
               id: '1',
+              caseNumber: 'TC001',
+              module: '应用启动',
               title: '启动应用并验证主界面',
-              steps: ['启动应用', '等待加载完成', '验证主界面显示'],
-              expected: '主界面正常显示，所有必要元素可见'
+              steps: '1. 启动应用\n2. 等待加载完成\n3. 验证主界面显示',
+              expected: '主界面正常显示，所有必要元素可见',
+              priority: 'P0',
+              testType: '功能测试'
             },
             {
-              id: '2', 
+              id: '2',
+              caseNumber: 'TC002', 
+              module: '用户认证',
               title: '用户登录流程测试',
-              steps: ['点击登录按钮', '输入用户名', '输入密码', '点击登录'],
-              expected: '登录成功，跳转到用户主页'
+              steps: '1. 点击登录按钮\n2. 输入用户名\n3. 输入密码\n4. 点击登录',
+              expected: '登录成功，跳转到用户主页',
+              priority: 'P0',
+              testType: '功能测试'
             },
             {
               id: '3',
+              caseNumber: 'TC003',
+              module: '用户认证',
               title: '登录失败处理',
-              steps: ['输入错误用户名', '输入错误密码', '点击登录'],
-              expected: '显示错误提示信息，用户停留在登录页面'
+              steps: '1. 输入错误用户名\n2. 输入错误密码\n3. 点击登录',
+              expected: '显示错误提示信息，用户停留在登录页面',
+              priority: 'P1',
+              testType: '功能测试'
             }
           ]
           setTestCases(mockTestCases)
@@ -204,6 +224,50 @@ class TestLogin:
     setTimeout(runNextTest, 1000)
   }
 
+  const addNewTestCase = () => {
+    const newCase: TestCase = {
+      id: Date.now().toString(),
+      caseNumber: `TC${String(testCases.length + 1).padStart(3, '0')}`,
+      module: '',
+      title: '',
+      steps: '',
+      expected: '',
+      priority: 'P1',
+      testType: '功能测试'
+    }
+    setEditingCase(newCase)
+    setIsEditing(true)
+  }
+
+  const editTestCase = (testCase: TestCase) => {
+    setEditingCase({ ...testCase })
+    setIsEditing(true)
+  }
+
+  const deleteTestCase = (id: string) => {
+    setTestCases(testCases.filter(tc => tc.id !== id))
+  }
+
+  const saveTestCase = () => {
+    if (!editingCase) return
+    
+    if (testCases.find(tc => tc.id === editingCase.id)) {
+      // Edit existing
+      setTestCases(testCases.map(tc => tc.id === editingCase.id ? editingCase : tc))
+    } else {
+      // Add new
+      setTestCases([...testCases, editingCase])
+    }
+    
+    setEditingCase(null)
+    setIsEditing(false)
+  }
+
+  const cancelEdit = () => {
+    setEditingCase(null)
+    setIsEditing(false)
+  }
+
   // Render different steps
   if (currentStep === 'generating') {
     return (
@@ -275,37 +339,175 @@ class TestLogin:
           <p className="text-white/90">AI 已生成 {testCases.length} 个测试用例，请检查并确认</p>
         </div>
         
-        <div className="space-y-4">
-          {testCases.map((testCase, index) => (
-            <Card key={testCase.id} className="bg-gradient-card shadow-card border-0 animate-fade-in" style={{ animationDelay: `${index * 100}ms` }}>
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  <span>测试用例 {index + 1}: {testCase.title}</span>
-                  <Button variant="outline" size="sm">
-                    <Edit className="h-4 w-4 mr-2" />
-                    编辑
-                  </Button>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div>
-                    <h4 className="font-medium mb-2">测试步骤:</h4>
-                    <ol className="list-decimal list-inside space-y-1">
-                      {testCase.steps.map((step, stepIndex) => (
-                        <li key={stepIndex} className="text-sm text-muted-foreground">{step}</li>
-                      ))}
-                    </ol>
-                  </div>
-                  <div>
-                    <h4 className="font-medium mb-2">预期结果:</h4>
-                    <p className="text-sm text-muted-foreground">{testCase.expected}</p>
-                  </div>
+        <Card className="bg-gradient-card shadow-card border-0">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle>测试用例列表</CardTitle>
+              <Button onClick={addNewTestCase} className="bg-gradient-primary">
+                <Plus className="h-4 w-4 mr-2" />
+                新增用例
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="rounded-lg border">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[100px]">用例编号</TableHead>
+                    <TableHead className="w-[120px]">用例模块</TableHead>
+                    <TableHead className="w-[200px]">测试步骤</TableHead>
+                    <TableHead className="w-[200px]">预期结果</TableHead>
+                    <TableHead className="w-[80px]">优先级</TableHead>
+                    <TableHead className="w-[100px]">测试类型</TableHead>
+                    <TableHead className="w-[120px]">操作</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {testCases.map((testCase) => (
+                    <TableRow key={testCase.id}>
+                      <TableCell className="font-medium">{testCase.caseNumber}</TableCell>
+                      <TableCell>{testCase.module}</TableCell>
+                      <TableCell>
+                        <div className="max-w-[200px] truncate" title={testCase.steps}>
+                          {testCase.steps.split('\n')[0]}...
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="max-w-[200px] truncate" title={testCase.expected}>
+                          {testCase.expected}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={testCase.priority === 'P0' ? 'destructive' : testCase.priority === 'P1' ? 'default' : 'secondary'}>
+                          {testCase.priority}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>{testCase.testType}</TableCell>
+                      <TableCell>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => editTestCase(testCase)}
+                          >
+                            <Edit className="h-3 w-3" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => deleteTestCase(testCase.id)}
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
+        
+        {isEditing && editingCase && (
+          <Card className="bg-gradient-card shadow-card border-0">
+            <CardHeader>
+              <CardTitle>{testCases.find(tc => tc.id === editingCase.id) ? '编辑测试用例' : '新增测试用例'}</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="caseNumber">用例编号</Label>
+                  <Input
+                    id="caseNumber"
+                    value={editingCase.caseNumber}
+                    onChange={(e) => setEditingCase({...editingCase, caseNumber: e.target.value})}
+                  />
                 </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                <div>
+                  <Label htmlFor="module">用例模块</Label>
+                  <Input
+                    id="module"
+                    value={editingCase.module}
+                    onChange={(e) => setEditingCase({...editingCase, module: e.target.value})}
+                  />
+                </div>
+              </div>
+              
+              <div>
+                <Label htmlFor="title">测试用例标题</Label>
+                <Input
+                  id="title"
+                  value={editingCase.title}
+                  onChange={(e) => setEditingCase({...editingCase, title: e.target.value})}
+                />
+              </div>
+              
+              <div>
+                <Label htmlFor="steps">测试步骤</Label>
+                <Textarea
+                  id="steps"
+                  value={editingCase.steps}
+                  onChange={(e) => setEditingCase({...editingCase, steps: e.target.value})}
+                  placeholder="请输入测试步骤，每行一个步骤"
+                  rows={4}
+                />
+              </div>
+              
+              <div>
+                <Label htmlFor="expected">预期结果</Label>
+                <Textarea
+                  id="expected"
+                  value={editingCase.expected}
+                  onChange={(e) => setEditingCase({...editingCase, expected: e.target.value})}
+                  placeholder="请输入预期结果"
+                  rows={2}
+                />
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="priority">优先级</Label>
+                  <Select value={editingCase.priority} onValueChange={(value: 'P0' | 'P1' | 'P2' | 'P3') => setEditingCase({...editingCase, priority: value})}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="P0">P0 - 高</SelectItem>
+                      <SelectItem value="P1">P1 - 中</SelectItem>
+                      <SelectItem value="P2">P2 - 低</SelectItem>
+                      <SelectItem value="P3">P3 - 最低</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="testType">测试类型</Label>
+                  <Select value={editingCase.testType} onValueChange={(value: '功能测试' | '性能测试' | '界面测试' | '兼容性测试') => setEditingCase({...editingCase, testType: value})}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="功能测试">功能测试</SelectItem>
+                      <SelectItem value="性能测试">性能测试</SelectItem>
+                      <SelectItem value="界面测试">界面测试</SelectItem>
+                      <SelectItem value="兼容性测试">兼容性测试</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" onClick={cancelEdit}>
+                  取消
+                </Button>
+                <Button onClick={saveTestCase} className="bg-gradient-primary">
+                  保存
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
         
         <div className="flex justify-between">
           <Button variant="outline" onClick={() => setCurrentStep('form')}>
