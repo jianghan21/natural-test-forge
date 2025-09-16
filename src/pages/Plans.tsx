@@ -90,7 +90,28 @@ export default function Plans() {
 
   return (
     <div className="p-6 space-y-8 animate-fade-in">
-      {/* Welcome Section */}
+      {/* Top Guidance Section */}
+      <div className="bg-gradient-primary rounded-xl p-8 text-white shadow-elevated hover:shadow-glow transition-all duration-500 group overflow-hidden">
+        <h1 className="text-3xl font-bold mb-3 transition-transform duration-300">
+          测试计划管理
+        </h1>
+        <p className="text-white/90 mb-6 text-lg leading-relaxed">
+          创建和管理您的测试计划，支持定时运行、事件触发和批量测试执行。
+        </p>
+        <div className="flex flex-wrap gap-4">
+          <Button 
+            variant="secondary" 
+            className="bg-white/20 hover:bg-white/30 text-white border-white/30 hover:scale-105 transition-all duration-200 shadow-lg"
+            size="lg"
+            onClick={() => navigate('/plans/new')}
+          >
+            <Plus className="h-5 w-5 mr-2" />
+            新建计划
+          </Button>
+        </div>
+      </div>
+
+      {/* Welcome Section for Empty State */}
       {!hasPlans && (
         <div className="bg-gradient-primary rounded-xl p-8 text-white shadow-elevated hover:shadow-glow transition-all duration-500 group overflow-hidden">
           <h1 className="text-3xl font-bold mb-3 transition-transform duration-300">
@@ -116,16 +137,10 @@ export default function Plans() {
       {/* Plans List */}
       <Card className="bg-gradient-card shadow-card border-0 hover:shadow-elevated transition-all duration-300">
         <CardHeader className="pb-4">
-          <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-3 text-xl">
-              <Calendar className="h-6 w-6 text-primary" />
-              测试计划列表
-            </CardTitle>
-            <Button onClick={() => navigate('/plans/new')}>
-              <Plus className="h-4 w-4 mr-2" />
-              新建计划
-            </Button>
-          </div>
+          <CardTitle className="flex items-center gap-3 text-xl">
+            <Calendar className="h-6 w-6 text-primary" />
+            测试计划列表
+          </CardTitle>
         </CardHeader>
         <CardContent>
           {hasPlans ? (
