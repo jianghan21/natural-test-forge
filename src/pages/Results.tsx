@@ -39,12 +39,12 @@ interface TestResult {
 export default function Results() {
   const navigate = useNavigate()
   const [filters, setFilters] = useState({
-    status: "",
+    status: "all",
     testName: "",
     planName: "",
     startDateFrom: undefined as Date | undefined,
     startDateTo: undefined as Date | undefined,
-    passRate: "",
+    passRate: "all",
     creator: ""
   })
 
@@ -124,13 +124,13 @@ export default function Results() {
 
   const filteredResults = testResults
     .filter(result => {
-      if (filters.status && result.status !== filters.status) return false
+      if (filters.status !== "all" && result.status !== filters.status) return false
       if (filters.testName && !result.testName.toLowerCase().includes(filters.testName.toLowerCase())) return false
       if (filters.planName && !result.planName?.toLowerCase().includes(filters.planName.toLowerCase())) return false
       if (filters.creator && !result.creator.toLowerCase().includes(filters.creator.toLowerCase())) return false
       if (filters.startDateFrom && result.startTime < filters.startDateFrom) return false
       if (filters.startDateTo && result.startTime > filters.startDateTo) return false
-      if (filters.passRate) {
+      if (filters.passRate !== "all") {
         if (filters.passRate === "90" && result.passRate <= 90) return false
         if (filters.passRate === "60" && result.passRate <= 60) return false
         if (filters.passRate === "30" && result.passRate <= 30) return false
@@ -160,12 +160,12 @@ export default function Results() {
         <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           <div className="space-y-2">
             <Label>运行状态</Label>
-            <Select value={filters.status} onValueChange={(value) => setFilters({...filters, status: value})}>
+            <Select value={filters.status} onValueChange={(value) => setFilters({...filters, status: value === "all" ? "" : value})}>
               <SelectTrigger>
                 <SelectValue placeholder="选择状态" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">全部</SelectItem>
+                <SelectItem value="all">全部</SelectItem>
                 <SelectItem value="running">正在运行</SelectItem>
                 <SelectItem value="scheduled">计划运行</SelectItem>
                 <SelectItem value="finished">运行结束</SelectItem>
@@ -244,12 +244,12 @@ export default function Results() {
 
           <div className="space-y-2">
             <Label>通过率</Label>
-            <Select value={filters.passRate} onValueChange={(value) => setFilters({...filters, passRate: value})}>
+            <Select value={filters.passRate} onValueChange={(value) => setFilters({...filters, passRate: value === "all" ? "" : value})}>
               <SelectTrigger>
                 <SelectValue placeholder="选择通过率" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">全部</SelectItem>
+                <SelectItem value="all">全部</SelectItem>
                 <SelectItem value="90">大于90%</SelectItem>
                 <SelectItem value="60">大于60%</SelectItem>
                 <SelectItem value="30">大于30%</SelectItem>
@@ -260,12 +260,12 @@ export default function Results() {
           <div className="flex items-end">
             <Button 
               onClick={() => setFilters({
-                status: "",
+                status: "all",
                 testName: "",
                 planName: "",
                 startDateFrom: undefined,
                 startDateTo: undefined,
-                passRate: "",
+                passRate: "all",
                 creator: ""
               })}
               variant="outline"
