@@ -94,10 +94,10 @@ export default function Plans() {
       {!hasPlans && (
         <div className="bg-gradient-primary rounded-xl p-8 text-white shadow-elevated hover:shadow-glow transition-all duration-500 group overflow-hidden">
           <h1 className="text-3xl font-bold mb-3 transition-transform duration-300">
-            创建您的第一个测试计划
+            欢迎使用 TestFlow AI
           </h1>
           <p className="text-white/90 mb-6 text-lg leading-relaxed">
-            测试计划可以帮助您管理和调度多个测试的执行，支持定时运行和事件触发。
+            开始您的自动化测试之旅，创建第一个测试计划来体验AI驱动的测试流程。
           </p>
           <div className="flex flex-wrap gap-4">
             <Button 
