@@ -9,6 +9,8 @@ import NewTest from "./pages/NewTest";
 import Results from "./pages/Results";
 import ResultDetail from "./pages/ResultDetail";
 import Plans from "./pages/Plans";
+import NewPlan from "./pages/NewPlan";
+import PlanDetail from "./pages/PlanDetail";
 import Tests from "./pages/Tests";
 import Insights from "./pages/Insights";
 import Coverage from "./pages/Coverage";
@@ -31,6 +33,9 @@ const App = () => (
             <Route path="/results" element={<Results />} />
             <Route path="/results/:id" element={<ResultDetail />} />
             <Route path="/plans" element={<Plans />} />
+            <Route path="/plans/new" element={<NewPlan />} />
+            <Route path="/plans/:id" element={<PlanDetail />} />
+            <Route path="/plans/:id/edit" element={<NewPlan />} />
             <Route path="/tests" element={<Tests />} />
             <Route path="/insights" element={<Insights />} />
             <Route path="/coverage" element={<Coverage />} />
