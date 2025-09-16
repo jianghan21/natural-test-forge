@@ -98,8 +98,8 @@ export default function NewTest() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="space-y-4">
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div>
                   <Label htmlFor="testName" className="text-sm font-medium flex items-center gap-2">
                     测试名称 <span className="text-destructive">*</span>
@@ -149,8 +149,9 @@ export default function NewTest() {
                 </div>
               </div>
 
+              {/* Test Description - Full Width */}
               <div>
-                <Label htmlFor="testDescription" className="text-sm font-medium">
+                <Label htmlFor="testDescription" className="text-sm font-medium flex items-center gap-2">
                   测试描述 <span className="text-destructive">*</span>
                 </Label>
                 <Textarea
