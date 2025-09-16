@@ -160,7 +160,7 @@ export default function Results() {
         <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           <div className="space-y-2">
             <Label>运行状态</Label>
-            <Select value={filters.status} onValueChange={(value) => setFilters({...filters, status: value === "all" ? "" : value})}>
+            <Select value={filters.status} onValueChange={(value) => setFilters({...filters, status: value})}>
               <SelectTrigger>
                 <SelectValue placeholder="选择状态" />
               </SelectTrigger>
@@ -244,7 +244,7 @@ export default function Results() {
 
           <div className="space-y-2">
             <Label>通过率</Label>
-            <Select value={filters.passRate} onValueChange={(value) => setFilters({...filters, passRate: value === "all" ? "" : value})}>
+            <Select value={filters.passRate} onValueChange={(value) => setFilters({...filters, passRate: value})}>
               <SelectTrigger>
                 <SelectValue placeholder="选择通过率" />
               </SelectTrigger>
@@ -276,71 +276,74 @@ export default function Results() {
         </CardContent>
       </Card>
 
-      {/* Results Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {filteredResults.map((result) => (
-          <Card 
-            key={result.id}
-            className="bg-gradient-card shadow-card border-0 hover:shadow-elevated transition-all duration-300 cursor-pointer"
-            onClick={() => navigate(`/results/${result.id}`)}
-          >
-            <CardHeader className="pb-3">
-              <div className="flex items-start justify-between">
-                <div className="space-y-1">
-                  <CardTitle className="text-lg">{result.testName}</CardTitle>
-                  <p className="text-sm text-muted-foreground">
-                    计划名: {result.planName || "null"}
-                  </p>
-                </div>
-                {getStatusBadge(result.status)}
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div className="flex items-center gap-2">
-                  <CalendarLucide className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">开始时间:</span>
-                </div>
-                <span>{format(result.startTime, "yyyy-MM-dd HH:mm")}</span>
-
-                <div className="flex items-center gap-2">
-                  <Play className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">运行进度:</span>
-                </div>
-                <span>{result.completedCases}/{result.totalCases} 用例</span>
-
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">通过率:</span>
-                </div>
-                <span className={cn(
-                  "font-medium",
-                  result.passRate >= 90 ? "text-green-600" : 
-                  result.passRate >= 60 ? "text-orange-600" : "text-red-600"
-                )}>
-                  {result.passRate}%
-                </span>
-
-                <div className="flex items-center gap-2">
-                  <User className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">创建人:</span>
-                </div>
-                <span>{result.creator}</span>
-              </div>
-
-              {result.status !== "scheduled" && (
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">进度</span>
-                    <span>{result.progress}%</span>
-                  </div>
-                  <Progress value={result.progress} className="h-2" />
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      {/* Results Table */}
+      <Card className="bg-gradient-card shadow-card border-0">
+        <CardContent className="p-0">
+          <div className="overflow-hidden rounded-lg">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                {/* Frozen Header */}
+                <thead className="sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b z-10">
+                  <tr>
+                    <th className="text-left p-4 font-medium text-muted-foreground min-w-[200px]">测试名称</th>
+                    <th className="text-left p-4 font-medium text-muted-foreground min-w-[180px]">计划名</th>
+                    <th className="text-left p-4 font-medium text-muted-foreground min-w-[120px]">运行状态</th>
+                    <th className="text-left p-4 font-medium text-muted-foreground min-w-[160px]">开始时间</th>
+                    <th className="text-left p-4 font-medium text-muted-foreground min-w-[140px]">运行进度</th>
+                    <th className="text-left p-4 font-medium text-muted-foreground min-w-[100px]">通过率</th>
+                    <th className="text-left p-4 font-medium text-muted-foreground min-w-[120px]">创建人</th>
+                  </tr>
+                </thead>
+                {/* Scrollable Body */}
+                <tbody className="divide-y divide-border">
+                  {filteredResults.map((result) => (
+                    <tr 
+                      key={result.id}
+                      className="hover:bg-muted/50 cursor-pointer transition-colors"
+                      onClick={() => navigate(`/results/${result.id}`)}
+                    >
+                      <td className="p-4">
+                        <div className="font-medium">{result.testName}</div>
+                      </td>
+                      <td className="p-4">
+                        <span className="text-muted-foreground">{result.planName || "null"}</span>
+                      </td>
+                      <td className="p-4">
+                        {getStatusBadge(result.status)}
+                      </td>
+                      <td className="p-4">
+                        <span className="text-sm">{format(result.startTime, "yyyy-MM-dd HH:mm")}</span>
+                      </td>
+                      <td className="p-4">
+                        <div className="space-y-1">
+                          <div className="text-sm">{result.completedCases}/{result.totalCases} 用例</div>
+                          {result.status !== "scheduled" && (
+                            <div className="w-full max-w-[120px]">
+                              <Progress value={result.progress} className="h-1.5" />
+                            </div>
+                          )}
+                        </div>
+                      </td>
+                      <td className="p-4">
+                        <span className={cn(
+                          "font-medium text-sm",
+                          result.passRate >= 90 ? "text-green-600" : 
+                          result.passRate >= 60 ? "text-orange-600" : "text-red-600"
+                        )}>
+                          {result.passRate}%
+                        </span>
+                      </td>
+                      <td className="p-4">
+                        <span className="text-sm">{result.creator}</span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {filteredResults.length === 0 && (
         <Card className="bg-gradient-card shadow-card border-0">
