@@ -3,7 +3,16 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
+import { Layout } from "@/components/Layout";
+import Dashboard from "./pages/Dashboard";
+import NewTest from "./pages/NewTest";
+import Results from "./pages/Results";
+import Plans from "./pages/Plans";
+import Tests from "./pages/Tests";
+import Insights from "./pages/Insights";
+import Coverage from "./pages/Coverage";
+import Configuration from "./pages/Configuration";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -14,11 +23,20 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <Layout>
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/new-test" element={<NewTest />} />
+            <Route path="/results" element={<Results />} />
+            <Route path="/plans" element={<Plans />} />
+            <Route path="/tests" element={<Tests />} />
+            <Route path="/insights" element={<Insights />} />
+            <Route path="/coverage" element={<Coverage />} />
+            <Route path="/configuration" element={<Configuration />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Layout>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
