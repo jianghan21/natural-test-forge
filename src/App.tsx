@@ -7,6 +7,7 @@ import { Layout } from "@/components/Layout";
 import Dashboard from "./pages/Dashboard";
 import NewTest from "./pages/NewTest";
 import Results from "./pages/Results";
+import ResultDetail from "./pages/ResultDetail";
 import Plans from "./pages/Plans";
 import Tests from "./pages/Tests";
 import Insights from "./pages/Insights";
@@ -28,6 +29,7 @@ const App = () => (
             <Route path="/" element={<Dashboard />} />
             <Route path="/new-test" element={<NewTest />} />
             <Route path="/results" element={<Results />} />
+            <Route path="/results/:id" element={<ResultDetail />} />
             <Route path="/plans" element={<Plans />} />
             <Route path="/tests" element={<Tests />} />
             <Route path="/insights" element={<Insights />} />
