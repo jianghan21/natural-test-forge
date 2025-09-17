@@ -12,6 +12,7 @@ import Plans from "./pages/Plans";
 import NewPlan from "./pages/NewPlan";
 import PlanDetail from "./pages/PlanDetail";
 import Tests from "./pages/Tests";
+import TestDetail from "./pages/TestDetail";
 import Insights from "./pages/Insights";
 import Coverage from "./pages/Coverage";
 import Configuration from "./pages/Configuration";
@@ -37,6 +38,8 @@ const App = () => (
             <Route path="/plans/:id" element={<PlanDetail />} />
             <Route path="/plans/:id/edit" element={<NewPlan />} />
             <Route path="/tests" element={<Tests />} />
+            <Route path="/tests/:id" element={<TestDetail />} />
+            <Route path="/tests/:id/edit" element={<NewTest />} />
             <Route path="/insights" element={<Insights />} />
             <Route path="/coverage" element={<Coverage />} />
             <Route path="/configuration" element={<Configuration />} />
