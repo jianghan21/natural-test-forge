@@ -123,13 +123,13 @@ export default function Tests() {
               <Table>
                 <TableHeader className="sticky top-0 bg-background z-10">
                   <TableRow>
-                    <TableHead className="w-[200px]">测试名称</TableHead>
-                    <TableHead className="w-[160px]">创建时间</TableHead>
-                    <TableHead className="w-[120px]">最近通过率</TableHead>
-                    <TableHead className="w-[160px]">创建人</TableHead>
-                    <TableHead className="w-[80px]">状态</TableHead>
-                    <TableHead className="min-w-[200px]">描述</TableHead>
-                    <TableHead className="w-[150px]">操作</TableHead>
+                    <TableHead className="w-[250px]">测试名称</TableHead>
+                    <TableHead className="w-[180px]">创建时间</TableHead>
+                    <TableHead className="w-[140px]">最近通过率</TableHead>
+                    <TableHead className="w-[180px]">创建人</TableHead>
+                    <TableHead className="w-[100px]">状态</TableHead>
+                    <TableHead className="min-w-[250px]">描述</TableHead>
+                    <TableHead className="w-[180px]">操作</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
