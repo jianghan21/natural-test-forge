@@ -112,7 +112,12 @@ export function AppSidebar() {
     if (path === "/") {
       return currentPath === "/"
     }
-    return currentPath.startsWith(path)
+    // For project-specific routes, check exact match or project scope
+    if (path.includes("/projects/") && currentProjectId) {
+      return currentPath === path
+    }
+    // For other routes, only match if it's exact or starts with path but has a delimiter
+    return currentPath === path || (currentPath.startsWith(path + "/") && path !== "/projects")
   }
   
   const getNavClass = (path: string) => {
