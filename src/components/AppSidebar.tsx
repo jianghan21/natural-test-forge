@@ -116,6 +116,11 @@ export function AppSidebar() {
       return currentPath === path
     }
     
+    // For tests routes, also match legacy /new-test route
+    if (path.includes("/tests") && currentPath === "/new-test") {
+      return true
+    }
+    
     // For all other routes, match exactly
     return currentPath === path
   }
