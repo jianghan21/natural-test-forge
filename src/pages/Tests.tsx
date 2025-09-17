@@ -89,39 +89,33 @@ export default function Tests() {
     <div className="p-6 space-y-6">
       {/* Top Guidance Section */}
       <div className="bg-gradient-primary rounded-xl p-6 text-white shadow-elevated">
-        <div className="flex items-center justify-between">
-          <div>
+        <div className="flex items-start justify-between">
+          <div className="flex-1">
             <h1 className="text-2xl font-bold mb-2 flex items-center gap-3">
               <TestTube className="h-6 w-6" />
               欢迎使用 TestFlow AI
             </h1>
             <p className="text-white/90 mb-4">开始创建您的第一个测试用例，让 AI 帮您自动生成完整的测试流程</p>
+            <Button 
+              onClick={() => navigate('/new-test')}
+              variant="secondary"
+              size="lg"
+              className="bg-white/10 text-white border-white/20 hover:bg-white/20 backdrop-blur-sm"
+            >
+              <Plus className="h-5 w-5 mr-2" />
+              创建第一个测试
+            </Button>
           </div>
-          <Button 
-            onClick={() => navigate('/new-test')}
-            variant="secondary"
-            size="lg"
-            className="bg-white/10 text-white border-white/20 hover:bg-white/20 backdrop-blur-sm"
-          >
-            <Plus className="h-5 w-5 mr-2" />
-            创建第一个测试
-          </Button>
         </div>
       </div>
 
       {/* Test List */}
       <Card className="bg-gradient-card shadow-card border-0">
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2">
-              <TestTube className="h-5 w-5 text-primary" />
-              测试用例库
-            </CardTitle>
-            <Button onClick={() => navigate('/new-test')} className="bg-gradient-primary">
-              <Plus className="h-4 w-4 mr-2" />
-              新建测试
-            </Button>
-          </div>
+          <CardTitle className="flex items-center gap-2">
+            <TestTube className="h-5 w-5 text-primary" />
+            测试用例库
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="rounded-lg border">
