@@ -123,7 +123,7 @@ export function AppSidebar() {
   const getNavClass = (path: string) => {
     const active = isActive(path)
     return active 
-      ? "bg-primary text-primary-foreground font-medium shadow-sm" 
+      ? "bg-primary text-primary-foreground font-medium shadow-sm hover:bg-primary hover:text-primary-foreground" 
       : "text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-all duration-200"
   }
 
