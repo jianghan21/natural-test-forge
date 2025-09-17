@@ -123,8 +123,8 @@ export function AppSidebar() {
   const getNavClass = (path: string) => {
     const active = isActive(path)
     return active 
-      ? "bg-primary text-primary-foreground font-medium shadow-sm hover:bg-primary hover:text-primary-foreground" 
-      : "text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-all duration-200"
+      ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium" 
+      : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-all duration-200"
   }
 
   const mainItems = getMainItems(currentProjectId || selectedProject)
