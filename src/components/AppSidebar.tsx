@@ -124,8 +124,8 @@ export function AppSidebar() {
     const active = isActive(path)
     return `${active 
       ? "bg-primary text-primary-foreground font-medium shadow-sm" 
-      : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-    } transition-all duration-200 ${active ? "hover:bg-primary hover:text-primary-foreground" : ""}`
+      : "text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-all duration-200"
+    }`
   }
 
   const mainItems = getMainItems(currentProjectId || selectedProject)
