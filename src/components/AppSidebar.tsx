@@ -106,18 +106,18 @@ export function AppSidebar() {
   const [selectedProject, setSelectedProject] = useState(currentProjectId || "1")
 
   const isActive = (path: string) => {
+    // Exact match for projects list page
     if (path === "/projects" && (currentPath === "/" || currentPath === "/projects")) {
       return true
     }
-    if (path === "/") {
-      return currentPath === "/"
-    }
-    // For project-specific routes, check exact match or project scope
-    if (path.includes("/projects/") && currentProjectId) {
+    
+    // For project overview page, only match if it's exactly the project detail page
+    if (path.match(/^\/projects\/\d+$/)) {
       return currentPath === path
     }
-    // For other routes, only match if it's exact or starts with path but has a delimiter
-    return currentPath === path || (currentPath.startsWith(path + "/") && path !== "/projects")
+    
+    // For all other routes, match exactly
+    return currentPath === path
   }
   
   const getNavClass = (path: string) => {
