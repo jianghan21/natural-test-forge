@@ -1,16 +1,19 @@
+import { useState } from "react"
 import { 
-  Home, 
-  Plus, 
-  BarChart3, 
-  Calendar, 
+  FolderOpen, 
   TestTube, 
-  Brain, 
+  FileText, 
+  BarChart3, 
+  TrendingUp, 
   Shield, 
   Settings, 
-  Cog 
+  Wrench,
+  Home,
+  Plus,
+  ChevronDown,
+  Building2
 } from "lucide-react"
-import { NavLink, useLocation } from "react-router-dom"
-
+import { NavLink, useLocation, useParams } from "react-router-dom"
 import {
   Sidebar,
   SidebarContent,
@@ -20,41 +23,98 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { Button } from "@/components/ui/button"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
-const mainItems = [
-  { title: "Dashboard", url: "/", icon: Home },
-  { title: "New Test", url: "/new-test", icon: Plus },
-  { title: "Results", url: "/results", icon: BarChart3 },
-  { title: "Plans", url: "/plans", icon: Calendar },
-  { title: "Tests", url: "/tests", icon: TestTube },
+// Mock projects data
+const projects = [
+  { id: "1", name: "电商平台测试" },
+  { id: "2", name: "移动端APP测试" }, 
+  { id: "3", name: "API接口测试" }
 ]
 
-const analysisItems = [
-  { title: "Insights", url: "/insights", icon: Brain },
-  { title: "Coverage", url: "/coverage", icon: Shield },
+// Navigation items
+const getMainItems = (projectId?: string) => [
+  {
+    title: "项目列表",
+    url: "/projects",
+    icon: Building2,
+  },
+  ...(projectId ? [
+    {
+      title: "项目概览",
+      url: `/projects/${projectId}`,
+      icon: Home,
+    },
+    {
+      title: "测试用例",
+      url: `/projects/${projectId}/tests`,
+      icon: TestTube,
+    },
+    {
+      title: "测试计划",
+      url: `/projects/${projectId}/plans`,
+      icon: FileText,
+    },
+    {
+      title: "测试结果",
+      url: `/projects/${projectId}/results`,
+      icon: BarChart3,
+    },
+  ] : [])
+]
+
+const getAnalysisItems = (projectId?: string) => [
+  ...(projectId ? [
+    {
+      title: "测试洞察",
+      url: `/projects/${projectId}/insights`,
+      icon: TrendingUp,
+    },
+    {
+      title: "覆盖率分析",
+      url: `/projects/${projectId}/coverage`,
+      icon: Shield,
+    },
+    {
+      title: "测试配置",
+      url: `/projects/${projectId}/configuration`,
+      icon: Wrench,
+    },
+  ] : [])
 ]
 
 const settingsItems = [
-  { title: "Configuration", url: "/configuration", icon: Cog },
-  { title: "Settings", url: "/settings", icon: Settings },
+  {
+    title: "系统设置",
+    url: "/settings",
+    icon: Settings,
+  },
 ]
 
 export function AppSidebar() {
   const { state } = useSidebar()
   const location = useLocation()
+  const params = useParams()
   const currentPath = location.pathname
   const collapsed = state === "collapsed"
+  
+  // Extract project ID from current route
+  const currentProjectId = params.projectId || params.id
+  const [selectedProject, setSelectedProject] = useState(currentProjectId || "1")
 
   const isActive = (path: string) => {
+    if (path === "/projects" && (currentPath === "/" || currentPath === "/projects")) {
+      return true
+    }
     if (path === "/") {
       return currentPath === "/"
     }
     return currentPath.startsWith(path)
   }
-
+  
   const getNavClass = (path: string) => {
     const active = isActive(path)
     return `${active 
@@ -62,6 +122,11 @@ export function AppSidebar() {
       : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
     } transition-all duration-200`
   }
+
+  const mainItems = getMainItems(currentProjectId || selectedProject)
+  const analysisItems = getAnalysisItems(currentProjectId || selectedProject)
+  
+  const currentProject = projects.find(p => p.id === (currentProjectId || selectedProject))
 
   return (
     <Sidebar className={collapsed ? "w-16" : "w-64"} collapsible="icon">
@@ -79,10 +144,40 @@ export function AppSidebar() {
         </div>
       </div>
 
+      {/* Project Selector */}
+      {!collapsed && (currentProjectId || selectedProject) && (
+        <div className="p-4 border-b">
+          <div className="space-y-2">
+            <label className="text-xs font-medium text-muted-foreground">当前项目</label>
+            <Select value={currentProjectId || selectedProject} onValueChange={setSelectedProject}>
+              <SelectTrigger className="w-full">
+                <SelectValue>
+                  <div className="flex items-center gap-2">
+                    <Building2 className="h-4 w-4" />
+                    <span className="truncate">{currentProject?.name}</span>
+                  </div>
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                {projects.map((project) => (
+                  <SelectItem key={project.id} value={project.id}>
+                    <div className="flex items-center gap-2">
+                      <Building2 className="h-4 w-4" />
+                      {project.name}
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      )}
+
       <SidebarContent className="px-2 py-4">
+        {/* Main Navigation */}
         <SidebarGroup>
           <SidebarGroupLabel className={collapsed ? "sr-only" : ""}>
-            Main
+            主要功能
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -100,29 +195,33 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarGroup>
-          <SidebarGroupLabel className={collapsed ? "sr-only" : ""}>
-            Analysis
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {analysisItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink to={item.url} className={getNavClass(item.url)}>
-                      <item.icon className={`${collapsed ? "h-5 w-5" : "h-4 w-4"}`} />
-                      {!collapsed && <span>{item.title}</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {/* Analysis Tools - Only show when in a project */}
+        {analysisItems.length > 0 && (
+          <SidebarGroup>
+            <SidebarGroupLabel className={collapsed ? "sr-only" : ""}>
+              分析工具
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {analysisItems.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild>
+                      <NavLink to={item.url} className={getNavClass(item.url)}>
+                        <item.icon className={`${collapsed ? "h-5 w-5" : "h-4 w-4"}`} />
+                        {!collapsed && <span>{item.title}</span>}
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
 
+        {/* Settings */}
         <SidebarGroup>
           <SidebarGroupLabel className={collapsed ? "sr-only" : ""}>
-            Settings
+            设置
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>

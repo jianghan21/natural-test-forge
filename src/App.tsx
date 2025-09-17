@@ -5,6 +5,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Layout } from "@/components/Layout";
 import Dashboard from "./pages/Dashboard";
+import Projects from "./pages/Projects";
+import NewProject from "./pages/NewProject";
+import ProjectDetail from "./pages/ProjectDetail";
 import NewTest from "./pages/NewTest";
 import Results from "./pages/Results";
 import ResultDetail from "./pages/ResultDetail";
@@ -29,7 +32,33 @@ const App = () => (
       <BrowserRouter>
         <Layout>
           <Routes>
-            <Route path="/" element={<Dashboard />} />
+            {/* Projects */}
+            <Route path="/" element={<Projects />} />
+            <Route path="/projects" element={<Projects />} />
+            <Route path="/projects/new" element={<NewProject />} />
+            <Route path="/projects/:id" element={<ProjectDetail />} />
+            
+            {/* Project-scoped routes */}
+            <Route path="/projects/:projectId/tests" element={<Tests />} />
+            <Route path="/projects/:projectId/tests/new" element={<NewTest />} />
+            <Route path="/projects/:projectId/tests/:id" element={<TestDetail />} />
+            <Route path="/projects/:projectId/tests/:id/edit" element={<NewTest />} />
+            
+            <Route path="/projects/:projectId/plans" element={<Plans />} />
+            <Route path="/projects/:projectId/plans/new" element={<NewPlan />} />
+            <Route path="/projects/:projectId/plans/:id" element={<PlanDetail />} />
+            <Route path="/projects/:projectId/plans/:id/edit" element={<NewPlan />} />
+            
+            <Route path="/projects/:projectId/results" element={<Results />} />
+            <Route path="/projects/:projectId/results/:id" element={<ResultDetail />} />
+            
+            <Route path="/projects/:projectId/insights" element={<Insights />} />
+            <Route path="/projects/:projectId/coverage" element={<Coverage />} />
+            <Route path="/projects/:projectId/configuration" element={<Configuration />} />
+            
+            {/* Legacy routes for backward compatibility */}
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/tests" element={<Tests />} />
             <Route path="/new-test" element={<NewTest />} />
             <Route path="/results" element={<Results />} />
             <Route path="/results/:id" element={<ResultDetail />} />
@@ -37,12 +66,13 @@ const App = () => (
             <Route path="/plans/new" element={<NewPlan />} />
             <Route path="/plans/:id" element={<PlanDetail />} />
             <Route path="/plans/:id/edit" element={<NewPlan />} />
-            <Route path="/tests" element={<Tests />} />
             <Route path="/tests/:id" element={<TestDetail />} />
             <Route path="/tests/:id/edit" element={<NewTest />} />
             <Route path="/insights" element={<Insights />} />
             <Route path="/coverage" element={<Coverage />} />
             <Route path="/configuration" element={<Configuration />} />
+            
+            {/* Global settings */}
             <Route path="/settings" element={<Settings />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
