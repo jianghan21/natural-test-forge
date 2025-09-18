@@ -651,12 +651,9 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
                     <AppFlowDiagram onNext={() => {
                       toast({
                         title: "流程图确认完成",
-                        description: "正在跳转到项目创建页面...",
+                        description: "感谢您的确认，您可以继续使用其他功能。",
                       })
-                      // Here you would navigate to the next step
-                      setTimeout(() => {
-                        setAnalysisStep('upload') // Reset for demo
-                      }, 1500)
+                      // 用户确认后不自动跳转，可以在这里添加实际的跳转逻辑
                     }} />
                   </div>
                 </div>
