@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/components/ui/use-toast"
-import { Upload, FileCheck, Smartphone, Brain, Network, CheckCircle, Clock, AlertCircle, Monitor, HelpCircle, ChevronRight, Sparkles, Zap, Eye, Bot, MessageCircle } from "lucide-react"
+import { Upload, FileCheck, Smartphone, Brain, Network, CheckCircle, Clock, AlertCircle, Monitor, HelpCircle, ChevronRight, Sparkles, Zap, Eye, Bot, MessageCircle, Trash2 } from "lucide-react"
 
 interface APKUploadProps {
   onComplete?: (projectId: string) => void
@@ -261,7 +261,7 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
                       }}
                       className="text-muted-foreground hover:text-destructive hover:bg-destructive/10"
                     >
-                      <AlertCircle className="h-5 w-5" />
+                      <Trash2 className="h-5 w-5" />
                     </Button>
                   </div>
                   
