@@ -372,18 +372,18 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
                     </div>
 
                     {/* Current Question */}
-                    <div className="flex items-start gap-3 p-4 bg-gradient-to-br from-primary/5 to-blue-500/5 border border-primary/20 rounded-xl">
-                      <div className="w-10 h-10 bg-gradient-to-br from-primary to-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
-                        <Bot className="h-5 w-5 text-white" />
+                    <div className="flex items-start gap-4 p-6 bg-gradient-to-br from-primary/5 to-blue-500/5 border border-primary/20 rounded-xl hover-scale">{/* 增加padding和gap */}
+                      <div className="w-12 h-12 bg-gradient-to-br from-primary to-blue-500 rounded-full flex items-center justify-center flex-shrink-0">{/* 增加头像大小 */}
+                        <Bot className="h-6 w-6 text-white" />{/* 增加图标大小 */}
                       </div>
                       <div className="flex-1">
-                        <p className="text-sm font-medium text-primary mb-2">AI助手</p>
-                        <p className="text-foreground mb-4">
+                        <p className="text-base font-medium text-primary mb-2">AI助手</p>{/* 增加字体大小 */}
+                        <p className="text-base text-foreground mb-4">{/* 增加字体大小 */}
                           为了更好地为这个页面生成测试用例，请帮我选择这个页面的主要功能类型：
                         </p>
                         
                         {/* Options */}
-                        <div className="space-y-2">
+                        <div className="space-y-3">{/* 增加间距 */}
                           {[
                             { id: "home", label: "应用首页", desc: "显示主要功能入口和导航" },
                             { id: "auth", label: "登录/注册", desc: "用户身份验证相关功能" },
@@ -399,8 +399,8 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
                               onClick={() => handleScreenHelp(option.label)}
                             >
                               <div>
-                                <p className="font-medium text-sm">{option.label}</p>
-                                <p className="text-xs text-muted-foreground mt-1">{option.desc}</p>
+                                <p className="font-medium text-base">{option.label}</p>{/* 增加字体大小 */}
+                                <p className="text-sm text-muted-foreground mt-1">{option.desc}</p>
                               </div>
                             </Button>
                           ))}
@@ -449,20 +449,20 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
                   </div>
 
                   {/* Progress */}
-                  <div className="mt-8 p-4 bg-muted/30 rounded-lg">
-                    <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
+                  <div className="mt-6 p-3 bg-muted/30 rounded-lg">{/* 缩小margin和padding */}
+                    <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">{/* 缩小字体 */}
                       <span>页面识别进度</span>
                       <span>{discoveredPages.length}/10 页面</span>
                     </div>
-                    <div className="w-full bg-muted rounded-full h-2">
+                    <div className="w-full bg-muted rounded-full h-1.5">{/* 缩小进度条高度 */}
                       <div 
                         className="bg-gradient-to-r from-primary to-blue-500 h-2 rounded-full transition-all duration-300"
                         style={{ width: `${(discoveredPages.length / 10) * 100}%` }}
                       ></div>
                     </div>
-                    <div className="flex flex-wrap gap-2 mt-3">
+                    <div className="flex flex-wrap gap-1.5 mt-2">{/* 缩小间距 */}
                       {discoveredPages.map((page, index) => (
-                        <Badge key={index} variant="secondary" className="text-xs px-2 py-1">
+                        <Badge key={index} variant="secondary" className="text-xs px-2 py-0.5">{/* 缩小badge */}
                           {page}
                         </Badge>
                       ))}
