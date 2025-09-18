@@ -144,7 +144,7 @@ export default function Home() {
                     <Button 
                       size="lg" 
                       className="w-full h-16 text-lg font-semibold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 hover:from-blue-500 hover:via-purple-500 hover:to-blue-500 transition-all duration-500 shadow-2xl hover:shadow-blue-500/50 border-0 hover:scale-105 group" 
-                      onClick={() => setShowUploader(true)}
+                      onClick={() => window.location.href = '/upload'}
                     >
                       <div className="flex items-center gap-3">
                         <Upload className="h-6 w-6 group-hover:rotate-12 transition-transform duration-300" />
