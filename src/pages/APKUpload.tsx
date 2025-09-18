@@ -246,6 +246,23 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
                         {(uploadedFile.size / 1024 / 1024).toFixed(2)} MB
                       </p>
                     </div>
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      onClick={() => {
+                        setUploadedFile(null)
+                        if (fileInputRef.current) {
+                          fileInputRef.current.value = ''
+                        }
+                        toast({
+                          title: "文件已删除",
+                          description: "您可以重新选择APK文件",
+                        })
+                      }}
+                      className="text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                    >
+                      <AlertCircle className="h-5 w-5" />
+                    </Button>
                   </div>
                   
                   <Button 
