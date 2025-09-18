@@ -347,7 +347,7 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-12">
               {/* Cloud Device Screen - Full Screen Mobile */}
-              <Card className="bg-background/80 backdrop-blur-xl border-primary/20 shadow-2xl">
+              <Card className="bg-background/80 backdrop-blur-xl border-primary/20 shadow-2xl h-[800px]">
                 <CardHeader>
                   <CardTitle className="text-2xl font-bold flex items-center gap-3">
                     <Smartphone className="h-8 w-8 text-primary" />
@@ -400,7 +400,7 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
               </Card>
 
               {/* Help Panel */}
-              <Card className="bg-background/80 backdrop-blur-xl border-primary/20 shadow-2xl flex flex-col h-[700px]">
+              <Card className="bg-background/80 backdrop-blur-xl border-primary/20 shadow-2xl flex flex-col h-[800px]">
                 <CardHeader className="flex-shrink-0">
                   <CardTitle className="text-2xl font-bold flex items-center gap-3">
                     <HelpCircle className="h-8 w-8 text-primary" />
