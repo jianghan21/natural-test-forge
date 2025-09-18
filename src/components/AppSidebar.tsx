@@ -13,7 +13,7 @@ import {
   ChevronDown,
   Building2
 } from "lucide-react"
-import { NavLink, useLocation, useParams } from "react-router-dom"
+import { NavLink, useLocation, useParams, useNavigate } from "react-router-dom"
 import {
   Sidebar,
   SidebarContent,
@@ -98,6 +98,7 @@ export function AppSidebar() {
   const { state } = useSidebar()
   const location = useLocation()
   const params = useParams()
+  const navigate = useNavigate()
   const currentPath = location.pathname
   const collapsed = state === "collapsed"
   
@@ -145,17 +146,20 @@ export function AppSidebar() {
   return (
     <Sidebar className={collapsed ? "w-16" : "w-64"} collapsible="icon">
       <div className="p-4 border-b">
-        <div className="flex items-center gap-3">
+        <button 
+          onClick={() => navigate('/')}
+          className="flex items-center gap-3 hover:opacity-80 transition-opacity cursor-pointer w-full"
+        >
           <div className="h-8 w-8 bg-gradient-primary rounded-lg flex items-center justify-center">
             <TestTube className="h-4 w-4 text-white" />
           </div>
           {!collapsed && (
-            <div>
+            <div className="text-left">
               <h2 className="font-semibold text-foreground">TestFlow</h2>
               <p className="text-xs text-muted-foreground">AI Testing Platform</p>
             </div>
           )}
-        </div>
+        </button>
       </div>
 
       {/* Project Selector */}
