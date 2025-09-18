@@ -130,7 +130,7 @@ export default function Home() {
             <div className="max-w-2xl mx-auto animate-fade-in" style={{ animationDelay: '0.6s' }}>
               {!showUploader ? <Card className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-lg border border-white/20 shadow-2xl hover:shadow-blue-500/25 transition-all duration-500 hover:scale-105 hover:border-blue-400/50">
                   <CardHeader className="pb-4">
-                    <CardTitle className="flex items-center gap-3 text-2xl text-white">
+                    <CardTitle className="flex items-center gap-3 text-2xl text-black">
                       <div className="p-2 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 shadow-lg">
                         <Upload className="h-7 w-7 text-white" />
                       </div>
@@ -186,7 +186,7 @@ export default function Home() {
                   <div className="p-4 rounded-xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 group-hover:from-blue-500/40 group-hover:to-purple-500/40 transition-all duration-500 border border-blue-400/30">
                     <feature.icon className="h-8 w-8 text-blue-300 group-hover:text-blue-200 group-hover:scale-110 transition-all duration-300" />
                   </div>
-                  <CardTitle className="text-xl text-white group-hover:text-blue-200 transition-colors duration-300">{feature.title}</CardTitle>
+                  <CardTitle className="text-xl text-black group-hover:text-gray-800 transition-colors duration-300">{feature.title}</CardTitle>
                 </div>
               </CardHeader>
               <CardContent>
@@ -247,7 +247,7 @@ export default function Home() {
                   )}
                 </div>
                 
-                <h3 className="text-xl font-semibold mb-4 text-white group-hover:text-blue-200 transition-colors duration-300">
+                <h3 className="text-xl font-semibold mb-4 text-black group-hover:text-gray-800 transition-colors duration-300">
                   {process.title}
                 </h3>
                 <p className="text-black leading-relaxed group-hover:text-gray-800 transition-colors duration-300">
