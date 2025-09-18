@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Layout } from "@/components/Layout";
+import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import Projects from "./pages/Projects";
 import NewProject from "./pages/NewProject";
@@ -20,6 +21,7 @@ import Insights from "./pages/Insights";
 import Coverage from "./pages/Coverage";
 import Configuration from "./pages/Configuration";
 import Settings from "./pages/Settings";
+import UXFlowDiagram from "./pages/UXFlowDiagram";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,8 +34,9 @@ const App = () => (
       <BrowserRouter>
         <Layout>
           <Routes>
-            {/* Projects */}
-            <Route path="/" element={<Projects />} />
+            {/* Home and Projects */}
+            <Route path="/" element={<Home />} />
+            <Route path="/home" element={<Home />} />
             <Route path="/projects" element={<Projects />} />
             <Route path="/projects/new" element={<NewProject />} />
             <Route path="/projects/:id" element={<ProjectDetail />} />
@@ -55,6 +58,9 @@ const App = () => (
             <Route path="/projects/:projectId/insights" element={<Insights />} />
             <Route path="/projects/:projectId/coverage" element={<Coverage />} />
             <Route path="/projects/:projectId/configuration" element={<Configuration />} />
+            
+            {/* UX Flow Diagram */}
+            <Route path="/ux-flow" element={<UXFlowDiagram />} />
             
             {/* Legacy routes for backward compatibility */}
             <Route path="/dashboard" element={<Dashboard />} />

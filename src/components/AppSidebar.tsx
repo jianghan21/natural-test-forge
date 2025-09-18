@@ -38,15 +38,20 @@ const projects = [
 // Navigation items
 const getMainItems = (projectId?: string) => [
   {
-    title: "项目列表",
+    title: "首页",
+    url: "/",
+    icon: Home,
+  },
+  {
+    title: "项目列表", 
     url: "/projects",
     icon: Building2,
   },
   ...(projectId ? [
     {
-      title: "项目概览",
+      title: "项目概览", 
       url: `/projects/${projectId}`,
-      icon: Home,
+      icon: Building2,
     },
     {
       title: "测试用例",
@@ -106,8 +111,13 @@ export function AppSidebar() {
   const [selectedProject, setSelectedProject] = useState(currentProjectId || "1")
 
   const isActive = (path: string) => {
-    // Exact match for projects list page
-    if (path === "/projects" && (currentPath === "/" || currentPath === "/projects")) {
+    // Home page exact match
+    if (path === "/" && currentPath === "/") {
+      return true
+    }
+    
+    // Projects list page match
+    if (path === "/projects" && currentPath === "/projects") {
       return true
     }
     
