@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/components/ui/use-toast"
+import { AppFlowDiagram } from "@/components/AppFlowDiagram"
 import { Upload, FileCheck, Smartphone, Brain, Network, CheckCircle, Clock, AlertCircle, Monitor, HelpCircle, ChevronRight, Sparkles, Zap, Eye, Bot, MessageCircle, Trash2 } from "lucide-react"
 
 interface APKUploadProps {
@@ -24,6 +25,7 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const [conversationHistory, setConversationHistory] = useState<Array<{type: 'ai' | 'user', message: string, timestamp: number}>>([])
   const [waitingForUserInput, setWaitingForUserInput] = useState(true)
+  const [showFlowDiagram, setShowFlowDiagram] = useState(false)
   const conversationEndRef = useRef<HTMLDivElement>(null)
 
   // Mouse tracking for glow effect
@@ -559,6 +561,33 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
     )
   }
 
+  // Show Flow Diagram Phase
+  if (showFlowDiagram) {
+    return (
+      <div className="min-h-screen bg-background relative">
+        <BackgroundEffects />
+        
+        <div className="relative z-10 pt-20 px-8">
+          <div className="max-w-full mx-auto h-[calc(100vh-120px)]">
+            <Card className="bg-background/80 backdrop-blur-xl border-primary/20 shadow-2xl h-full flex flex-col">
+              <AppFlowDiagram onNext={() => {
+                toast({
+                  title: "流程图确认完成",
+                  description: "正在跳转到项目创建页面...",
+                })
+                // Here you would navigate to the next step
+                setTimeout(() => {
+                  setShowFlowDiagram(false)
+                  setAnalysisStep('upload') // Reset for demo
+                }, 1500)
+              }} />
+            </Card>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   const stepInfo = getCurrentStepInfo()
   
   return (
@@ -638,9 +667,16 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
                   <div>
                     <h3 className="text-2xl font-bold text-success mb-3">分析完成！</h3>
                     <p className="text-lg text-muted-foreground">
-                      发现 {discoveredPages.length} 个页面，正在为您创建项目...
+                      发现 {discoveredPages.length} 个页面，已生成页面流程图
                     </p>
                   </div>
+                  <Button 
+                    onClick={() => setShowFlowDiagram(true)}
+                    className="bg-gradient-to-r from-primary to-blue-500 hover:from-primary/90 hover:to-blue-500/90"
+                    size="lg"
+                  >
+                    查看页面流程图
+                  </Button>
                 </div>
               )}
             </CardContent>
