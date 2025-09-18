@@ -38,11 +38,6 @@ const projects = [
 // Navigation items
 const getMainItems = (projectId?: string) => [
   {
-    title: "首页",
-    url: "/",
-    icon: Home,
-  },
-  {
     title: "项目列表", 
     url: "/projects",
     icon: Building2,

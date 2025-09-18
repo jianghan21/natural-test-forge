@@ -33,58 +33,58 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Layout>
-          <Routes>
-            {/* Home and Projects */}
-            <Route path="/" element={<Home />} />
-            <Route path="/home" element={<Home />} />
-            <Route path="/upload" element={<APKUpload />} />
-            <Route path="/projects" element={<Projects />} />
-            <Route path="/projects/new" element={<NewProject />} />
-            <Route path="/projects/:id" element={<ProjectDetail />} />
-            
-            {/* Project-scoped routes */}
-            <Route path="/projects/:projectId/tests" element={<Tests />} />
-            <Route path="/projects/:projectId/tests/new" element={<NewTest />} />
-            <Route path="/projects/:projectId/tests/:id" element={<TestDetail />} />
-            <Route path="/projects/:projectId/tests/:id/edit" element={<NewTest />} />
-            
-            <Route path="/projects/:projectId/plans" element={<Plans />} />
-            <Route path="/projects/:projectId/plans/new" element={<NewPlan />} />
-            <Route path="/projects/:projectId/plans/:id" element={<PlanDetail />} />
-            <Route path="/projects/:projectId/plans/:id/edit" element={<NewPlan />} />
-            
-            <Route path="/projects/:projectId/results" element={<Results />} />
-            <Route path="/projects/:projectId/results/:id" element={<ResultDetail />} />
-            
-            <Route path="/projects/:projectId/insights" element={<Insights />} />
-            <Route path="/projects/:projectId/coverage" element={<Coverage />} />
-            <Route path="/projects/:projectId/configuration" element={<Configuration />} />
-            
-            {/* UX Flow Diagram */}
-            <Route path="/ux-flow" element={<UXFlowDiagram />} />
-            
-            {/* Legacy routes for backward compatibility */}
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/tests" element={<Tests />} />
-            <Route path="/new-test" element={<NewTest />} />
-            <Route path="/results" element={<Results />} />
-            <Route path="/results/:id" element={<ResultDetail />} />
-            <Route path="/plans" element={<Plans />} />
-            <Route path="/plans/new" element={<NewPlan />} />
-            <Route path="/plans/:id" element={<PlanDetail />} />
-            <Route path="/plans/:id/edit" element={<NewPlan />} />
-            <Route path="/tests/:id" element={<TestDetail />} />
-            <Route path="/tests/:id/edit" element={<NewTest />} />
-            <Route path="/insights" element={<Insights />} />
-            <Route path="/coverage" element={<Coverage />} />
-            <Route path="/configuration" element={<Configuration />} />
-            
-            {/* Global settings */}
-            <Route path="/settings" element={<Settings />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Layout>
+        <Routes>
+          {/* Home pages without sidebar */}
+          <Route path="/" element={<Home />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/upload" element={<APKUpload />} />
+          
+          {/* All other pages with sidebar */}
+          <Route path="/projects" element={<Layout><Projects /></Layout>} />
+          <Route path="/projects/new" element={<Layout><NewProject /></Layout>} />
+          <Route path="/projects/:id" element={<Layout><ProjectDetail /></Layout>} />
+          
+          {/* Project-scoped routes */}
+          <Route path="/projects/:projectId/tests" element={<Layout><Tests /></Layout>} />
+          <Route path="/projects/:projectId/tests/new" element={<Layout><NewTest /></Layout>} />
+          <Route path="/projects/:projectId/tests/:id" element={<Layout><TestDetail /></Layout>} />
+          <Route path="/projects/:projectId/tests/:id/edit" element={<Layout><NewTest /></Layout>} />
+          
+          <Route path="/projects/:projectId/plans" element={<Layout><Plans /></Layout>} />
+          <Route path="/projects/:projectId/plans/new" element={<Layout><NewPlan /></Layout>} />
+          <Route path="/projects/:projectId/plans/:id" element={<Layout><PlanDetail /></Layout>} />
+          <Route path="/projects/:projectId/plans/:id/edit" element={<Layout><NewPlan /></Layout>} />
+          
+          <Route path="/projects/:projectId/results" element={<Layout><Results /></Layout>} />
+          <Route path="/projects/:projectId/results/:id" element={<Layout><ResultDetail /></Layout>} />
+          
+          <Route path="/projects/:projectId/insights" element={<Layout><Insights /></Layout>} />
+          <Route path="/projects/:projectId/coverage" element={<Layout><Coverage /></Layout>} />
+          <Route path="/projects/:projectId/configuration" element={<Layout><Configuration /></Layout>} />
+          
+          {/* UX Flow Diagram */}
+          <Route path="/ux-flow" element={<Layout><UXFlowDiagram /></Layout>} />
+          
+          {/* Legacy routes for backward compatibility */}
+          <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
+          <Route path="/tests" element={<Layout><Tests /></Layout>} />
+          <Route path="/new-test" element={<Layout><NewTest /></Layout>} />
+          <Route path="/results" element={<Layout><Results /></Layout>} />
+          <Route path="/results/:id" element={<Layout><ResultDetail /></Layout>} />
+          <Route path="/plans" element={<Layout><Plans /></Layout>} />
+          <Route path="/plans/new" element={<Layout><NewPlan /></Layout>} />
+          <Route path="/plans/:id" element={<Layout><PlanDetail /></Layout>} />
+          <Route path="/plans/:id/edit" element={<Layout><NewPlan /></Layout>} />
+          <Route path="/tests/:id" element={<Layout><TestDetail /></Layout>} />
+          <Route path="/tests/:id/edit" element={<Layout><NewTest /></Layout>} />
+          <Route path="/insights" element={<Layout><Insights /></Layout>} />
+          <Route path="/coverage" element={<Layout><Coverage /></Layout>} />
+          <Route path="/configuration" element={<Layout><Configuration /></Layout>} />
+          
+          {/* Global settings */}
+          <Route path="/settings" element={<Layout><Settings /></Layout>} />
+          <Route path="*" element={<Layout><NotFound /></Layout>} />
+        </Routes>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
