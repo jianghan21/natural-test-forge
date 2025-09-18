@@ -340,8 +340,8 @@ export const AppFlowDiagram: React.FC<AppFlowDiagramProps> = ({ onNext }) => {
             <Button variant="outline">
               重新分析
             </Button>
-            <Button onClick={onNext} className="bg-gradient-to-r from-primary to-blue-500">
-              确认结果，进入下一步
+            <Button onClick={() => window.location.href = '/tests'} className="bg-gradient-to-r from-primary to-blue-500">
+              确认结果，进入测试用例界面
             </Button>
           </div>
         </div>
