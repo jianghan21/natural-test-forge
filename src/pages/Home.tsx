@@ -136,7 +136,7 @@ export default function Home() {
                       </div>
                       开始智能测试之旅
                     </CardTitle>
-                    <CardDescription className="text-base text-white">
+                    <CardDescription className="text-base text-black">
                       上传您的APK文件，让AI为您的应用生成专业的测试方案
                     </CardDescription>
                   </CardHeader>
@@ -190,7 +190,7 @@ export default function Home() {
                 </div>
               </CardHeader>
               <CardContent>
-                <p className="text-white leading-relaxed group-hover:text-blue-100 transition-colors duration-300">
+                <p className="text-black leading-relaxed group-hover:text-gray-800 transition-colors duration-300">
                   {feature.description}
                 </p>
               </CardContent>
@@ -250,7 +250,7 @@ export default function Home() {
                 <h3 className="text-xl font-semibold mb-4 text-white group-hover:text-blue-200 transition-colors duration-300">
                   {process.title}
                 </h3>
-                <p className="text-white leading-relaxed group-hover:text-blue-100 transition-colors duration-300">
+                <p className="text-black leading-relaxed group-hover:text-gray-800 transition-colors duration-300">
                   {process.description}
                 </p>
               </div>)}
