@@ -364,7 +364,7 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
                         <Bot className="h-4 w-4 text-white" />
                       </div>
                       <div className="flex-1">
-                        <div className="bg-muted/50 rounded-2xl rounded-tl-md px-4 py-3 max-w-md">
+                        <div className="bg-muted/50 rounded-2xl rounded-tl-md px-4 py-3">{/* 移除max-w-md限制 */}
                           <p className="text-sm text-foreground">
                             你好！我是TestFlow AI助手。我正在分析你的应用，当前发现了一个新页面: <strong>{currentPage}</strong>
                           </p>
@@ -416,7 +416,7 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
                         <MessageCircle className="h-4 w-4 text-white" />
                       </div>
                       <div className="flex-1">
-                        <div className="bg-green-50 dark:bg-green-500/10 rounded-2xl rounded-tl-md px-4 py-3 max-w-md border border-green-200/50 dark:border-green-500/20">
+                        <div className="bg-green-50 dark:bg-green-500/10 rounded-2xl rounded-tl-md px-4 py-3 border border-green-200/50 dark:border-green-500/20">{/* 移除max-w-md限制 */}
                           <p className="text-sm text-foreground mb-3">
                             或者用一句话描述这个页面的主要功能：
                           </p>
