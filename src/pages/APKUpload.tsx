@@ -24,6 +24,7 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const [conversationHistory, setConversationHistory] = useState<Array<{type: 'ai' | 'user', message: string, timestamp: number}>>([])
   const [waitingForUserInput, setWaitingForUserInput] = useState(true)
+  const conversationEndRef = useRef<HTMLDivElement>(null)
 
   // Mouse tracking for glow effect
   useEffect(() => {
@@ -33,6 +34,13 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
     window.addEventListener('mousemove', handleMouseMove)
     return () => window.removeEventListener('mousemove', handleMouseMove)
   }, [])
+
+  // Auto-scroll to bottom when new messages are added
+  useEffect(() => {
+    if (conversationEndRef.current) {
+      conversationEndRef.current.scrollIntoView({ behavior: 'smooth' })
+    }
+  }, [conversationHistory, waitingForUserInput])
 
   const analysisSteps = [
     { key: 'analyzing', title: '逆向工程分析', description: '正在分析APK结构和组件...', icon: Brain },
@@ -392,16 +400,16 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
               </Card>
 
               {/* Help Panel */}
-              <Card className="bg-background/80 backdrop-blur-xl border-primary/20 shadow-2xl">
-                <CardHeader>
+              <Card className="bg-background/80 backdrop-blur-xl border-primary/20 shadow-2xl flex flex-col h-[700px]">
+                <CardHeader className="flex-shrink-0">
                   <CardTitle className="text-2xl font-bold flex items-center gap-3">
                     <HelpCircle className="h-8 w-8 text-primary" />
                     协助AI理解页面
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-6">
+                <CardContent className="flex-1 flex flex-col min-h-0">
                   {/* AI Agent Conversation */}
-                  <div className="max-h-96 overflow-y-auto space-y-4">
+                  <div className="flex-1 overflow-y-auto space-y-4 pr-2">
                     {/* Conversation History */}
                     {conversationHistory.map((msg, index) => (
                       <div key={index} className="flex items-start gap-3">
@@ -471,6 +479,9 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
                       </div>
                     )}
 
+                    {/* Scroll anchor for auto-scrolling */}
+                    <div ref={conversationEndRef} />
+
                     {/* Custom Input Message - Only show when waiting for user input */}
                     {waitingForUserInput && (
                       <div className="flex items-start gap-3">
@@ -513,10 +524,12 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
                         </div>
                       </div>
                     )}
+                    {/* Scroll anchor for auto-scrolling */}
+                    <div ref={conversationEndRef} />
                   </div>
 
                   {/* Compact Progress */}
-                  <div className="border-t pt-4">
+                  <div className="border-t pt-4 flex-shrink-0 mt-6">
                     <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
                       <span>页面识别进度</span>
                       <span>{Math.round((discoveredPages.length / 10) * 100)}%</span>
