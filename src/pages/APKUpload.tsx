@@ -357,17 +357,19 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
                 </CardHeader>
                 <CardContent className="space-y-6">
                   {/* AI Agent Conversation */}
-                  <div className="max-h-96 overflow-y-auto space-y-4">
-                    {/* Agent Introduction */}
-                    <div className="flex items-start gap-3 p-4 bg-gradient-to-br from-primary/10 to-blue-500/10 border-2 border-primary/30 rounded-xl">
-                      <div className="w-10 h-10 bg-gradient-to-br from-primary to-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
-                        <Bot className="h-5 w-5 text-white" />
+                  <div className="max-h-96 overflow-y-auto space-y-4 px-2">
+                    {/* AI Message - Introduction */}
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 bg-gradient-to-br from-primary to-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+                        <Bot className="h-4 w-4 text-white" />
                       </div>
                       <div className="flex-1">
-                        <p className="text-sm font-medium text-primary mb-1">AI助手</p>
-                        <p className="text-foreground">
-                          你好！我是TestFlow AI助手。我正在分析你的应用，当前发现了一个新页面: <strong>{currentPage}</strong>
-                        </p>
+                        <div className="bg-muted/50 rounded-2xl rounded-tl-md px-4 py-3 max-w-md">
+                          <p className="text-sm text-foreground">
+                            你好！我是TestFlow AI助手。我正在分析你的应用，当前发现了一个新页面: <strong>{currentPage}</strong>
+                          </p>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1 ml-1">AI助手</p>
                       </div>
                     </div>
 
@@ -408,65 +410,69 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
                       </div>
                     </div>
 
-                    {/* Custom Input Option */}
-                    <div className="flex items-start gap-3 p-4 bg-gradient-to-br from-green-500/5 to-emerald-500/5 border border-green-500/20 rounded-xl">
-                      <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center flex-shrink-0">
-                        <MessageCircle className="h-5 w-5 text-white" />
+                    {/* Custom Input Message */}
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center flex-shrink-0">
+                        <MessageCircle className="h-4 w-4 text-white" />
                       </div>
                       <div className="flex-1">
-                        <p className="text-sm font-medium text-green-600 mb-2">或者自定义描述</p>
-                        <p className="text-sm text-muted-foreground mb-3">
-                          如果上述选项都不准确，请用一句话描述这个页面的主要功能：
-                        </p>
-                        <div className="flex gap-2">
-                          <input
-                            type="text"
-                            placeholder="例如：这是一个商品搜索页面，用户可以搜索和筛选商品..."
-                            className="flex-1 px-3 py-2 text-sm border border-green-500/30 rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-green-500/50"
-                            onKeyDown={(e) => {
-                              if (e.key === 'Enter' && e.currentTarget.value.trim()) {
-                                handleScreenHelp(e.currentTarget.value.trim())
-                                e.currentTarget.value = ''
-                              }
-                            }}
-                          />
-                          <Button 
-                            size="sm" 
-                            className="bg-green-500 hover:bg-green-600"
-                            onClick={(e) => {
-                              const input = e.currentTarget.parentElement?.querySelector('input') as HTMLInputElement
-                              if (input?.value.trim()) {
-                                handleScreenHelp(input.value.trim())
-                                input.value = ''
-                              }
-                            }}
-                          >
-                            发送
-                          </Button>
+                        <div className="bg-green-50 dark:bg-green-500/10 rounded-2xl rounded-tl-md px-4 py-3 max-w-md border border-green-200/50 dark:border-green-500/20">
+                          <p className="text-sm text-foreground mb-3">
+                            或者用一句话描述这个页面的主要功能：
+                          </p>
+                          <div className="flex gap-2">
+                            <input
+                              type="text"
+                              placeholder="例如：这是一个商品搜索页面..."
+                              className="flex-1 px-3 py-2 text-xs border border-green-500/30 rounded-lg bg-background/80 focus:outline-none focus:ring-2 focus:ring-green-500/50"
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter' && e.currentTarget.value.trim()) {
+                                  handleScreenHelp(e.currentTarget.value.trim())
+                                  e.currentTarget.value = ''
+                                }
+                              }}
+                            />
+                            <Button 
+                              size="sm" 
+                              className="bg-green-500 hover:bg-green-600 text-xs px-3 py-1 h-auto"
+                              onClick={(e) => {
+                                const input = e.currentTarget.parentElement?.querySelector('input') as HTMLInputElement
+                                if (input?.value.trim()) {
+                                  handleScreenHelp(input.value.trim())
+                                  input.value = ''
+                                }
+                              }}
+                            >
+                              发送
+                            </Button>
+                          </div>
                         </div>
+                        <p className="text-xs text-muted-foreground mt-1 ml-1">自定义描述</p>
                       </div>
                     </div>
                   </div>
 
-                  {/* Progress */}
-                  <div className="mt-6 p-3 bg-muted/30 rounded-lg">{/* 缩小margin和padding */}
-                    <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">{/* 缩小字体 */}
+                  {/* Compact Progress */}
+                  <div className="border-t pt-4">
+                    <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
                       <span>页面识别进度</span>
-                      <span>{discoveredPages.length}/10 页面</span>
+                      <span>{discoveredPages.length}/10</span>
                     </div>
-                    <div className="w-full bg-muted rounded-full h-1.5">{/* 缩小进度条高度 */}
+                    <div className="w-full bg-muted rounded-full h-1">
                       <div 
-                        className="bg-gradient-to-r from-primary to-blue-500 h-2 rounded-full transition-all duration-300"
+                        className="bg-gradient-to-r from-primary to-blue-500 h-1 rounded-full transition-all duration-300"
                         style={{ width: `${(discoveredPages.length / 10) * 100}%` }}
                       ></div>
                     </div>
-                    <div className="flex flex-wrap gap-1.5 mt-2">{/* 缩小间距 */}
-                      {discoveredPages.map((page, index) => (
-                        <Badge key={index} variant="secondary" className="text-xs px-2 py-0.5">{/* 缩小badge */}
-                          {page}
-                        </Badge>
-                      ))}
-                    </div>
+                    {discoveredPages.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mt-2">
+                        {discoveredPages.map((page, index) => (
+                          <Badge key={index} variant="secondary" className="text-xs px-1.5 py-0.5">
+                            {page}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
