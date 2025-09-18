@@ -357,7 +357,7 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
                 </CardHeader>
                 <CardContent className="space-y-6">
                   {/* AI Agent Conversation */}
-                  <div className="max-h-96 overflow-y-auto space-y-4 px-2">
+                  <div className="space-y-4">
                     {/* AI Message - Introduction */}
                     <div className="flex items-start gap-3">
                       <div className="w-8 h-8 bg-gradient-to-br from-primary to-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
