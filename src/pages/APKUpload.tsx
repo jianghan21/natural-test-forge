@@ -143,10 +143,7 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
       description: "已成功生成测试方案和UX交互关系图",
     })
     
-    // Navigate to Tests page
-    setTimeout(() => {
-      window.location.href = '/tests'
-    }, 2000)
+    // Analysis complete - no auto navigation
   }
 
   const handleScreenHelp = (description: string) => {
@@ -177,9 +174,7 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
       setDiscoveredPages(prev => [...prev, currentPage])
       setWaitingForUserInput(true)
       
-      if (discoveredPages.length >= 5) {
-        continueAfterCloudDevice()
-      }
+      // Don't auto continue - let user manually proceed
     }, 1000)
   }
 
@@ -548,6 +543,23 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
                             {page}
                           </Badge>
                         ))}
+                      </div>
+                    )}
+                    
+                    {/* Manual Continue Button */}
+                    {discoveredPages.length >= 3 && (
+                      <div className="mt-4 pt-4 border-t border-border">
+                        <Button 
+                          onClick={continueAfterCloudDevice}
+                          className="w-full bg-gradient-to-r from-primary to-blue-500 hover:from-primary/90 hover:to-blue-500/90"
+                          size="sm"
+                        >
+                          <CheckCircle className="h-4 w-4 mr-2" />
+                          完成测试，继续分析 ({discoveredPages.length} 页面)
+                        </Button>
+                        <p className="text-xs text-muted-foreground text-center mt-2">
+                          当您觉得测试足够时，点击此按钮继续AI深度分析
+                        </p>
                       </div>
                     )}
                   </div>
