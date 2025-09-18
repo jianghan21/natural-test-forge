@@ -374,39 +374,38 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
                     </div>
 
                     {/* Current Question */}
-                    <div className="flex items-start gap-4 p-6 bg-gradient-to-br from-primary/5 to-blue-500/5 border border-primary/20 rounded-xl hover-scale">{/* 增加padding和gap */}
-                      <div className="w-12 h-12 bg-gradient-to-br from-primary to-blue-500 rounded-full flex items-center justify-center flex-shrink-0">{/* 增加头像大小 */}
-                        <Bot className="h-6 w-6 text-white" />{/* 增加图标大小 */}
+                    <div className="flex items-start gap-3">{/* 改为聊天气泡样式 */}
+                      <div className="w-8 h-8 bg-gradient-to-br from-primary to-blue-500 rounded-full flex items-center justify-center flex-shrink-0">{/* 改为小头像 */}
+                        <Bot className="h-4 w-4 text-white" />{/* 改为小图标 */}
                       </div>
                       <div className="flex-1">
-                        <p className="text-base font-medium text-primary mb-2">AI助手</p>{/* 增加字体大小 */}
-                        <p className="text-base text-foreground mb-4">{/* 增加字体大小 */}
-                          为了更好地为这个页面生成测试用例，请帮我选择这个页面的主要功能类型：
-                        </p>
-                        
-                        {/* Options */}
-                        <div className="space-y-3">{/* 增加间距 */}
-                          {[
-                            { id: "home", label: "应用首页", desc: "显示主要功能入口和导航" },
-                            { id: "auth", label: "登录/注册", desc: "用户身份验证相关功能" },
-                            { id: "list", label: "列表页面", desc: "显示商品、内容或数据列表" },
-                            { id: "profile", label: "个人中心", desc: "用户设置和个人信息管理" },
-                            { id: "detail", label: "详情页面", desc: "显示具体项目的详细信息" },
-                            { id: "other", label: "其他功能", desc: "上述分类以外的功能页面" }
-                          ].map((option) => (
-                            <Button
-                              key={option.id}
-                              variant="outline"
-                              className="w-full justify-start text-left h-auto p-3 border border-primary/20 bg-background hover:bg-primary/5 hover:border-primary/40 transition-all duration-200"
-                              onClick={() => handleScreenHelp(option.label)}
-                            >
-                              <div>
-                                <p className="font-medium text-base">{option.label}</p>{/* 增加字体大小 */}
-                                <p className="text-sm text-muted-foreground mt-1">{option.desc}</p>
-                              </div>
-                            </Button>
-                          ))}
+                        <div className="bg-muted/50 rounded-2xl rounded-tl-md px-4 py-3">
+                          <p className="text-sm text-foreground mb-3">
+                            为了更好地为这个页面生成测试用例，请帮我选择这个页面的主要功能类型：
+                          </p>
+                          
+                          {/* Quick Reply Options */}
+                          <div className="space-y-2">
+                            {[
+                              { id: "home", label: "应用首页", desc: "显示主要功能入口和导航" },
+                              { id: "auth", label: "登录/注册", desc: "用户身份验证相关功能" },
+                              { id: "list", label: "列表页面", desc: "显示商品、内容或数据列表" },
+                              { id: "profile", label: "个人中心", desc: "用户设置和个人信息管理" },
+                              { id: "detail", label: "详情页面", desc: "显示具体项目的详细信息" },
+                              { id: "other", label: "其他功能", desc: "上述分类以外的功能页面" }
+                            ].map((option) => (
+                              <button
+                                key={option.id}
+                                className="block w-full text-left p-2 rounded-lg bg-background/80 border border-border/50 hover:bg-primary/5 hover:border-primary/30 transition-all duration-200 text-xs"
+                                onClick={() => handleScreenHelp(option.label)}
+                              >
+                                <div className="font-medium">{option.label}</div>
+                                <div className="text-muted-foreground text-xs mt-0.5">{option.desc}</div>
+                              </button>
+                            ))}
+                          </div>
                         </div>
+                        <p className="text-xs text-muted-foreground mt-1 ml-1">AI助手</p>
                       </div>
                     </div>
 
