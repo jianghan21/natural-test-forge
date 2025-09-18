@@ -401,7 +401,7 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
                 </CardHeader>
                 <CardContent className="space-y-6">
                   {/* AI Agent Conversation */}
-                  <div className="space-y-4">
+                  <div className="max-h-96 overflow-y-auto space-y-4">
                     {/* Conversation History */}
                     {conversationHistory.map((msg, index) => (
                       <div key={index} className="flex items-start gap-3">
