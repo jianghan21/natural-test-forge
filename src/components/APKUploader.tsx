@@ -30,7 +30,16 @@ export const APKUploader = ({ onComplete }: APKUploaderProps) => {
   ]
 
   const mockPages = [
-    "启动页面", "登录页面", "主页面", "用户中心", "设置页面", "关于页面", "商品列表", "商品详情", "购物车", "订单页面"
+    { name: "启动页面", screenshot: "/placeholder.svg" },
+    { name: "登录页面", screenshot: "/placeholder.svg" },
+    { name: "主页面", screenshot: "/placeholder.svg" },
+    { name: "用户中心", screenshot: "/placeholder.svg" },
+    { name: "设置页面", screenshot: "/placeholder.svg" },
+    { name: "关于页面", screenshot: "/placeholder.svg" },
+    { name: "商品列表", screenshot: "/placeholder.svg" },
+    { name: "商品详情", screenshot: "/placeholder.svg" },
+    { name: "购物车", screenshot: "/placeholder.svg" },
+    { name: "订单页面", screenshot: "/placeholder.svg" }
   ]
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,7 +74,7 @@ export const APKUploader = ({ onComplete }: APKUploaderProps) => {
     setAnalysisStep('cloud-device')
     setProgress(25)
     setCurrentScreenshot("/placeholder.svg")
-    setCurrentPage("启动页面")
+    setCurrentPage(mockPages[0].name)
   }
 
   const simulateStep = async (step: string, targetProgress: number) => {
@@ -90,7 +99,7 @@ export const APKUploader = ({ onComplete }: APKUploaderProps) => {
     
     // Add discovered pages during learning
     for (const page of mockPages.slice(0, 8)) {
-      setDiscoveredPages(prev => [...prev, page])
+      setDiscoveredPages(prev => [...prev, page.name])
       await new Promise(resolve => setTimeout(resolve, 300))
     }
     
@@ -105,9 +114,9 @@ export const APKUploader = ({ onComplete }: APKUploaderProps) => {
       description: "已成功生成测试方案和UX交互关系图",
     })
     
-    // Navigate to UX Flow Diagram
+    // Navigate to Tests page
     setTimeout(() => {
-      window.location.href = '/ux-flow-diagram'
+      window.location.href = '/tests'
     }, 2000)
   }
 
@@ -116,9 +125,11 @@ export const APKUploader = ({ onComplete }: APKUploaderProps) => {
     setNeedsHelp(false)
     
     // Simulate moving to next page
-    const currentIndex = mockPages.indexOf(currentPage)
+    const currentIndex = mockPages.findIndex(page => page.name === currentPage)
     const nextIndex = (currentIndex + 1) % mockPages.length
-    setCurrentPage(mockPages[nextIndex])
+    const nextPage = mockPages[nextIndex]
+    setCurrentPage(nextPage.name)
+    setCurrentScreenshot(nextPage.screenshot)
     setDiscoveredPages(prev => [...prev, currentPage])
     
     if (discoveredPages.length >= 5) {
@@ -227,16 +238,20 @@ export const APKUploader = ({ onComplete }: APKUploaderProps) => {
                     </div>
                     
                     {/* App Content */}
-                    <div className="h-full bg-gradient-to-b from-blue-50 to-white p-4 flex flex-col items-center justify-center">
-                      <img 
-                        src={currentScreenshot} 
-                        alt="App Screenshot"
-                        className="w-20 h-20 rounded-lg mb-4 border border-gray-200"
-                      />
-                      <h3 className="text-lg font-semibold text-gray-800 mb-2">{currentPage}</h3>
-                      <p className="text-sm text-gray-600 text-center mb-4">
-                        AI正在分析这个页面的功能...
-                      </p>
+                    <div className="h-full bg-gradient-to-b from-blue-50 to-white p-2 flex flex-col">
+                      <div className="flex-1 bg-white rounded-lg overflow-hidden border border-gray-200">
+                        <img 
+                          src={currentScreenshot} 
+                          alt="App Screenshot"
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="mt-2 text-center">
+                        <h3 className="text-sm font-medium text-gray-800">{currentPage}</h3>
+                        <p className="text-xs text-gray-600">
+                          AI正在分析页面功能...
+                        </p>
+                      </div>
                       
                       {/* Help Request */}
                       <div className="mt-auto w-full">
