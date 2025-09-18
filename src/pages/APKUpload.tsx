@@ -25,7 +25,6 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const [conversationHistory, setConversationHistory] = useState<Array<{type: 'ai' | 'user', message: string, timestamp: number}>>([])
   const [waitingForUserInput, setWaitingForUserInput] = useState(true)
-  const [showFlowDiagram, setShowFlowDiagram] = useState(false)
   const conversationEndRef = useRef<HTMLDivElement>(null)
 
   // Mouse tracking for glow effect
@@ -561,32 +560,6 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
     )
   }
 
-  // Show Flow Diagram Phase
-  if (showFlowDiagram) {
-    return (
-      <div className="min-h-screen bg-background relative">
-        <BackgroundEffects />
-        
-        <div className="relative z-10 pt-20 px-8">
-          <div className="max-w-full mx-auto h-[calc(100vh-120px)]">
-            <Card className="bg-background/80 backdrop-blur-xl border-primary/20 shadow-2xl h-full flex flex-col">
-              <AppFlowDiagram onNext={() => {
-                toast({
-                  title: "流程图确认完成",
-                  description: "正在跳转到项目创建页面...",
-                })
-                // Here you would navigate to the next step
-                setTimeout(() => {
-                  setShowFlowDiagram(false)
-                  setAnalysisStep('upload') // Reset for demo
-                }, 1500)
-              }} />
-            </Card>
-          </div>
-        </div>
-      </div>
-    )
-  }
 
   const stepInfo = getCurrentStepInfo()
   
@@ -660,23 +633,32 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
                 </div>
               )}
 
-              {/* Completion Message */}
+              {/* Completion Message with Flow Diagram */}
               {analysisStep === 'complete' && (
-                <div className="text-center space-y-6 p-8 bg-success/10 border-2 border-success/30 rounded-xl">
-                  <CheckCircle className="h-16 w-16 text-success mx-auto" />
-                  <div>
-                    <h3 className="text-2xl font-bold text-success mb-3">分析完成！</h3>
-                    <p className="text-lg text-muted-foreground">
-                      发现 {discoveredPages.length} 个页面，已生成页面流程图
-                    </p>
+                <div className="space-y-8">
+                  <div className="text-center p-6 bg-success/10 border-2 border-success/30 rounded-xl">
+                    <CheckCircle className="h-12 w-12 text-success mx-auto mb-4" />
+                    <div>
+                      <h3 className="text-xl font-bold text-success mb-2">AI分析完成！</h3>
+                      <p className="text-muted-foreground">
+                        发现 {discoveredPages.length} 个页面，已自动生成页面流程图
+                      </p>
+                    </div>
                   </div>
-                  <Button 
-                    onClick={() => setShowFlowDiagram(true)}
-                    className="bg-gradient-to-r from-primary to-blue-500 hover:from-primary/90 hover:to-blue-500/90"
-                    size="lg"
-                  >
-                    查看页面流程图
-                  </Button>
+                  
+                  {/* Flow Diagram */}
+                  <div className="border border-border rounded-xl bg-background/50 backdrop-blur-sm" style={{ height: '600px' }}>
+                    <AppFlowDiagram onNext={() => {
+                      toast({
+                        title: "流程图确认完成",
+                        description: "正在跳转到项目创建页面...",
+                      })
+                      // Here you would navigate to the next step
+                      setTimeout(() => {
+                        setAnalysisStep('upload') // Reset for demo
+                      }, 1500)
+                    }} />
+                  </div>
                 </div>
               )}
             </CardContent>
