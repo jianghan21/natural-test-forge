@@ -22,6 +22,8 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
   const [needsHelp, setNeedsHelp] = useState(false)
   const [pageDescription, setPageDescription] = useState("")
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [conversationHistory, setConversationHistory] = useState<Array<{type: 'ai' | 'user', message: string, timestamp: number}>>([])
+  const [waitingForUserInput, setWaitingForUserInput] = useState(true)
 
   // Mouse tracking for glow effect
   useEffect(() => {
@@ -85,6 +87,14 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
     setProgress(25)
     setCurrentScreenshot("/placeholder.svg")
     setCurrentPage(mockPages[0].name)
+    
+    // Initialize conversation
+    setConversationHistory([{
+      type: 'ai',
+      message: `你好！我是TestFlow AI助手。我正在分析你的应用，当前发现了一个新页面: ${mockPages[0].name}`,
+      timestamp: Date.now()
+    }])
+    setWaitingForUserInput(true)
   }
 
   const simulateStep = async (step: string, targetProgress: number) => {
@@ -131,20 +141,37 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
   }
 
   const handleScreenHelp = (description: string) => {
+    // Add user response to conversation
+    setConversationHistory(prev => [...prev, {
+      type: 'user',
+      message: description,
+      timestamp: Date.now()
+    }])
+    
     setPageDescription(description)
-    setNeedsHelp(false)
+    setWaitingForUserInput(false)
     
-    // Simulate moving to next page
-    const currentIndex = mockPages.findIndex(page => page.name === currentPage)
-    const nextIndex = (currentIndex + 1) % mockPages.length
-    const nextPage = mockPages[nextIndex]
-    setCurrentPage(nextPage.name)
-    setCurrentScreenshot(nextPage.screenshot)
-    setDiscoveredPages(prev => [...prev, currentPage])
-    
-    if (discoveredPages.length >= 5) {
-      continueAfterCloudDevice()
-    }
+    // Add AI acknowledgment and move to next page
+    setTimeout(() => {
+      const currentIndex = mockPages.findIndex(page => page.name === currentPage)
+      const nextIndex = (currentIndex + 1) % mockPages.length
+      const nextPage = mockPages[nextIndex]
+      
+      setConversationHistory(prev => [...prev, {
+        type: 'ai',
+        message: `很好！我已经理解了"${currentPage}"的功能。现在我发现了新页面: ${nextPage.name}`,
+        timestamp: Date.now()
+      }])
+      
+      setCurrentPage(nextPage.name)
+      setCurrentScreenshot(nextPage.screenshot)
+      setDiscoveredPages(prev => [...prev, currentPage])
+      setWaitingForUserInput(true)
+      
+      if (discoveredPages.length >= 5) {
+        continueAfterCloudDevice()
+      }
+    }, 1000)
   }
 
   const getCurrentStepInfo = () => {
@@ -375,97 +402,117 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
                 <CardContent className="space-y-6">
                   {/* AI Agent Conversation */}
                   <div className="space-y-4">
-                    {/* AI Message - Introduction */}
-                    <div className="flex items-start gap-3">
-                      <div className="w-8 h-8 bg-gradient-to-br from-primary to-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
-                        <Bot className="h-4 w-4 text-white" />
+                    {/* Conversation History */}
+                    {conversationHistory.map((msg, index) => (
+                      <div key={index} className="flex items-start gap-3">
+                        {msg.type === 'ai' ? (
+                          <>
+                            <div className="w-8 h-8 bg-gradient-to-br from-primary to-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+                              <Bot className="h-4 w-4 text-white" />
+                            </div>
+                            <div className="flex-1">
+                              <div className="bg-muted/50 rounded-2xl rounded-tl-md px-4 py-3">
+                                <p className="text-sm text-foreground">{msg.message}</p>
+                              </div>
+                              <p className="text-xs text-muted-foreground mt-1 ml-1">AI助手</p>
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center flex-shrink-0">
+                              <MessageCircle className="h-4 w-4 text-white" />
+                            </div>
+                            <div className="flex-1">
+                              <div className="bg-primary/10 rounded-2xl rounded-tl-md px-4 py-3 border border-primary/20">
+                                <p className="text-sm text-foreground">{msg.message}</p>
+                              </div>
+                              <p className="text-xs text-muted-foreground mt-1 ml-1">您</p>
+                            </div>
+                          </>
+                        )}
                       </div>
-                      <div className="flex-1">
-                        <div className="bg-muted/50 rounded-2xl rounded-tl-md px-4 py-3">{/* 移除max-w-md限制 */}
-                          <p className="text-sm text-foreground">
-                            你好！我是TestFlow AI助手。我正在分析你的应用，当前发现了一个新页面: <strong>{currentPage}</strong>
-                          </p>
-                        </div>
-                        <p className="text-xs text-muted-foreground mt-1 ml-1">AI助手</p>
-                      </div>
-                    </div>
+                    ))}
 
-                    {/* Current Question */}
-                    <div className="flex items-start gap-3">{/* 改为聊天气泡样式 */}
-                      <div className="w-8 h-8 bg-gradient-to-br from-primary to-blue-500 rounded-full flex items-center justify-center flex-shrink-0">{/* 改为小头像 */}
-                        <Bot className="h-4 w-4 text-white" />{/* 改为小图标 */}
+                    {/* Current Question - Only show when waiting for user input */}
+                    {waitingForUserInput && (
+                      <div className="flex items-start gap-3">
+                        <div className="w-8 h-8 bg-gradient-to-br from-primary to-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+                          <Bot className="h-4 w-4 text-white" />
+                        </div>
+                        <div className="flex-1">
+                          <div className="bg-muted/50 rounded-2xl rounded-tl-md px-4 py-3">
+                            <p className="text-sm text-foreground mb-3">
+                              为了更好地为这个页面生成测试用例，请帮我选择这个页面的主要功能类型：
+                            </p>
+                            
+                            {/* Quick Reply Options */}
+                            <div className="space-y-2">
+                              {[
+                                { id: "home", label: "应用首页", desc: "显示主要功能入口和导航" },
+                                { id: "auth", label: "登录/注册", desc: "用户身份验证相关功能" },
+                                { id: "list", label: "列表页面", desc: "显示商品、内容或数据列表" },
+                                { id: "profile", label: "个人中心", desc: "用户设置和个人信息管理" },
+                                { id: "detail", label: "详情页面", desc: "显示具体项目的详细信息" },
+                                { id: "other", label: "其他功能", desc: "上述分类以外的功能页面" }
+                              ].map((option) => (
+                                <button
+                                  key={option.id}
+                                  className="block w-full text-left p-2 rounded-lg bg-background/80 border border-border/50 hover:bg-primary/5 hover:border-primary/30 transition-all duration-200 text-xs"
+                                  onClick={() => handleScreenHelp(option.label)}
+                                >
+                                  <div className="font-medium">{option.label}</div>
+                                  <div className="text-muted-foreground text-xs mt-0.5">{option.desc}</div>
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                          <p className="text-xs text-muted-foreground mt-1 ml-1">AI助手</p>
+                        </div>
                       </div>
-                      <div className="flex-1">
-                        <div className="bg-muted/50 rounded-2xl rounded-tl-md px-4 py-3">
-                          <p className="text-sm text-foreground mb-3">
-                            为了更好地为这个页面生成测试用例，请帮我选择这个页面的主要功能类型：
-                          </p>
-                          
-                          {/* Quick Reply Options */}
-                          <div className="space-y-2">
-                            {[
-                              { id: "home", label: "应用首页", desc: "显示主要功能入口和导航" },
-                              { id: "auth", label: "登录/注册", desc: "用户身份验证相关功能" },
-                              { id: "list", label: "列表页面", desc: "显示商品、内容或数据列表" },
-                              { id: "profile", label: "个人中心", desc: "用户设置和个人信息管理" },
-                              { id: "detail", label: "详情页面", desc: "显示具体项目的详细信息" },
-                              { id: "other", label: "其他功能", desc: "上述分类以外的功能页面" }
-                            ].map((option) => (
-                              <button
-                                key={option.id}
-                                className="block w-full text-left p-2 rounded-lg bg-background/80 border border-border/50 hover:bg-primary/5 hover:border-primary/30 transition-all duration-200 text-xs"
-                                onClick={() => handleScreenHelp(option.label)}
+                    )}
+
+                    {/* Custom Input Message - Only show when waiting for user input */}
+                    {waitingForUserInput && (
+                      <div className="flex items-start gap-3">
+                        <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center flex-shrink-0">
+                          <MessageCircle className="h-4 w-4 text-white" />
+                        </div>
+                        <div className="flex-1">
+                          <div className="bg-green-50 dark:bg-green-500/10 rounded-2xl rounded-tl-md px-4 py-3 border border-green-200/50 dark:border-green-500/20">
+                            <p className="text-sm text-foreground mb-3">
+                              或者用一句话描述这个页面的主要功能：
+                            </p>
+                            <div className="flex gap-2">
+                              <input
+                                type="text"
+                                placeholder="例如：这是一个商品搜索页面..."
+                                className="flex-1 px-3 py-2 text-xs border border-green-500/30 rounded-lg bg-background/80 focus:outline-none focus:ring-2 focus:ring-green-500/50"
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter' && e.currentTarget.value.trim()) {
+                                    handleScreenHelp(e.currentTarget.value.trim())
+                                    e.currentTarget.value = ''
+                                  }
+                                }}
+                              />
+                              <Button 
+                                size="sm" 
+                                className="bg-green-500 hover:bg-green-600 text-xs px-3 py-1 h-auto"
+                                onClick={(e) => {
+                                  const input = e.currentTarget.parentElement?.querySelector('input') as HTMLInputElement
+                                  if (input?.value.trim()) {
+                                    handleScreenHelp(input.value.trim())
+                                    input.value = ''
+                                  }
+                                }}
                               >
-                                <div className="font-medium">{option.label}</div>
-                                <div className="text-muted-foreground text-xs mt-0.5">{option.desc}</div>
-                              </button>
-                            ))}
+                                发送
+                              </Button>
+                            </div>
                           </div>
+                          <p className="text-xs text-muted-foreground mt-1 ml-1">自定义描述</p>
                         </div>
-                        <p className="text-xs text-muted-foreground mt-1 ml-1">AI助手</p>
                       </div>
-                    </div>
-
-                    {/* Custom Input Message */}
-                    <div className="flex items-start gap-3">
-                      <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center flex-shrink-0">
-                        <MessageCircle className="h-4 w-4 text-white" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="bg-green-50 dark:bg-green-500/10 rounded-2xl rounded-tl-md px-4 py-3 border border-green-200/50 dark:border-green-500/20">{/* 移除max-w-md限制 */}
-                          <p className="text-sm text-foreground mb-3">
-                            或者用一句话描述这个页面的主要功能：
-                          </p>
-                          <div className="flex gap-2">
-                            <input
-                              type="text"
-                              placeholder="例如：这是一个商品搜索页面..."
-                              className="flex-1 px-3 py-2 text-xs border border-green-500/30 rounded-lg bg-background/80 focus:outline-none focus:ring-2 focus:ring-green-500/50"
-                              onKeyDown={(e) => {
-                                if (e.key === 'Enter' && e.currentTarget.value.trim()) {
-                                  handleScreenHelp(e.currentTarget.value.trim())
-                                  e.currentTarget.value = ''
-                                }
-                              }}
-                            />
-                            <Button 
-                              size="sm" 
-                              className="bg-green-500 hover:bg-green-600 text-xs px-3 py-1 h-auto"
-                              onClick={(e) => {
-                                const input = e.currentTarget.parentElement?.querySelector('input') as HTMLInputElement
-                                if (input?.value.trim()) {
-                                  handleScreenHelp(input.value.trim())
-                                  input.value = ''
-                                }
-                              }}
-                            >
-                              发送
-                            </Button>
-                          </div>
-                        </div>
-                        <p className="text-xs text-muted-foreground mt-1 ml-1">自定义描述</p>
-                      </div>
-                    </div>
+                    )}
                   </div>
 
                   {/* Compact Progress */}
