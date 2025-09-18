@@ -472,7 +472,7 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
                   <div className="border-t pt-4">
                     <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
                       <span>页面识别进度</span>
-                      <span>{discoveredPages.length}/10</span>
+                      <span>{Math.round((discoveredPages.length / 10) * 100)}%</span>
                     </div>
                     <div className="w-full bg-muted rounded-full h-1">
                       <div 
