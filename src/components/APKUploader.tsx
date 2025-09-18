@@ -220,44 +220,51 @@ export const APKUploader = ({ onComplete }: APKUploaderProps) => {
           </CardContent>
         </Card>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-7xl mx-auto">
           {/* Cloud Device Screen */}
-          <Card className="bg-gradient-card shadow-elevated border-0">
-            <CardHeader>
-              <CardTitle className="text-lg">云真机屏幕</CardTitle>
+          <Card className="bg-gradient-to-br from-slate-900/80 via-blue-900/20 to-purple-900/20 backdrop-blur-lg shadow-2xl border border-white/20 hover:shadow-blue-500/25 transition-all duration-500">
+            <CardHeader className="pb-6">
+              <CardTitle className="text-2xl font-bold text-white flex items-center gap-3">
+                <Smartphone className="h-8 w-8 text-blue-400" />
+                云真机屏幕
+              </CardTitle>
             </CardHeader>
             <CardContent className="flex justify-center">
-              <div className="relative">
-                {/* Phone Frame */}
-                <div className="w-64 h-[480px] bg-gradient-to-b from-slate-800 to-slate-900 rounded-[2rem] p-4 shadow-2xl">
-                  <div className="w-full h-full bg-white rounded-[1.5rem] overflow-hidden relative">
+              <div className="relative group">
+                {/* Phone Frame - Much Larger */}
+                <div className="w-80 h-[600px] bg-gradient-to-b from-slate-800 to-slate-900 rounded-[3rem] p-6 shadow-2xl group-hover:shadow-blue-500/30 transition-all duration-500">
+                  <div className="w-full h-full bg-white rounded-[2rem] overflow-hidden relative border-4 border-slate-700">
                     {/* Status Bar */}
-                    <div className="h-6 bg-black flex items-center justify-between px-4 text-white text-xs">
+                    <div className="h-8 bg-black flex items-center justify-between px-6 text-white text-sm font-medium">
                       <span>9:41</span>
-                      <span>●●●</span>
+                      <div className="flex items-center gap-1">
+                        <div className="w-1 h-1 bg-white rounded-full"></div>
+                        <div className="w-1 h-1 bg-white rounded-full"></div>
+                        <div className="w-1 h-1 bg-white rounded-full"></div>
+                      </div>
                     </div>
                     
                     {/* App Content */}
-                    <div className="h-full bg-gradient-to-b from-blue-50 to-white p-2 flex flex-col">
-                      <div className="flex-1 bg-white rounded-lg overflow-hidden border border-gray-200">
+                    <div className="h-full bg-gradient-to-b from-blue-50 to-white p-3 flex flex-col">
+                      <div className="flex-1 bg-white rounded-xl overflow-hidden border-2 border-gray-200 shadow-lg">
                         <img 
                           src={currentScreenshot} 
                           alt="App Screenshot"
                           className="w-full h-full object-cover"
                         />
                       </div>
-                      <div className="mt-2 text-center">
-                        <h3 className="text-sm font-medium text-gray-800">{currentPage}</h3>
-                        <p className="text-xs text-gray-600">
+                      <div className="mt-3 text-center">
+                        <h3 className="text-lg font-semibold text-gray-800">{currentPage}</h3>
+                        <p className="text-sm text-gray-600 font-medium">
                           AI正在分析页面功能...
                         </p>
                       </div>
                       
                       {/* Help Request */}
                       <div className="mt-auto w-full">
-                        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-center">
-                          <HelpCircle className="h-5 w-5 text-yellow-600 mx-auto mb-2" />
-                          <p className="text-xs text-yellow-800">
+                        <div className="bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-300 rounded-xl p-4 text-center shadow-lg">
+                          <HelpCircle className="h-6 w-6 text-yellow-600 mx-auto mb-2" />
+                          <p className="text-sm text-yellow-800 font-medium">
                             AI需要您的帮助来理解这个页面
                           </p>
                         </div>
@@ -270,24 +277,24 @@ export const APKUploader = ({ onComplete }: APKUploaderProps) => {
           </Card>
 
           {/* Help Panel */}
-          <Card className="bg-gradient-card shadow-elevated border-0">
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <HelpCircle className="h-5 w-5 text-primary" />
+          <Card className="bg-gradient-to-br from-slate-900/80 via-purple-900/20 to-blue-900/20 backdrop-blur-lg shadow-2xl border border-white/20 hover:shadow-purple-500/25 transition-all duration-500">
+            <CardHeader className="pb-6">
+              <CardTitle className="text-2xl font-bold text-white flex items-center gap-3">
+                <HelpCircle className="h-8 w-8 text-purple-400" />
                 协助AI理解页面
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <p className="text-sm text-blue-800 mb-3">
+            <CardContent className="space-y-6">
+              <div className="p-6 bg-gradient-to-br from-blue-50/90 to-purple-50/90 border-2 border-blue-300 rounded-xl shadow-lg backdrop-blur-sm">
+                <p className="text-lg text-blue-800 mb-4 font-semibold">
                   <strong>当前页面:</strong> {currentPage}
                 </p>
-                <p className="text-sm text-blue-700">
+                <p className="text-base text-blue-700 font-medium">
                   请帮助AI理解这个页面的主要功能是什么？
                 </p>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {[
                   "这是应用的主页面，显示主要功能入口",
                   "这是登录/注册页面，用于用户身份验证", 
@@ -299,7 +306,7 @@ export const APKUploader = ({ onComplete }: APKUploaderProps) => {
                   <Button
                     key={index}
                     variant="outline"
-                    className="w-full justify-start text-left h-auto p-3"
+                    className="w-full justify-start text-left h-auto p-4 text-base font-medium border-2 border-white/30 bg-white/10 text-white hover:bg-white/20 hover:border-white/50 transition-all duration-300 hover:scale-105"
                     onClick={() => handleScreenHelp(option)}
                   >
                     <ChevronRight className="h-4 w-4 mr-2" />
