@@ -118,14 +118,12 @@ export default function Home() {
                 </span>
               </h1>
               
-              <div className="bg-black/30 backdrop-blur-sm rounded-2xl px-8 py-6 border border-white/10">
-                <p className="text-xl text-white max-w-4xl mx-auto leading-relaxed animate-fade-in" style={{ animationDelay: '0.4s' }}>
-                  <Cpu className="inline h-6 w-6 mr-2 text-blue-400" />
-                  上传您的APK文件，我们的AI测试智能体将自动学习您的应用，
-                  <br />
-                  生成完整的测试用例并在云真机上执行测试
-                </p>
-              </div>
+              <p className="text-xl text-white max-w-4xl mx-auto leading-relaxed animate-fade-in" style={{ animationDelay: '0.4s' }}>
+                <Cpu className="inline h-6 w-6 mr-2 text-blue-400" />
+                上传您的APK文件，我们的AI测试智能体将自动学习您的应用，
+                <br />
+                生成完整的测试用例并在云真机上执行测试
+              </p>
             </div>
 
             {/* Upload Section */}
@@ -138,7 +136,7 @@ export default function Home() {
                       </div>
                       开始智能测试之旅
                     </CardTitle>
-                    <CardDescription className="text-base text-white/90 bg-black/20 rounded-lg px-4 py-2">
+                    <CardDescription className="text-base text-white">
                       上传您的APK文件，让AI为您的应用生成专业的测试方案
                     </CardDescription>
                   </CardHeader>
@@ -172,11 +170,9 @@ export default function Home() {
           <h2 className="text-4xl font-bold mb-6 bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
             为什么选择我们的AI测试平台？
           </h2>
-          <div className="bg-black/20 backdrop-blur-sm rounded-xl px-6 py-4 border border-white/10 max-w-2xl mx-auto">
-            <p className="text-lg text-white/95">
-              结合最新的AI技术和云端基础设施，为您的移动应用提供前所未有的测试体验
-            </p>
-          </div>
+          <p className="text-lg text-white max-w-2xl mx-auto">
+            结合最新的AI技术和云端基础设施，为您的移动应用提供前所未有的测试体验
+          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -194,11 +190,9 @@ export default function Home() {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="bg-black/30 backdrop-blur-sm rounded-lg px-4 py-3 border border-white/10">
-                  <p className="text-white/95 leading-relaxed group-hover:text-white transition-colors duration-300">
-                    {feature.description}
-                  </p>
-                </div>
+                <p className="text-white leading-relaxed group-hover:text-blue-100 transition-colors duration-300">
+                  {feature.description}
+                </p>
               </CardContent>
             </Card>)}
         </div>
@@ -211,11 +205,9 @@ export default function Home() {
             <h2 className="text-4xl font-bold mb-6 bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
               AI测试流程
             </h2>
-            <div className="bg-black/20 backdrop-blur-sm rounded-xl px-6 py-3 border border-white/10 inline-block">
-              <p className="text-lg text-white/95">
-                简单三步，让AI为您的应用生成完整的测试方案
-              </p>
-            </div>
+            <p className="text-lg text-white">
+              简单三步，让AI为您的应用生成完整的测试方案
+            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
@@ -258,11 +250,9 @@ export default function Home() {
                 <h3 className="text-xl font-semibold mb-4 text-white group-hover:text-blue-200 transition-colors duration-300">
                   {process.title}
                 </h3>
-                <div className="bg-black/30 backdrop-blur-sm rounded-lg px-4 py-3 border border-white/10">
-                  <p className="text-white/95 leading-relaxed group-hover:text-white transition-colors duration-300">
-                    {process.description}
-                  </p>
-                </div>
+                <p className="text-white leading-relaxed group-hover:text-blue-100 transition-colors duration-300">
+                  {process.description}
+                </p>
               </div>)}
           </div>
         </div>
