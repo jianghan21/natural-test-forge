@@ -705,10 +705,21 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
             </div>
           )}
 
-          {/* Completion Message with Flow Diagram */}
-          {analysisStep === 'complete' && (
-            <div className="space-y-8">
-              {/* Compact success message */}
+          {/* Flow Diagram Preview - Always show for demo */}
+          <div className="space-y-8">
+            {analysisStep !== 'complete' && (
+              <div className="max-w-2xl mx-auto text-center p-4 bg-primary/10 border-2 border-primary/30 rounded-lg">
+                <Brain className="h-8 w-8 text-primary mx-auto mb-2" />
+                <div>
+                  <h3 className="text-lg font-bold text-primary mb-1">流程图预览</h3>
+                  <p className="text-sm text-muted-foreground">
+                    以下是AI智能分析生成的App页面流程图示例
+                  </p>
+                </div>
+              </div>
+            )}
+            
+            {analysisStep === 'complete' && (
               <div className="max-w-2xl mx-auto text-center p-4 bg-success/10 border-2 border-success/30 rounded-lg">
                 <CheckCircle className="h-8 w-8 text-success mx-auto mb-2" />
                 <div>
@@ -718,21 +729,22 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
                   </p>
                 </div>
               </div>
-              
-              {/* Flow Diagram - Hero Section */}
-              <div className="w-full min-h-[700px] border border-border rounded-2xl bg-background/50 backdrop-blur-sm shadow-2xl overflow-hidden">
-                <div className="h-full">
-                  <AppFlowDiagram onNext={() => {
-                    toast({
-                      title: "流程图确认完成",
-                      description: "感谢您的确认，您可以继续使用其他功能。",
-                    })
-                    // 用户确认后不自动跳转，可以在这里添加实际的跳转逻辑
-                  }} />
-                </div>
+            )}
+            
+            {/* Flow Diagram - Hero Section */}
+            <div className="w-full min-h-[700px] border border-border rounded-2xl bg-background/50 backdrop-blur-sm shadow-2xl overflow-hidden">
+              <div className="h-full">
+                <AppFlowDiagram onNext={() => {
+                  toast({
+                    title: "流程图确认完成",
+                    description: "感谢您的确认，您可以继续使用其他功能。",
+                  })
+                  // 用户确认后不自动跳转，可以在这里添加实际的跳转逻辑
+                }} />
               </div>
             </div>
-          )}
+          </div>
+
         </div>
       </div>
     </div>
