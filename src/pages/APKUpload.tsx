@@ -30,6 +30,7 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const [conversationHistory, setConversationHistory] = useState<Array<{type: 'ai' | 'user', message: string, timestamp: number}>>([])
   const [waitingForUserInput, setWaitingForUserInput] = useState(true)
+  const [showConfigCard, setShowConfigCard] = useState(false)
   const conversationEndRef = useRef<HTMLDivElement>(null)
 
   // Mouse tracking for glow effect
@@ -376,7 +377,8 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
                         <img 
                           src={currentScreenshot} 
                           alt="App Screenshot"
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover cursor-pointer hover:opacity-90 transition-opacity"
+                          onClick={() => setShowConfigCard(true)}
                         />
                         
                         {/* Overlay with current page info */}
@@ -402,8 +404,9 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
                 </CardContent>
               </Card>
 
-              {/* Help Panel */}
-              <Card className="bg-background/80 backdrop-blur-xl border-primary/20 shadow-2xl flex flex-col h-[800px]">
+              {/* Help Panel - Only show when config card is active */}
+              {showConfigCard ? (
+                <Card className="bg-background/80 backdrop-blur-xl border-primary/20 shadow-2xl flex flex-col h-[800px]">
                 <CardHeader className="flex-shrink-0">
                   <CardTitle className="text-2xl font-bold flex items-center gap-3">
                     <HelpCircle className="h-8 w-8 text-primary" />
@@ -572,6 +575,19 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
                   </div>
                 </CardContent>
               </Card>
+              ) : (
+                <Card className="bg-background/80 backdrop-blur-xl border-primary/20 shadow-2xl flex flex-col h-[800px]">
+                  <CardContent className="flex items-center justify-center h-full">
+                    <div className="text-center">
+                      <Monitor className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                      <h3 className="text-xl font-semibold mb-2">点击左侧屏幕开始交互</h3>
+                      <p className="text-muted-foreground">
+                        点击云真机屏幕上的应用页面，开始配置页面功能
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
             </div>
           </div>
         </div>
