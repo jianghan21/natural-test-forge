@@ -682,7 +682,7 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
                         ) : (
                           <AlertCircle className="h-6 w-6 text-muted-foreground" />
                         )}
-                        <span className="text-lg font-medium">{step.title}</span>
+                        <span className="text-lg font-medium">SmartMonkey分析</span>
                       </div>
                     </div>
                   )
