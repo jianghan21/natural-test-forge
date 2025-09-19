@@ -541,7 +541,25 @@ const APKUpload = ({
           
           {/* Bottom Action Button */}
           {discoveredPages.length >= 3 && <div className="max-w-7xl mx-auto mt-8 px-8">
-              
+              <div className="text-center">
+                <Button 
+                  size="lg" 
+                  className="px-8 py-3 text-lg font-semibold bg-gradient-to-r from-primary to-blue-500 hover:from-primary/90 hover:to-blue-500/90"
+                  onClick={() => {
+                    // 完成训练，进入下一流程
+                    setAnalysisStep('learning');
+                    setProgress(80);
+                    setCurrentPage("AI智能学习");
+                    toast({
+                      title: "完成训练",
+                      description: "正在进入AI智能学习阶段...",
+                    });
+                  }}
+                >
+                  <CheckCircle className="h-5 w-5 mr-2" />
+                  完成训练
+                </Button>
+              </div>
             </div>}
         </div>;
   }
