@@ -247,17 +247,19 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-8">
-              <div 
-                className="border-2 border-dashed border-primary/30 rounded-2xl p-16 text-center hover:border-primary/60 transition-all duration-300 cursor-pointer group bg-gradient-to-br from-primary/5 to-purple-500/5"
-                onClick={() => fileInputRef.current?.click()}
-              >
-                <div className="relative">
-                  <Upload className="h-20 w-20 mx-auto mb-6 text-primary group-hover:scale-110 transition-transform duration-300" />
-                  <div className="absolute inset-0 bg-primary/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              {!uploadedFile && (
+                <div 
+                  className="border-2 border-dashed border-primary/30 rounded-2xl p-16 text-center hover:border-primary/60 transition-all duration-300 cursor-pointer group bg-gradient-to-br from-primary/5 to-purple-500/5"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <div className="relative">
+                    <Upload className="h-20 w-20 mx-auto mb-6 text-primary group-hover:scale-110 transition-transform duration-300" />
+                    <div className="absolute inset-0 bg-primary/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  </div>
+                  <p className="text-2xl font-semibold mb-4">点击选择APK文件</p>
+                  <p className="text-lg text-muted-foreground">或拖拽文件到此区域</p>
                 </div>
-                <p className="text-2xl font-semibold mb-4">点击选择APK文件</p>
-                <p className="text-lg text-muted-foreground">或拖拽文件到此区域</p>
-              </div>
+              )}
               
               <input
                 ref={fileInputRef}
