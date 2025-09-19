@@ -70,13 +70,13 @@ const APKUpload = ({
   }, [showConfigCard]);
   const analysisSteps = [{
     key: 'analyzing',
-    title: '逆向工程分析',
+    title: 'APK智能解析',
     description: '正在分析APK结构和组件...',
     icon: Brain
   }, {
     key: 'cloud-device',
-    title: '云真机模拟',
-    description: '在云真机上运行APK，需要您的协助...',
+    title: 'SmartMonkey 训练',
+    description: '在真机上运行APK，需要您的协助...',
     icon: Monitor
   }, {
     key: 'learning',
@@ -85,8 +85,8 @@ const APKUpload = ({
     icon: Smartphone
   }, {
     key: 'generating',
-    title: '生成测试方案',
-    description: '生成测试用例和UX交互图...',
+    title: 'SmartMonkey 学习报告',
+    description: '生成APK交互图...',
     icon: Network
   }];
   const mockPages = [{
