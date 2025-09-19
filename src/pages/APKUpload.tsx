@@ -641,48 +641,48 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
       <BackgroundEffects />
       
       <div className="relative z-10 pt-20 px-8">
-        <div className="max-w-4xl mx-auto space-y-8">
-          {/* Header */}
-          <div className="text-center space-y-4">
-            <div className="flex items-center justify-center gap-4">
-              <stepInfo.icon className="h-10 w-10 text-primary" />
-              <h1 className="text-3xl font-bold">{stepInfo.title}</h1>
+        <div className="max-w-7xl mx-auto space-y-12">
+          {/* Header - Compact */}
+          <div className="text-center space-y-3">
+            <div className="flex items-center justify-center gap-3">
+              <stepInfo.icon className="h-8 w-8 text-primary" />
+              <h1 className="text-2xl font-bold">{stepInfo.title}</h1>
             </div>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-base text-muted-foreground">
               {stepInfo.description}
             </p>
           </div>
 
-          {/* Progress */}
-          <div className="space-y-4">
+          {/* Progress - Compact */}
+          <div className="max-w-2xl mx-auto space-y-3">
             <div className="flex justify-between items-center">
-              <span className="text-lg font-medium">分析进度</span>
-              <span className="text-lg font-bold text-primary">{Math.round(progress)}%</span>
+              <span className="text-base font-medium">分析进度</span>
+              <span className="text-base font-bold text-primary">{Math.round(progress)}%</span>
             </div>
-            <Progress value={progress} className="h-4" />
+            <Progress value={progress} className="h-3" />
           </div>
 
-          {/* Current Status */}
-          <div className="grid grid-cols-2 gap-6">
+          {/* Current Status - Compact Grid */}
+          <div className="max-w-4xl mx-auto grid grid-cols-4 gap-4">
             {analysisSteps.map((step, index) => {
               const isActive = step.key === analysisStep
               const isCompleted = analysisSteps.findIndex(s => s.key === analysisStep) > index
               
               return (
-                <div key={step.key} className={`p-6 rounded-xl border-2 transition-all duration-300 ${
+                <div key={step.key} className={`p-4 rounded-lg border-2 transition-all duration-300 ${
                   isActive ? 'bg-primary/10 border-primary/30' : 
                   isCompleted ? 'bg-success/10 border-success/30' : 
                   'bg-muted/10 border-muted/30'
                 }`}>
-                  <div className="flex items-center gap-3 mb-3">
+                  <div className="flex flex-col items-center gap-2 text-center">
                     {isCompleted ? (
-                      <CheckCircle className="h-6 w-6 text-success" />
+                      <CheckCircle className="h-5 w-5 text-success" />
                     ) : isActive ? (
-                      <Clock className="h-6 w-6 text-primary animate-pulse" />
+                      <Clock className="h-5 w-5 text-primary animate-pulse" />
                     ) : (
-                      <AlertCircle className="h-6 w-6 text-muted-foreground" />
+                      <AlertCircle className="h-5 w-5 text-muted-foreground" />
                     )}
-                    <span className="text-lg font-medium">{step.title}</span>
+                    <span className="text-sm font-medium">{step.title}</span>
                   </div>
                 </div>
               )
@@ -691,14 +691,14 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
 
           {/* Learning Phase - Show discovered pages */}
           {analysisStep === 'learning' && discoveredPages.length > 0 && (
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <Smartphone className="h-6 w-6 text-primary" />
-                <span className="text-lg font-medium">正在学习页面: {currentPage}</span>
+            <div className="max-w-4xl mx-auto space-y-4">
+              <div className="flex items-center justify-center gap-3">
+                <Smartphone className="h-5 w-5 text-primary" />
+                <span className="text-base font-medium">正在学习页面: {currentPage}</span>
               </div>
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-wrap justify-center gap-2">
                 {discoveredPages.map((page, index) => (
-                  <Badge key={index} variant="outline" className="bg-success/10 border-success/30 text-success text-sm px-3 py-1">
+                  <Badge key={index} variant="outline" className="bg-success/10 border-success/30 text-success text-xs px-2 py-1">
                     {page}
                   </Badge>
                 ))}
@@ -709,25 +709,28 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
           {/* Completion Message with Flow Diagram */}
           {analysisStep === 'complete' && (
             <div className="space-y-8">
-              <div className="text-center p-6 bg-success/10 border-2 border-success/30 rounded-xl">
-                <CheckCircle className="h-12 w-12 text-success mx-auto mb-4" />
+              {/* Compact success message */}
+              <div className="max-w-2xl mx-auto text-center p-4 bg-success/10 border-2 border-success/30 rounded-lg">
+                <CheckCircle className="h-8 w-8 text-success mx-auto mb-2" />
                 <div>
-                  <h3 className="text-xl font-bold text-success mb-2">AI分析完成！</h3>
-                  <p className="text-muted-foreground">
+                  <h3 className="text-lg font-bold text-success mb-1">AI分析完成！</h3>
+                  <p className="text-sm text-muted-foreground">
                     发现 {discoveredPages.length} 个页面，已自动生成页面流程图
                   </p>
                 </div>
               </div>
               
-              {/* Flow Diagram */}
-              <div className="border border-border rounded-xl bg-background/50 backdrop-blur-sm" style={{ height: '600px' }}>
-                <AppFlowDiagram onNext={() => {
-                  toast({
-                    title: "流程图确认完成",
-                    description: "感谢您的确认，您可以继续使用其他功能。",
-                  })
-                  // 用户确认后不自动跳转，可以在这里添加实际的跳转逻辑
-                }} />
+              {/* Flow Diagram - Hero Section */}
+              <div className="w-full min-h-[700px] border border-border rounded-2xl bg-background/50 backdrop-blur-sm shadow-2xl overflow-hidden">
+                <div className="h-full">
+                  <AppFlowDiagram onNext={() => {
+                    toast({
+                      title: "流程图确认完成",
+                      description: "感谢您的确认，您可以继续使用其他功能。",
+                    })
+                    // 用户确认后不自动跳转，可以在这里添加实际的跳转逻辑
+                  }} />
+                </div>
               </div>
             </div>
           )}
