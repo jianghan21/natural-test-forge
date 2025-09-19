@@ -617,10 +617,10 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
               <div className="text-center">
                 <Button 
                   onClick={continueAfterCloudDevice}
-                  className="bg-gradient-to-r from-primary to-blue-500 hover:from-primary/90 hover:to-blue-500/90 px-8 py-3 text-lg"
+                  className="bg-gradient-to-r from-primary to-blue-500 px-8 py-3 text-lg"
                   size="lg"
                 >
-                  <CheckCircle className="h-5 w-5 mr-3" style={{ animation: 'none' }} />
+                  <CheckCircle className="h-5 w-5 mr-3" />
                   完成测试，继续分析 ({discoveredPages.length} 页面)
                 </Button>
                 <p className="text-sm text-muted-foreground mt-3">
