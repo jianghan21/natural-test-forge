@@ -615,14 +615,13 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
           {discoveredPages.length >= 3 && (
             <div className="max-w-7xl mx-auto mt-8 px-8">
               <div className="text-center">
-                <Button 
+                <button 
                   onClick={continueAfterCloudDevice}
-                  className="bg-gradient-to-r from-primary to-blue-500 px-8 py-3 text-lg"
-                  size="lg"
+                  className="bg-gradient-to-r from-primary to-blue-500 px-8 py-3 text-lg text-white rounded-lg font-medium inline-flex items-center gap-3"
                 >
-                  <CheckCircle className="h-5 w-5 mr-3" />
+                  <CheckCircle className="h-5 w-5" style={{ animation: 'none' }} />
                   完成测试，继续分析 ({discoveredPages.length} 页面)
-                </Button>
+                </button>
                 <p className="text-sm text-muted-foreground mt-3">
                   当您觉得测试足够时，点击此按钮继续AI深度分析
                 </p>
