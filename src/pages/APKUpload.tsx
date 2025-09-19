@@ -5,7 +5,7 @@ import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/components/ui/use-toast"
 import { AppFlowDiagram } from "@/components/AppFlowDiagram"
-import { Upload, FileCheck, Smartphone, Brain, Network, CheckCircle, Clock, AlertCircle, Monitor, HelpCircle, ChevronRight, Sparkles, Zap, Eye, Bot, MessageCircle, Trash2 } from "lucide-react"
+import { Upload, FileCheck, Smartphone, Brain, Network, CheckCircle, Clock, AlertCircle, Monitor, HelpCircle, ChevronRight, Sparkles, Zap, Eye, Bot, MessageCircle, Trash2, Tag, Type, MousePointer, Hand } from "lucide-react"
 
 // Import real app screenshots
 import mobileAppUI from "@/assets/mobile-app-ui.jpg"
@@ -28,9 +28,10 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
   const [needsHelp, setNeedsHelp] = useState(false)
   const [pageDescription, setPageDescription] = useState("")
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
-  const [conversationHistory, setConversationHistory] = useState<Array<{type: 'ai' | 'user', message: string, timestamp: number}>>([])
-  const [waitingForUserInput, setWaitingForUserInput] = useState(true)
   const [showConfigCard, setShowConfigCard] = useState(false)
+  const [pageLabel, setPageLabel] = useState("")
+  const [inputRules, setInputRules] = useState<Array<{id: string, label: string, rule: string}>>([])
+  const [specialOperations, setSpecialOperations] = useState<Array<{id: string, element: string, operation: string}>>([])
   const conversationEndRef = useRef<HTMLDivElement>(null)
 
   // Mouse tracking for glow effect
@@ -47,7 +48,7 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
     if (conversationEndRef.current) {
       conversationEndRef.current.scrollIntoView({ behavior: 'smooth' })
     }
-  }, [conversationHistory, waitingForUserInput])
+  }, [showConfigCard])
 
   const analysisSteps = [
     { key: 'analyzing', title: '逆向工程分析', description: '正在分析APK结构和组件...', icon: Brain },
@@ -105,7 +106,6 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
     
     // Don't initialize conversation - wait for user to click screen
     setShowConfigCard(false)
-    setWaitingForUserInput(false)
   }
 
   const simulateStep = async (step: string, targetProgress: number) => {
@@ -149,35 +149,18 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
   }
 
   const handleScreenHelp = (description: string) => {
-    // Add user response to conversation
-    setConversationHistory(prev => [...prev, {
-      type: 'user',
-      message: description,
-      timestamp: Date.now()
-    }])
-    
     setPageDescription(description)
-    setWaitingForUserInput(false)
     
-    // Add AI acknowledgment and move to next page
+    // Move to next page after configuration
     setTimeout(() => {
       const currentIndex = mockPages.findIndex(page => page.name === currentPage)
       const nextIndex = (currentIndex + 1) % mockPages.length
       const nextPage = mockPages[nextIndex]
       
-      setConversationHistory(prev => [...prev, {
-        type: 'ai',
-        message: `很好！我已经理解了"${currentPage}"的功能。现在我发现了新页面: ${nextPage.name}`,
-        timestamp: Date.now()
-      }])
-      
       setCurrentPage(nextPage.name)
       setCurrentScreenshot(nextPage.screenshot)
       setDiscoveredPages(prev => [...prev, currentPage])
       setShowConfigCard(false) // Hide card so user needs to click screen again
-      setWaitingForUserInput(false)
-      
-      // Don't auto continue - let user manually proceed
     }, 1000)
   }
 
@@ -377,12 +360,10 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
                           className="w-full h-full object-cover cursor-pointer hover:opacity-90 transition-opacity"
                           onClick={() => {
                             setShowConfigCard(true)
-                            setConversationHistory([{
-                              type: 'ai',
-                              message: `你好！我是TestFlow AI助手。我正在分析你的应用，当前发现了一个新页面: ${currentPage}`,
-                              timestamp: Date.now()
-                            }])
-                            setWaitingForUserInput(true)
+                            setPageLabel(currentPage)
+                            setPageDescription("")
+                            setInputRules([])
+                            setSpecialOperations([])
                           }}
                         />
                         
@@ -419,164 +400,214 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="flex-1 flex flex-col min-h-0">
-                  {/* AI Agent Conversation */}
-                  <div className="flex-1 overflow-y-auto space-y-4 pr-2">
-                    {/* Conversation History */}
-                    {conversationHistory.map((msg, index) => (
-                      <div key={index} className="flex items-start gap-3">
-                        {msg.type === 'ai' ? (
-                          <>
-                            <div className="w-8 h-8 bg-gradient-to-br from-primary to-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
-                              <Bot className="h-4 w-4 text-white" />
-                            </div>
-                            <div className="flex-1">
-                              <div className="bg-muted/50 rounded-2xl rounded-tl-md px-4 py-3">
-                                <p className="text-sm text-foreground">{msg.message}</p>
-                              </div>
-                              <p className="text-xs text-muted-foreground mt-1 ml-1">AI助手</p>
-                            </div>
-                          </>
-                        ) : (
-                          <>
-                            <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center flex-shrink-0">
-                              <MessageCircle className="h-4 w-4 text-white" />
-                            </div>
-                            <div className="flex-1">
-                              <div className="bg-primary/10 rounded-2xl rounded-tl-md px-4 py-3 border border-primary/20">
-                                <p className="text-sm text-foreground">{msg.message}</p>
-                              </div>
-                              <p className="text-xs text-muted-foreground mt-1 ml-1">您</p>
-                            </div>
-                          </>
-                        )}
+                  {/* Page Configuration Form */}
+                  <div className="space-y-6">
+                    {/* Part 1: Page Label and Description */}
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-2">
+                        <Tag className="h-5 w-5 text-primary" />
+                        <h3 className="text-lg font-semibold">页面信息</h3>
                       </div>
-                    ))}
-
-                    {/* Current Question - Only show when waiting for user input */}
-                    {waitingForUserInput && (
-                      <div className="flex items-start gap-3">
-                        <div className="w-8 h-8 bg-gradient-to-br from-primary to-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
-                          <Bot className="h-4 w-4 text-white" />
+                      <div className="space-y-3">
+                        <div>
+                          <label className="text-sm font-medium text-muted-foreground">页面标签名</label>
+                          <input
+                            type="text"
+                            value={pageLabel}
+                            onChange={(e) => setPageLabel(e.target.value)}
+                            className="w-full mt-1 px-3 py-2 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary/50"
+                            placeholder="例如：登录页面"
+                          />
                         </div>
-                        <div className="flex-1">
-                          <div className="bg-muted/50 rounded-2xl rounded-tl-md px-4 py-3">
-                            <p className="text-sm text-foreground mb-3">
-                              为了更好地为这个页面生成测试用例，请帮我选择这个页面的主要功能类型：
-                            </p>
-                            
-                            {/* Quick Reply Options */}
-                            <div className="space-y-2">
-                              {[
-                                { id: "home", label: "应用首页", desc: "显示主要功能入口和导航" },
-                                { id: "auth", label: "登录/注册", desc: "用户身份验证相关功能" },
-                                { id: "list", label: "列表页面", desc: "显示商品、内容或数据列表" },
-                                { id: "profile", label: "个人中心", desc: "用户设置和个人信息管理" },
-                                { id: "detail", label: "详情页面", desc: "显示具体项目的详细信息" },
-                                { id: "other", label: "其他功能", desc: "上述分类以外的功能页面" }
-                              ].map((option) => (
-                                <button
-                                  key={option.id}
-                                  className="block w-full text-left p-2 rounded-lg bg-background/80 border border-border/50 hover:bg-primary/5 hover:border-primary/30 transition-all duration-200 text-xs"
-                                  onClick={() => handleScreenHelp(option.label)}
-                                >
-                                  <div className="font-medium">{option.label}</div>
-                                  <div className="text-muted-foreground text-xs mt-0.5">{option.desc}</div>
-                                </button>
-                              ))}
-                            </div>
+                        <div>
+                          <label className="text-sm font-medium text-muted-foreground">页面描述</label>
+                          <textarea
+                            value={pageDescription}
+                            onChange={(e) => setPageDescription(e.target.value)}
+                            className="w-full mt-1 px-3 py-2 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
+                            rows={3}
+                            placeholder="描述这个页面的主要功能和用途..."
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Part 2: Input Rules */}
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-2">
+                        <Type className="h-5 w-5 text-primary" />
+                        <h3 className="text-lg font-semibold">输入规则定义</h3>
+                      </div>
+                      <div className="space-y-3">
+                        {inputRules.map((rule, index) => (
+                          <div key={rule.id} className="flex gap-2">
+                            <input
+                              type="text"
+                              value={rule.label}
+                              onChange={(e) => {
+                                const newRules = [...inputRules]
+                                newRules[index].label = e.target.value
+                                setInputRules(newRules)
+                              }}
+                              className="flex-1 px-3 py-2 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary/50"
+                              placeholder="输入框标签"
+                            />
+                            <input
+                              type="text"
+                              value={rule.rule}
+                              onChange={(e) => {
+                                const newRules = [...inputRules]
+                                newRules[index].rule = e.target.value
+                                setInputRules(newRules)
+                              }}
+                              className="flex-1 px-3 py-2 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary/50"
+                              placeholder="输入规则"
+                            />
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                setInputRules(inputRules.filter((_, i) => i !== index))
+                              }}
+                              className="text-destructive hover:text-destructive"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
                           </div>
-                          <p className="text-xs text-muted-foreground mt-1 ml-1">AI助手</p>
-                        </div>
+                        ))}
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setInputRules([...inputRules, {
+                              id: Date.now().toString(),
+                              label: "",
+                              rule: ""
+                            }])
+                          }}
+                          className="w-full"
+                        >
+                          + 添加输入规则
+                        </Button>
                       </div>
-                    )}
+                    </div>
 
-                    {/* Scroll anchor for auto-scrolling */}
-                    <div ref={conversationEndRef} />
-
-                    {/* Custom Input Message - Only show when waiting for user input */}
-                    {waitingForUserInput && (
-                      <div className="flex items-start gap-3">
-                        <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center flex-shrink-0">
-                          <MessageCircle className="h-4 w-4 text-white" />
-                        </div>
-                        <div className="flex-1">
-                          <div className="bg-green-50 dark:bg-green-500/10 rounded-2xl rounded-tl-md px-4 py-3 border border-green-200/50 dark:border-green-500/20">
-                            <p className="text-sm text-foreground mb-3">
-                              或者用一句话描述这个页面的主要功能：
-                            </p>
-                            <div className="flex gap-2">
-                              <input
-                                type="text"
-                                placeholder="例如：这是一个商品搜索页面..."
-                                className="flex-1 px-3 py-2 text-xs border border-green-500/30 rounded-lg bg-background/80 focus:outline-none focus:ring-2 focus:ring-green-500/50"
-                                onKeyDown={(e) => {
-                                  if (e.key === 'Enter' && e.currentTarget.value.trim()) {
-                                    handleScreenHelp(e.currentTarget.value.trim())
-                                    e.currentTarget.value = ''
-                                  }
-                                }}
-                              />
-                              <Button 
-                                size="sm" 
-                                className="bg-green-500 hover:bg-green-600 text-xs px-3 py-1 h-auto"
-                                onClick={(e) => {
-                                  const input = e.currentTarget.parentElement?.querySelector('input') as HTMLInputElement
-                                  if (input?.value.trim()) {
-                                    handleScreenHelp(input.value.trim())
-                                    input.value = ''
-                                  }
-                                }}
-                              >
-                                发送
-                              </Button>
-                            </div>
+                    {/* Part 3: Special Operations */}
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-2">
+                        <Hand className="h-5 w-5 text-primary" />
+                        <h3 className="text-lg font-semibold">特殊操作</h3>
+                      </div>
+                      <div className="space-y-3">
+                        {specialOperations.map((operation, index) => (
+                          <div key={operation.id} className="flex gap-2">
+                            <input
+                              type="text"
+                              value={operation.element}
+                              onChange={(e) => {
+                                const newOps = [...specialOperations]
+                                newOps[index].element = e.target.value
+                                setSpecialOperations(newOps)
+                              }}
+                              className="flex-1 px-3 py-2 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary/50"
+                              placeholder="页面元素"
+                            />
+                            <select
+                              value={operation.operation}
+                              onChange={(e) => {
+                                const newOps = [...specialOperations]
+                                newOps[index].operation = e.target.value
+                                setSpecialOperations(newOps)
+                              }}
+                              className="flex-1 px-3 py-2 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary/50"
+                            >
+                              <option value="">选择操作</option>
+                              <option value="long-press">长按</option>
+                              <option value="drag">拖拽</option>
+                              <option value="swipe">滑动</option>
+                              <option value="double-tap">双击</option>
+                              <option value="pinch">缩放</option>
+                            </select>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                setSpecialOperations(specialOperations.filter((_, i) => i !== index))
+                              }}
+                              className="text-destructive hover:text-destructive"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
                           </div>
-                          <p className="text-xs text-muted-foreground mt-1 ml-1">自定义描述</p>
-                        </div>
+                        ))}
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setSpecialOperations([...specialOperations, {
+                              id: Date.now().toString(),
+                              element: "",
+                              operation: ""
+                            }])
+                          }}
+                          className="w-full"
+                        >
+                          + 添加特殊操作
+                        </Button>
+                    </div>
+
+                    {/* Progress Section */}
+                    <div className="border-t pt-4 flex-shrink-0">
+                      <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
+                        <span>页面识别进度</span>
+                        <span>{Math.round((discoveredPages.length / 10) * 100)}%</span>
                       </div>
-                    )}
-                    {/* Scroll anchor for auto-scrolling */}
-                    <div ref={conversationEndRef} />
+                      <div className="w-full bg-muted rounded-full h-1">
+                        <div 
+                          className="bg-gradient-to-r from-primary to-blue-500 h-1 rounded-full transition-all duration-300"
+                          style={{ width: `${(discoveredPages.length / 10) * 100}%` }}
+                        ></div>
+                      </div>
+                      {discoveredPages.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mt-2">
+                          {discoveredPages.map((page, index) => (
+                            <Badge key={index} variant="secondary" className="text-xs px-1.5 py-0.5">
+                              {page}
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
+                      
+                      {/* Manual Continue Button */}
+                      {discoveredPages.length >= 3 && (
+                        <div className="mt-4 pt-4 border-t border-border">
+                          <Button 
+                            onClick={continueAfterCloudDevice}
+                            className="w-full bg-gradient-to-r from-primary to-blue-500 hover:from-primary/90 hover:to-blue-500/90"
+                            size="sm"
+                          >
+                            <CheckCircle className="h-4 w-4 mr-2" />
+                            完成测试，继续分析 ({discoveredPages.length} 页面)
+                          </Button>
+                          <p className="text-xs text-muted-foreground text-center mt-2">
+                            当您觉得测试足够时，点击此按钮继续AI深度分析
+                          </p>
+                        </div>
+                      )}
+                    </div>
                   </div>
 
-                  {/* Compact Progress */}
-                  <div className="border-t pt-4 flex-shrink-0 mt-6">
-                    <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
-                      <span>页面识别进度</span>
-                      <span>{Math.round((discoveredPages.length / 10) * 100)}%</span>
+                    {/* Save Button */}
+                    <div className="pt-4 border-t">
+                      <Button 
+                        onClick={() => handleScreenHelp(pageDescription)}
+                        className="w-full bg-gradient-to-r from-primary to-blue-500 hover:from-primary/90 hover:to-blue-500/90"
+                        disabled={!pageLabel.trim() || !pageDescription.trim()}
+                      >
+                        <CheckCircle className="h-4 w-4 mr-2" />
+                        保存配置并继续
+                      </Button>
                     </div>
-                    <div className="w-full bg-muted rounded-full h-1">
-                      <div 
-                        className="bg-gradient-to-r from-primary to-blue-500 h-1 rounded-full transition-all duration-300"
-                        style={{ width: `${(discoveredPages.length / 10) * 100}%` }}
-                      ></div>
-                    </div>
-                    {discoveredPages.length > 0 && (
-                      <div className="flex flex-wrap gap-1 mt-2">
-                        {discoveredPages.map((page, index) => (
-                          <Badge key={index} variant="secondary" className="text-xs px-1.5 py-0.5">
-                            {page}
-                          </Badge>
-                        ))}
-                      </div>
-                    )}
-                    
-                    {/* Manual Continue Button */}
-                    {discoveredPages.length >= 3 && (
-                      <div className="mt-4 pt-4 border-t border-border">
-                        <Button 
-                          onClick={continueAfterCloudDevice}
-                          className="w-full bg-gradient-to-r from-primary to-blue-500 hover:from-primary/90 hover:to-blue-500/90"
-                          size="sm"
-                        >
-                          <CheckCircle className="h-4 w-4 mr-2" />
-                          完成测试，继续分析 ({discoveredPages.length} 页面)
-                        </Button>
-                        <p className="text-xs text-muted-foreground text-center mt-2">
-                          当您觉得测试足够时，点击此按钮继续AI深度分析
-                        </p>
-                      </div>
-                    )}
                   </div>
                 </CardContent>
               </Card>
