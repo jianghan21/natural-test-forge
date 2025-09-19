@@ -166,7 +166,7 @@ const CloudDeviceSimulator = () => {
   return (
     <div className="flex h-screen bg-background">
       {/* 左侧 - 云真机模拟器 */}
-      <div className="flex-1 p-6">
+      <div className="flex-1 p-6 flex flex-col">
         <div className="mb-6">
           <h1 className="text-3xl font-bold flex items-center gap-3">
             <Smartphone className="h-8 w-8 text-primary" />
@@ -178,53 +178,69 @@ const CloudDeviceSimulator = () => {
         </div>
 
         {/* 设备模拟区域 */}
-        <Card className="max-w-md mx-auto bg-gradient-to-br from-slate-900 to-slate-800 border-slate-700">
-          <CardContent className="p-6">
-            {/* 设备外框 */}
-            <div className="bg-black rounded-2xl p-4 shadow-2xl">
-              {/* 状态栏 */}
-              <div className="bg-slate-900 rounded-t-lg px-3 py-1 flex justify-between items-center text-white text-xs">
-                <span>9:41</span>
-                <span>●●●●● WiFi</span>
-                <span>100%</span>
-              </div>
-              
-              {/* 屏幕内容区域 */}
-              <div className="bg-white rounded-b-lg relative overflow-hidden" style={{ height: '600px' }}>
-                {/* 页面卡片 */}
-                {pages.map(page => (
-                  <div
-                    key={page.id}
-                    className={`absolute cursor-pointer transition-all duration-200 ${
-                      selectedPage === page.id 
-                        ? 'ring-2 ring-primary scale-105 shadow-lg' 
-                        : 'hover:scale-102 hover:shadow-md'
-                    }`}
-                    style={{
-                      left: page.position.x,
-                      top: page.position.y,
-                      width: '120px',
-                      height: '160px'
-                    }}
-                    onClick={() => handlePageClick(page.id)}
-                  >
-                    <Card className="h-full border-2">
-                      <CardContent className="p-2 h-full flex flex-col">
-                        {/* 页面预览图 */}
-                        <div className="flex-1 bg-gradient-to-br from-primary/10 to-secondary/10 rounded mb-2 flex items-center justify-center">
-                          <div className="text-center">
-                            <Settings className="h-6 w-6 mx-auto text-primary mb-1" />
-                            <span className="text-xs font-medium">{page.title}</span>
+        <div className="flex-1 flex flex-col items-center">
+          <Card className="max-w-md bg-gradient-to-br from-slate-900 to-slate-800 border-slate-700">
+            <CardContent className="p-6">
+              {/* 设备外框 */}
+              <div className="bg-black rounded-2xl p-4 shadow-2xl">
+                {/* 状态栏 */}
+                <div className="bg-slate-900 rounded-t-lg px-3 py-1 flex justify-between items-center text-white text-xs">
+                  <span>9:41</span>
+                  <span>●●●●● WiFi</span>
+                  <span>100%</span>
+                </div>
+                
+                {/* 屏幕内容区域 */}
+                <div className="bg-white rounded-b-lg relative overflow-hidden" style={{ height: '600px' }}>
+                  {/* 页面卡片 */}
+                  {pages.map(page => (
+                    <div
+                      key={page.id}
+                      className={`absolute cursor-pointer transition-all duration-200 ${
+                        selectedPage === page.id 
+                          ? 'ring-2 ring-primary scale-105 shadow-lg' 
+                          : 'hover:scale-102 hover:shadow-md'
+                      }`}
+                      style={{
+                        left: page.position.x,
+                        top: page.position.y,
+                        width: '120px',
+                        height: '160px'
+                      }}
+                      onClick={() => handlePageClick(page.id)}
+                    >
+                      <Card className="h-full border-2">
+                        <CardContent className="p-2 h-full flex flex-col">
+                          {/* 页面预览图 */}
+                          <div className="flex-1 bg-gradient-to-br from-primary/10 to-secondary/10 rounded mb-2 flex items-center justify-center">
+                            <div className="text-center">
+                              <Settings className="h-6 w-6 mx-auto text-primary mb-1" />
+                              <span className="text-xs font-medium">{page.title}</span>
+                            </div>
                           </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-                ))}
+                        </CardContent>
+                      </Card>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+          
+          {/* 完成训练按钮 */}
+          <div className="mt-8">
+            <Button 
+              size="lg" 
+              className="px-8 py-3 text-lg font-semibold"
+              onClick={() => {
+                // 这里可以添加跳转到下一个流程的逻辑
+                console.log('完成训练，进入下一流程');
+              }}
+            >
+              完成训练
+            </Button>
+          </div>
+        </div>
       </div>
 
       {/* 右侧 - 交互配置卡片 */}
