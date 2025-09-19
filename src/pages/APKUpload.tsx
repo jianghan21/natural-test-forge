@@ -602,7 +602,7 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
                       <Button 
                         onClick={() => handleScreenHelp(pageDescription)}
                         className="w-full bg-gradient-to-r from-primary to-blue-500 hover:from-primary/90 hover:to-blue-500/90"
-                        disabled={!pageLabel.trim() || !pageDescription.trim()}
+                        disabled={!pageLabel.trim()}
                       >
                         <CheckCircle className="h-4 w-4 mr-2" />
                         保存配置并继续
