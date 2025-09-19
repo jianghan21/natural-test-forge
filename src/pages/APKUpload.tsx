@@ -103,13 +103,9 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
     setCurrentScreenshot(mobileAppUI)
     setCurrentPage(mockPages[0].name)
     
-    // Initialize conversation
-    setConversationHistory([{
-      type: 'ai',
-      message: `你好！我是TestFlow AI助手。我正在分析你的应用，当前发现了一个新页面: ${mockPages[0].name}`,
-      timestamp: Date.now()
-    }])
-    setWaitingForUserInput(true)
+    // Don't initialize conversation - wait for user to click screen
+    setShowConfigCard(false)
+    setWaitingForUserInput(false)
   }
 
   const simulateStep = async (step: string, targetProgress: number) => {
@@ -178,7 +174,8 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
       setCurrentPage(nextPage.name)
       setCurrentScreenshot(nextPage.screenshot)
       setDiscoveredPages(prev => [...prev, currentPage])
-      setWaitingForUserInput(true)
+      setShowConfigCard(false) // Hide card so user needs to click screen again
+      setWaitingForUserInput(false)
       
       // Don't auto continue - let user manually proceed
     }, 1000)
@@ -378,7 +375,15 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
                           src={currentScreenshot} 
                           alt="App Screenshot"
                           className="w-full h-full object-cover cursor-pointer hover:opacity-90 transition-opacity"
-                          onClick={() => setShowConfigCard(true)}
+                          onClick={() => {
+                            setShowConfigCard(true)
+                            setConversationHistory([{
+                              type: 'ai',
+                              message: `你好！我是TestFlow AI助手。我正在分析你的应用，当前发现了一个新页面: ${currentPage}`,
+                              timestamp: Date.now()
+                            }])
+                            setWaitingForUserInput(true)
+                          }}
                         />
                         
                         {/* Overlay with current page info */}
@@ -580,9 +585,9 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
                   <CardContent className="flex items-center justify-center h-full">
                     <div className="text-center">
                       <Monitor className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                      <h3 className="text-xl font-semibold mb-2">点击左侧屏幕开始交互</h3>
+                      <h3 className="text-xl font-semibold mb-2">点击左侧屏幕开始分析</h3>
                       <p className="text-muted-foreground">
-                        点击云真机屏幕上的应用页面，开始配置页面功能
+                        点击云真机屏幕上的 "{currentPage}" 页面，开始AI智能分析
                       </p>
                     </div>
                   </CardContent>
