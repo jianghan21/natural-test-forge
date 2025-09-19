@@ -641,98 +641,96 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
       <BackgroundEffects />
       
       <div className="relative z-10 pt-20 px-8">
-        <div className="max-w-4xl mx-auto">
-          <Card className="bg-background/80 backdrop-blur-xl border-primary/20 shadow-2xl">
-            <CardHeader className="pb-8 text-center">
-              <CardTitle className="flex items-center justify-center gap-4 text-3xl">
-                <stepInfo.icon className="h-10 w-10 text-primary" />
-                {stepInfo.title}
-              </CardTitle>
-              <CardDescription className="text-lg">
-                {stepInfo.description}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-8">
-              {/* Progress */}
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-lg font-medium">分析进度</span>
-                  <span className="text-lg font-bold text-primary">{Math.round(progress)}%</span>
+        <div className="max-w-4xl mx-auto space-y-8">
+          {/* Header */}
+          <div className="text-center space-y-4">
+            <div className="flex items-center justify-center gap-4">
+              <stepInfo.icon className="h-10 w-10 text-primary" />
+              <h1 className="text-3xl font-bold">{stepInfo.title}</h1>
+            </div>
+            <p className="text-lg text-muted-foreground">
+              {stepInfo.description}
+            </p>
+          </div>
+
+          {/* Progress */}
+          <div className="space-y-4">
+            <div className="flex justify-between items-center">
+              <span className="text-lg font-medium">分析进度</span>
+              <span className="text-lg font-bold text-primary">{Math.round(progress)}%</span>
+            </div>
+            <Progress value={progress} className="h-4" />
+          </div>
+
+          {/* Current Status */}
+          <div className="grid grid-cols-2 gap-6">
+            {analysisSteps.map((step, index) => {
+              const isActive = step.key === analysisStep
+              const isCompleted = analysisSteps.findIndex(s => s.key === analysisStep) > index
+              
+              return (
+                <div key={step.key} className={`p-6 rounded-xl border-2 transition-all duration-300 ${
+                  isActive ? 'bg-primary/10 border-primary/30' : 
+                  isCompleted ? 'bg-success/10 border-success/30' : 
+                  'bg-muted/10 border-muted/30'
+                }`}>
+                  <div className="flex items-center gap-3 mb-3">
+                    {isCompleted ? (
+                      <CheckCircle className="h-6 w-6 text-success" />
+                    ) : isActive ? (
+                      <Clock className="h-6 w-6 text-primary animate-pulse" />
+                    ) : (
+                      <AlertCircle className="h-6 w-6 text-muted-foreground" />
+                    )}
+                    <span className="text-lg font-medium">{step.title}</span>
+                  </div>
                 </div>
-                <Progress value={progress} className="h-4" />
+              )
+            })}
+          </div>
+
+          {/* Learning Phase - Show discovered pages */}
+          {analysisStep === 'learning' && discoveredPages.length > 0 && (
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <Smartphone className="h-6 w-6 text-primary" />
+                <span className="text-lg font-medium">正在学习页面: {currentPage}</span>
               </div>
-
-              {/* Current Status */}
-              <div className="grid grid-cols-2 gap-6">
-                {analysisSteps.map((step, index) => {
-                  const isActive = step.key === analysisStep
-                  const isCompleted = analysisSteps.findIndex(s => s.key === analysisStep) > index
-                  
-                  return (
-                    <div key={step.key} className={`p-6 rounded-xl border-2 transition-all duration-300 ${
-                      isActive ? 'bg-primary/10 border-primary/30' : 
-                      isCompleted ? 'bg-success/10 border-success/30' : 
-                      'bg-muted/10 border-muted/30'
-                    }`}>
-                      <div className="flex items-center gap-3 mb-3">
-                        {isCompleted ? (
-                          <CheckCircle className="h-6 w-6 text-success" />
-                        ) : isActive ? (
-                          <Clock className="h-6 w-6 text-primary animate-pulse" />
-                        ) : (
-                          <AlertCircle className="h-6 w-6 text-muted-foreground" />
-                        )}
-                        <span className="text-lg font-medium">{step.title}</span>
-                      </div>
-                    </div>
-                  )
-                })}
+              <div className="flex flex-wrap gap-3">
+                {discoveredPages.map((page, index) => (
+                  <Badge key={index} variant="outline" className="bg-success/10 border-success/30 text-success text-sm px-3 py-1">
+                    {page}
+                  </Badge>
+                ))}
               </div>
+            </div>
+          )}
 
-              {/* Learning Phase - Show discovered pages */}
-              {analysisStep === 'learning' && discoveredPages.length > 0 && (
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <Smartphone className="h-6 w-6 text-primary" />
-                    <span className="text-lg font-medium">正在学习页面: {currentPage}</span>
-                  </div>
-                  <div className="flex flex-wrap gap-3">
-                    {discoveredPages.map((page, index) => (
-                      <Badge key={index} variant="outline" className="bg-success/10 border-success/30 text-success text-sm px-3 py-1">
-                        {page}
-                      </Badge>
-                    ))}
-                  </div>
+          {/* Completion Message with Flow Diagram */}
+          {analysisStep === 'complete' && (
+            <div className="space-y-8">
+              <div className="text-center p-6 bg-success/10 border-2 border-success/30 rounded-xl">
+                <CheckCircle className="h-12 w-12 text-success mx-auto mb-4" />
+                <div>
+                  <h3 className="text-xl font-bold text-success mb-2">AI分析完成！</h3>
+                  <p className="text-muted-foreground">
+                    发现 {discoveredPages.length} 个页面，已自动生成页面流程图
+                  </p>
                 </div>
-              )}
-
-              {/* Completion Message with Flow Diagram */}
-              {analysisStep === 'complete' && (
-                <div className="space-y-8">
-                  <div className="text-center p-6 bg-success/10 border-2 border-success/30 rounded-xl">
-                    <CheckCircle className="h-12 w-12 text-success mx-auto mb-4" />
-                    <div>
-                      <h3 className="text-xl font-bold text-success mb-2">AI分析完成！</h3>
-                      <p className="text-muted-foreground">
-                        发现 {discoveredPages.length} 个页面，已自动生成页面流程图
-                      </p>
-                    </div>
-                  </div>
-                  
-                  {/* Flow Diagram */}
-                  <div className="border border-border rounded-xl bg-background/50 backdrop-blur-sm" style={{ height: '600px' }}>
-                    <AppFlowDiagram onNext={() => {
-                      toast({
-                        title: "流程图确认完成",
-                        description: "感谢您的确认，您可以继续使用其他功能。",
-                      })
-                      // 用户确认后不自动跳转，可以在这里添加实际的跳转逻辑
-                    }} />
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+              </div>
+              
+              {/* Flow Diagram */}
+              <div className="border border-border rounded-xl bg-background/50 backdrop-blur-sm" style={{ height: '600px' }}>
+                <AppFlowDiagram onNext={() => {
+                  toast({
+                    title: "流程图确认完成",
+                    description: "感谢您的确认，您可以继续使用其他功能。",
+                  })
+                  // 用户确认后不自动跳转，可以在这里添加实际的跳转逻辑
+                }} />
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
