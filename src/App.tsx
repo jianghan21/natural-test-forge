@@ -23,6 +23,7 @@ import Coverage from "./pages/Coverage";
 import Configuration from "./pages/Configuration";
 import Settings from "./pages/Settings";
 import UXFlowDiagram from "./pages/UXFlowDiagram";
+import CloudDeviceSimulator from "./pages/CloudDeviceSimulator";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -64,6 +65,9 @@ const App = () => (
           
           {/* UX Flow Diagram */}
           <Route path="/ux-flow" element={<Layout><UXFlowDiagram /></Layout>} />
+          
+          {/* Cloud Device Simulator */}
+          <Route path="/cloud-simulator" element={<CloudDeviceSimulator />} />
           
           {/* Legacy routes for backward compatibility */}
           <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
