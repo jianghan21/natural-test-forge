@@ -7,6 +7,11 @@ import { useToast } from "@/components/ui/use-toast"
 import { AppFlowDiagram } from "@/components/AppFlowDiagram"
 import { Upload, FileCheck, Smartphone, Brain, Network, CheckCircle, Clock, AlertCircle, Monitor, HelpCircle, ChevronRight, Sparkles, Zap, Eye, Bot, MessageCircle, Trash2 } from "lucide-react"
 
+// Import real app screenshots
+import mobileAppUI from "@/assets/mobile-app-ui.jpg"
+import appScreen1 from "@/assets/app-screen-1.jpg"
+import appScreen2 from "@/assets/app-screen-2.jpg"
+
 interface APKUploadProps {
   onComplete?: (projectId: string) => void
 }
@@ -19,7 +24,7 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
   const [progress, setProgress] = useState(0)
   const [currentPage, setCurrentPage] = useState("")
   const [discoveredPages, setDiscoveredPages] = useState<string[]>([])
-  const [currentScreenshot, setCurrentScreenshot] = useState("/placeholder.svg")
+  const [currentScreenshot, setCurrentScreenshot] = useState(mobileAppUI)
   const [needsHelp, setNeedsHelp] = useState(false)
   const [pageDescription, setPageDescription] = useState("")
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
@@ -51,16 +56,16 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
   ]
 
   const mockPages = [
-    { name: "启动页面", screenshot: "/placeholder.svg" },
-    { name: "登录页面", screenshot: "/placeholder.svg" },
-    { name: "主页面", screenshot: "/placeholder.svg" },
-    { name: "用户中心", screenshot: "/placeholder.svg" },
-    { name: "设置页面", screenshot: "/placeholder.svg" },
-    { name: "关于页面", screenshot: "/placeholder.svg" },
-    { name: "商品列表", screenshot: "/placeholder.svg" },
-    { name: "商品详情", screenshot: "/placeholder.svg" },
-    { name: "购物车", screenshot: "/placeholder.svg" },
-    { name: "订单页面", screenshot: "/placeholder.svg" }
+    { name: "启动页面", screenshot: mobileAppUI },
+    { name: "登录页面", screenshot: appScreen1 },
+    { name: "主页面", screenshot: mobileAppUI },
+    { name: "用户中心", screenshot: appScreen2 },
+    { name: "设置页面", screenshot: appScreen1 },
+    { name: "关于页面", screenshot: mobileAppUI },
+    { name: "商品列表", screenshot: appScreen2 },
+    { name: "商品详情", screenshot: appScreen1 },
+    { name: "购物车", screenshot: mobileAppUI },
+    { name: "订单页面", screenshot: appScreen2 }
   ]
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -94,7 +99,7 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
     // Second step: cloud device simulation (requires user interaction)
     setAnalysisStep('cloud-device')
     setProgress(25)
-    setCurrentScreenshot("/placeholder.svg")
+    setCurrentScreenshot(mobileAppUI)
     setCurrentPage(mockPages[0].name)
     
     // Initialize conversation
