@@ -27,6 +27,7 @@ const APKUpload = ({
   const [currentPage, setCurrentPage] = useState("");
   const [discoveredPages, setDiscoveredPages] = useState<string[]>([]);
   const [currentScreenshot, setCurrentScreenshot] = useState(mobileAppUI);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const [needsHelp, setNeedsHelp] = useState(false);
   const [pageDescription, setPageDescription] = useState("");
   const [mousePosition, setMousePosition] = useState({
@@ -119,6 +120,34 @@ const APKUpload = ({
     name: "订单页面",
     screenshot: appScreen2
   }];
+
+  // 模拟页面跳转的函数
+  const simulatePageTransition = () => {
+    if (isTransitioning) return;
+    
+    setIsTransitioning(true);
+    
+    // 随机选择下一个页面
+    const currentIndex = mockPages.findIndex(page => page.name === currentPage);
+    const nextIndex = (currentIndex + 1) % mockPages.length;
+    const nextPage = mockPages[nextIndex];
+    
+    // 延迟切换页面内容
+    setTimeout(() => {
+      setCurrentPage(nextPage.name);
+      setCurrentScreenshot(nextPage.screenshot);
+      
+      // 增加发现的页面
+      if (!discoveredPages.includes(nextPage.name)) {
+        setDiscoveredPages(prev => [...prev, nextPage.name]);
+        setProgress(prev => Math.min(prev + 15, 90));
+      }
+      
+      setTimeout(() => {
+        setIsTransitioning(false);
+      }, 300);
+    }, 150);
+  };
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -357,30 +386,70 @@ const APKUpload = ({
                       </div>
                       
                       {/* App Content - Full Bleed */}
-                      <div className="h-full bg-white relative">
-                        <img src={currentScreenshot} alt="App Screenshot" className="w-full h-full object-cover cursor-pointer hover:opacity-90 transition-opacity" onClick={() => {
-                        setShowConfigCard(true);
-                        setPageLabel(currentPage);
-                        setPageDescription("");
-                        setInputRules([]);
-                        setSpecialOperations([]);
-                      }} />
+                      <div className="h-full bg-white relative overflow-hidden">
+                        {/* 屏幕点击区域 */}
+                        <div 
+                          className={`w-full h-full cursor-pointer transition-all duration-300 ${
+                            isTransitioning ? 'scale-95 opacity-50' : 'scale-100 opacity-100 hover:scale-105'
+                          }`}
+                          onClick={() => {
+                            simulatePageTransition();
+                            // 延迟显示配置卡片，让跳转动画先完成
+                            setTimeout(() => {
+                              setShowConfigCard(true);
+                              setPageLabel(currentPage);
+                              setPageDescription("");
+                              setInputRules([]);
+                              setSpecialOperations([]);
+                            }, 300);
+                          }}
+                        >
+                          <img 
+                            src={currentScreenshot} 
+                            alt="App Screenshot" 
+                            className={`w-full h-full object-cover transition-all duration-300 ${
+                              isTransitioning ? 'brightness-75 blur-sm' : 'brightness-100'
+                            }`}
+                          />
+                          
+                          {/* 跳转动画指示器 */}
+                          {isTransitioning && (
+                            <div className="absolute inset-0 flex items-center justify-center bg-white/20 backdrop-blur-sm">
+                              <div className="bg-primary rounded-full p-4 animate-pulse">
+                                <ChevronRight className="h-8 w-8 text-white animate-bounce" />
+                              </div>
+                            </div>
+                          )}
+                          
+                          {/* 点击提示 */}
+                          {!showConfigCard && !isTransitioning && (
+                            <div className="absolute inset-0 flex items-center justify-center bg-black/10 opacity-0 hover:opacity-100 transition-opacity duration-300">
+                              <div className="bg-primary/90 rounded-lg px-4 py-2 text-white font-medium animate-bounce">
+                                点击跳转到下一页面
+                              </div>
+                            </div>
+                          )}
+                        </div>
                         
                         {/* Overlay with current page info */}
-                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
+                        <div className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 transition-all duration-300 ${
+                          isTransitioning ? 'translate-y-4 opacity-0' : 'translate-y-0 opacity-100'
+                        }`}>
                           <h3 className="text-2xl font-bold text-white mb-2">{currentPage}</h3>
                           <div className="flex items-center gap-2">
                             <Eye className="h-5 w-5 text-green-400" />
                             <p className="text-base text-green-200 font-medium">
-                              AI正在分析页面功能...
+                              {isTransitioning ? '正在跳转...' : 'AI正在分析页面功能...'}
                             </p>
                           </div>
                         </div>
                         
                         {/* AI Analysis Indicator */}
-                        <div className="absolute top-6 right-6">
+                        <div className={`absolute top-6 right-6 transition-all duration-300 ${
+                          isTransitioning ? 'scale-75 opacity-50' : 'scale-100 opacity-100'
+                        }`}>
                           <div className="bg-primary/90 rounded-full p-3 shadow-lg">
-                            <Brain className="h-6 w-6 text-white animate-pulse" />
+                            <Brain className={`h-6 w-6 text-white ${isTransitioning ? 'animate-spin' : 'animate-pulse'}`} />
                           </div>
                         </div>
                       </div>
