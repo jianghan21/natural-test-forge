@@ -585,7 +585,7 @@ const APKUpload = ({ onComplete }: APKUploadProps) => {
                   <CardContent className="flex items-center justify-center h-full">
                     <div className="text-center">
                       <Monitor className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                      <h3 className="text-xl font-semibold mb-2">点击左侧屏幕开始分析</h3>
+                      <h3 className="text-xl font-semibold mb-2">点击左侧屏 训练SmartMonkey</h3>
                       <p className="text-muted-foreground">
                         点击云真机屏幕上的 "{currentPage}" 页面，开始AI智能分析
                       </p>
