@@ -1,54 +1,67 @@
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Separator } from "@/components/ui/separator"
-import { ArrowLeft, Save, Users, Settings, FolderPlus } from "lucide-react"
-
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { ArrowLeft, Save, Users, Settings, FolderPlus } from "lucide-react";
 export default function NewProject() {
-  const navigate = useNavigate()
-  
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     description: "",
     template: "",
     visibility: "private",
     members: [] as string[]
-  })
-
+  });
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
-    }))
-  }
-
+    }));
+  };
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    
+    e.preventDefault();
+
     // 模拟创建项目
-    console.log('创建项目:', formData)
-    
+    console.log('创建项目:', formData);
+
     // 跳转到项目详情页
-    navigate('/projects/new-project-id')
-  }
-
-  const projectTemplates = [
-    { value: "web-app", label: "Web应用测试", description: "适用于网站和Web应用的功能测试" },
-    { value: "mobile-app", label: "移动应用测试", description: "iOS和Android应用的兼容性测试" },
-    { value: "api-testing", label: "API接口测试", description: "后端接口的功能和性能测试" },
-    { value: "e2e-testing", label: "端到端测试", description: "完整业务流程的自动化测试" },
-    { value: "performance", label: "性能测试", description: "系统性能和负载测试" },
-    { value: "security", label: "安全测试", description: "应用安全漏洞检测测试" },
-    { value: "custom", label: "自定义项目", description: "根据需求自定义测试项目" }
-  ]
-
-  return (
-    <div className="flex-1 space-y-6 p-8 pt-6">
+    navigate('/projects/new-project-id');
+  };
+  const projectTemplates = [{
+    value: "web-app",
+    label: "Web应用测试",
+    description: "适用于网站和Web应用的功能测试"
+  }, {
+    value: "mobile-app",
+    label: "移动应用测试",
+    description: "iOS和Android应用的兼容性测试"
+  }, {
+    value: "api-testing",
+    label: "API接口测试",
+    description: "后端接口的功能和性能测试"
+  }, {
+    value: "e2e-testing",
+    label: "端到端测试",
+    description: "完整业务流程的自动化测试"
+  }, {
+    value: "performance",
+    label: "性能测试",
+    description: "系统性能和负载测试"
+  }, {
+    value: "security",
+    label: "安全测试",
+    description: "应用安全漏洞检测测试"
+  }, {
+    value: "custom",
+    label: "自定义项目",
+    description: "根据需求自定义测试项目"
+  }];
+  return <div className="flex-1 space-y-6 p-8 pt-6">
       {/* Header */}
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon" onClick={() => navigate('/projects')}>
@@ -78,57 +91,18 @@ export default function NewProject() {
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="project-name">项目名称 *</Label>
-                  <Input
-                    id="project-name"
-                    placeholder="输入项目名称"
-                    value={formData.name}
-                    onChange={(e) => handleInputChange('name', e.target.value)}
-                    required
-                  />
+                  <Input id="project-name" placeholder="输入项目名称" value={formData.name} onChange={e => handleInputChange('name', e.target.value)} required />
                 </div>
                 
                 <div className="space-y-2">
                   <Label htmlFor="project-description">项目描述</Label>
-                  <Textarea
-                    id="project-description"
-                    placeholder="描述项目的目标和范围"
-                    value={formData.description}
-                    onChange={(e) => handleInputChange('description', e.target.value)}
-                    rows={4}
-                  />
+                  <Textarea id="project-description" placeholder="描述项目的目标和范围" value={formData.description} onChange={e => handleInputChange('description', e.target.value)} rows={4} />
                 </div>
               </CardContent>
             </Card>
 
             {/* Project Template */}
-            <Card>
-              <CardHeader>
-                <CardTitle>项目模板</CardTitle>
-                <CardDescription>
-                  选择适合的项目模板，可以快速开始
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  {projectTemplates.map((template) => (
-                    <div
-                      key={template.value}
-                      className={`border rounded-lg p-3 cursor-pointer transition-colors ${
-                        formData.template === template.value
-                          ? 'border-primary bg-primary/5'
-                          : 'border-border hover:border-muted-foreground'
-                      }`}
-                      onClick={() => handleInputChange('template', template.value)}
-                    >
-                      <div className="font-medium">{template.label}</div>
-                      <div className="text-sm text-muted-foreground mt-1">
-                        {template.description}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+            
 
             {/* Project Settings */}
             <Card>
@@ -144,7 +118,7 @@ export default function NewProject() {
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="visibility">项目可见性</Label>
-                  <Select value={formData.visibility} onValueChange={(value) => handleInputChange('visibility', value)}>
+                  <Select value={formData.visibility} onValueChange={value => handleInputChange('visibility', value)}>
                     <SelectTrigger>
                       <SelectValue placeholder="选择可见性" />
                     </SelectTrigger>
@@ -171,12 +145,7 @@ export default function NewProject() {
                   <Save className="h-4 w-4" />
                   创建项目
                 </Button>
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  className="w-full"
-                  onClick={() => navigate('/projects')}
-                >
+                <Button type="button" variant="outline" className="w-full" onClick={() => navigate('/projects')}>
                   取消
                 </Button>
               </CardContent>
@@ -201,8 +170,7 @@ export default function NewProject() {
             </Card>
 
             {/* Template Info */}
-            {formData.template && (
-              <Card>
+            {formData.template && <Card>
                 <CardHeader>
                   <CardTitle>模板说明</CardTitle>
                 </CardHeader>
@@ -221,11 +189,9 @@ export default function NewProject() {
                     </ul>
                   </div>
                 </CardContent>
-              </Card>
-            )}
+              </Card>}
           </div>
         </div>
       </form>
-    </div>
-  )
+    </div>;
 }
