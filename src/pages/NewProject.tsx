@@ -53,86 +53,92 @@ export default function NewProject() {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Main Form */}
-        <div className="max-w-4xl space-y-6">
-          {/* Basic Information */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FolderPlus className="h-5 w-5" />
-                基本信息
-              </CardTitle>
-              <CardDescription>
-                设置项目的基本信息
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="project-name">项目名称 *</Label>
-                <Input 
-                  id="project-name" 
-                  placeholder="输入项目名称" 
-                  value={formData.name} 
-                  onChange={e => handleInputChange('name', e.target.value)} 
-                  required 
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="project-description">项目描述</Label>
-                <Textarea 
-                  id="project-description" 
-                  placeholder="描述项目的目标和范围" 
-                  value={formData.description} 
-                  onChange={e => handleInputChange('description', e.target.value)} 
-                  rows={4} 
-                />
-              </div>
+      <div className="max-w-5xl mx-auto">
+        <form onSubmit={handleSubmit} className="space-y-12">
+          {/* Project Name */}
+          <div className="space-y-4">
+            <div>
+              <h3 className="text-2xl font-semibold text-foreground mb-2">项目名称</h3>
+              <p className="text-muted-foreground">为你的项目起一个简洁明了的名称</p>
+            </div>
+            <Input 
+              id="project-name" 
+              placeholder="输入项目名称" 
+              value={formData.name} 
+              onChange={e => handleInputChange('name', e.target.value)} 
+              required 
+              className="text-lg h-14 text-foreground placeholder:text-muted-foreground"
+            />
+          </div>
+          
+          {/* Project Description */}
+          <div className="space-y-4">
+            <div>
+              <h3 className="text-2xl font-semibold text-foreground mb-2">项目描述</h3>
+              <p className="text-muted-foreground">简单描述项目的目标和测试范围（可选）</p>
+            </div>
+            <Textarea 
+              id="project-description" 
+              placeholder="描述项目的目标和范围..." 
+              value={formData.description} 
+              onChange={e => handleInputChange('description', e.target.value)} 
+              rows={6}
+              className="text-lg resize-none text-foreground placeholder:text-muted-foreground"
+            />
+          </div>
 
-              <div className="space-y-2">
-                <Label>APK文件上传 *</Label>
-                <div className="border border-dashed border-border rounded-lg p-4">
-                  {!showAPKUploader ? (
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      className="w-full gap-2" 
-                      onClick={() => setShowAPKUploader(true)}
-                    >
-                      <Upload className="h-4 w-4" />
-                      上传APK文件
-                    </Button>
-                  ) : (
-                    <APKUploader onComplete={(projectId) => {
-                      setApkUploaded(true);
-                      navigate(`/projects/${projectId}`);
-                    }} />
-                  )}
+          {/* APK Upload */}
+          <div className="space-y-4">
+            <div>
+              <h3 className="text-2xl font-semibold text-foreground mb-2">上传APK文件</h3>
+              <p className="text-muted-foreground">上传你的Android应用程序包，我们将为其生成智能测试方案</p>
+            </div>
+            <div className="border-2 border-dashed border-border rounded-xl p-12 bg-muted/30 hover:bg-muted/50 transition-colors">
+              {!showAPKUploader ? (
+                <div className="text-center">
+                  <Button 
+                    type="button" 
+                    size="lg"
+                    variant="outline" 
+                    className="gap-3 h-16 px-8 text-lg font-medium" 
+                    onClick={() => setShowAPKUploader(true)}
+                  >
+                    <Upload className="h-6 w-6" />
+                    选择APK文件上传
+                  </Button>
+                  <p className="text-muted-foreground mt-4">支持.apk格式文件</p>
                 </div>
-              </div>
+              ) : (
+                <APKUploader onComplete={(projectId) => {
+                  setApkUploaded(true);
+                  navigate(`/projects/${projectId}`);
+                }} />
+              )}
+            </div>
+          </div>
 
-              {/* Action Buttons */}
-              <div className="flex gap-3 pt-4">
-                <Button 
-                  type="submit" 
-                  className="gap-2" 
-                  disabled={!apkUploaded}
-                >
-                  <Save className="h-4 w-4" />
-                  创建项目
-                </Button>
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  onClick={() => navigate('/projects')}
-                >
-                  取消
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </form>
+          {/* Action Buttons */}
+          <div className="flex justify-center gap-6 pt-8 pb-12">
+            <Button 
+              type="button" 
+              variant="outline" 
+              size="lg"
+              className="px-8 h-14 text-lg"
+              onClick={() => navigate('/projects')}
+            >
+              取消
+            </Button>
+            <Button 
+              type="submit" 
+              size="lg"
+              className="gap-3 px-12 h-14 text-lg font-medium" 
+              disabled={!apkUploaded}
+            >
+              <Save className="h-5 w-5" />
+              创建项目
+            </Button>
+          </div>
+        </form>
+      </div>
     </div>;
 }
