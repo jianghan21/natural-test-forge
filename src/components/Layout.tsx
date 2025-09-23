@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useNavigate } from "react-router-dom";
+import userAvatar from "@/assets/user-avatar.jpg";
 interface LayoutProps {
   children: React.ReactNode;
 }
@@ -45,7 +46,7 @@ export function Layout({
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon" className="rounded-full">
                     <Avatar className="h-8 w-8">
-                      <AvatarImage src="/placeholder.svg" alt="用户头像" />
+                      <AvatarImage src={userAvatar} alt="用户头像" />
                       <AvatarFallback>用户</AvatarFallback>
                     </Avatar>
                   </Button>
