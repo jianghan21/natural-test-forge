@@ -264,58 +264,100 @@ export default function ProjectDetail() {
                 </CardContent>
               </Card>
 
-              {/* Quick Actions */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>快速操作</CardTitle>
-                  <CardDescription>
-                    常用的项目操作和功能入口
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    <Button variant="outline" className="h-auto p-4 justify-start" onClick={() => navigate(`/projects/${id}/tests/new`)}>
-                      <div className="flex items-center gap-3">
-                        <TestTube className="h-5 w-5 text-blue-500" />
-                        <div className="text-left">
-                          <div className="font-medium">创建测试用例</div>
-                          <div className="text-sm text-muted-foreground">添加新的测试用例</div>
+              {/* Test Results Charts */}
+              <div className="grid gap-6 md:grid-cols-2">
+                {/* Test Trend Chart */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <TrendingUp className="h-5 w-5" />
+                      测试趋势
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-muted-foreground">过去7天</span>
+                        <span className="text-green-600 font-medium">+12% 通过率</span>
+                      </div>
+                      <div className="h-[120px] flex items-end justify-between gap-2">
+                        {[65, 72, 68, 85, 90, 88, 92].map((value, index) => (
+                          <div key={index} className="flex flex-col items-center gap-1">
+                            <div 
+                              className="w-8 bg-primary/80 rounded-t-sm"
+                              style={{ height: `${value}px` }}
+                            />
+                            <span className="text-xs text-muted-foreground">
+                              {new Date(Date.now() - (6 - index) * 24 * 60 * 60 * 1000).getDate()}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Test Distribution Chart */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <BarChart3 className="h-5 w-5" />
+                      测试分布
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <div className="w-3 h-3 bg-green-500 rounded-full" />
+                            <span className="text-sm">通过</span>
+                          </div>
+                          <span className="text-sm font-medium">{project.stats.passedTests}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <div className="w-3 h-3 bg-red-500 rounded-full" />
+                            <span className="text-sm">失败</span>
+                          </div>
+                          <span className="text-sm font-medium">{project.stats.failedTests}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <div className="w-3 h-3 bg-yellow-500 rounded-full" />
+                            <span className="text-sm">待执行</span>
+                          </div>
+                          <span className="text-sm font-medium">{project.stats.pendingTests}</span>
                         </div>
                       </div>
-                    </Button>
-                    
-                    <Button variant="outline" className="h-auto p-4 justify-start" onClick={() => navigate(`/projects/${id}/plans/new`)}>
-                      <div className="flex items-center gap-3">
-                        <FileText className="h-5 w-5 text-green-500" />
-                        <div className="text-left">
-                          <div className="font-medium">创建测试计划</div>
-                          <div className="text-sm text-muted-foreground">制定执行计划</div>
-                        </div>
+                      
+                      <div className="relative h-16 flex items-end gap-1">
+                        <div 
+                          className="bg-green-500 rounded-t-sm"
+                          style={{ 
+                            width: `${(project.stats.passedTests / project.stats.totalTests) * 100}%`,
+                            height: '100%'
+                          }}
+                        />
+                        <div 
+                          className="bg-red-500 rounded-t-sm"
+                          style={{ 
+                            width: `${(project.stats.failedTests / project.stats.totalTests) * 100}%`,
+                            height: '70%'
+                          }}
+                        />
+                        <div 
+                          className="bg-yellow-500 rounded-t-sm"
+                          style={{ 
+                            width: `${(project.stats.pendingTests / project.stats.totalTests) * 100}%`,
+                            height: '40%'
+                          }}
+                        />
                       </div>
-                    </Button>
-                    
-                    <Button variant="outline" className="h-auto p-4 justify-start" onClick={() => navigate(`/projects/${id}/results`)}>
-                      <div className="flex items-center gap-3">
-                        <BarChart3 className="h-5 w-5 text-purple-500" />
-                        <div className="text-left">
-                          <div className="font-medium">查看测试报告</div>
-                          <div className="text-sm text-muted-foreground">分析测试结果</div>
-                        </div>
-                      </div>
-                    </Button>
-                    
-                    <Button variant="outline" className="h-auto p-4 justify-start" onClick={() => navigate(`/projects/${id}/team`)}>
-                      <div className="flex items-center gap-3">
-                        <Users className="h-5 w-5 text-orange-500" />
-                        <div className="text-left">
-                          <div className="font-medium">管理团队</div>
-                          <div className="text-sm text-muted-foreground">邀请成员协作</div>
-                        </div>
-                      </div>
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
 
             {/* Sidebar */}
