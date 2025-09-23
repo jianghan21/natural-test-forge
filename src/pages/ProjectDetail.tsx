@@ -7,7 +7,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { StatCard } from "@/components/StatCard";
-import { ArrowLeft, Settings, TestTube, FileText, BarChart3, Users, Calendar, TrendingUp, AlertTriangle, CheckCircle, Clock, Plus } from "lucide-react";
+import { ArrowLeft, Settings, TestTube, FileText, BarChart3, Users, Calendar, TrendingUp, AlertTriangle, CheckCircle, Clock, Plus, ChevronDown } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 interface ProjectData {
   id: string;
   name: string;
@@ -41,6 +42,18 @@ export default function ProjectDetail() {
     id
   } = useParams();
   const navigate = useNavigate();
+
+  // 模拟其他项目数据用于下拉选择
+  const availableProjects = [
+    { id: "1", name: "电商平台测试", status: "active" },
+    { id: "2", name: "移动应用测试", status: "active" },
+    { id: "3", name: "API接口测试", status: "active" },
+    { id: "4", name: "性能测试项目", status: "archived" }
+  ];
+
+  const handleProjectSwitch = (projectId: string) => {
+    navigate(`/projects/${projectId}`);
+  };
 
   // 模拟项目数据
   const [project] = useState<ProjectData>({
@@ -117,9 +130,28 @@ export default function ProjectDetail() {
           
           <div>
             <div className="flex items-center gap-3">
-              <h2 className="text-3xl font-bold tracking-tight text-foreground">
-                {project.name}
-              </h2>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="flex items-center gap-2 text-3xl font-bold tracking-tight text-foreground hover:text-foreground/80 transition-colors">
+                    {project.name}
+                    <ChevronDown className="h-5 w-5" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56 bg-background border shadow-lg" align="start">
+                  {availableProjects.map((proj) => (
+                    <DropdownMenuItem 
+                      key={proj.id}
+                      onClick={() => handleProjectSwitch(proj.id)}
+                      className="flex items-center justify-between cursor-pointer"
+                    >
+                      <span>{proj.name}</span>
+                      {proj.id === project.id && (
+                        <CheckCircle className="h-4 w-4 text-primary" />
+                      )}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
               <Badge className="bg-green-100 text-green-800 hover:bg-green-200">
                 活跃
               </Badge>
