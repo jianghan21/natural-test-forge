@@ -68,13 +68,7 @@ const getMainItems = (projectId?: string) => [
 
 const getAnalysisItems = (projectId?: string) => []
 
-const settingsItems = [
-  {
-    title: "系统设置",
-    url: "/settings",
-    icon: Settings,
-  },
-]
+const settingsItems: never[] = []
 
 export function AppSidebar() {
   const { state } = useSidebar()
@@ -190,26 +184,6 @@ export function AppSidebar() {
           </SidebarGroup>
         )}
 
-        {/* Settings */}
-        <SidebarGroup>
-          <SidebarGroupLabel className={collapsed ? "sr-only" : ""}>
-            设置
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {settingsItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink to={item.url} className={getNavClass(item.url)}>
-                      <item.icon className={`${collapsed ? "h-5 w-5" : "h-4 w-4"}`} />
-                      {!collapsed && <span>{item.title}</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
       </SidebarContent>
     </Sidebar>
   )
