@@ -14,6 +14,7 @@ export default function NewProject() {
     description: ""
   });
   const [showAPKUploader, setShowAPKUploader] = useState(false);
+  const [apkUploaded, setApkUploaded] = useState(false);
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
       ...prev,
@@ -22,6 +23,17 @@ export default function NewProject() {
   };
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    // 验证必填项
+    if (!formData.name.trim()) {
+      alert('请输入项目名称');
+      return;
+    }
+    
+    if (!apkUploaded) {
+      alert('请上传APK文件');
+      return;
+    }
 
     // 模拟创建项目
     console.log('创建项目:', formData);
@@ -68,7 +80,7 @@ export default function NewProject() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>APK文件上传</Label>
+                  <Label>APK文件上传 *</Label>
                   <div className="border border-dashed border-border rounded-lg p-4">
                     {!showAPKUploader ? (
                       <Button 
@@ -81,7 +93,10 @@ export default function NewProject() {
                         上传APK文件
                       </Button>
                     ) : (
-                      <APKUploader onComplete={(projectId) => navigate(`/projects/${projectId}`)} />
+                      <APKUploader onComplete={(projectId) => {
+                        setApkUploaded(true);
+                        navigate(`/projects/${projectId}`);
+                      }} />
                     )}
                   </div>
                 </div>
