@@ -208,9 +208,7 @@ export default function Projects() {
                       <Badge variant="outline">{project.memberCount}</Badge>
                     </TableCell>
                     <TableCell>
-                      <Badge className={getStatusColor(project.status)}>
-                        {getStatusText(project.status)}
-                      </Badge>
+                      
                     </TableCell>
                     
                   </TableRow>)}
