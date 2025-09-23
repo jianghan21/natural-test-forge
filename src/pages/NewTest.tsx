@@ -29,7 +29,7 @@ export default function NewTest() {
   const [trainingMode, setTrainingMode] = useState("");
   const [deviceModel, setDeviceModel] = useState("");
   const [systemVersion, setSystemVersion] = useState("");
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [selectedApk, setSelectedApk] = useState<string>("");
   const [timeoutMinutes, setTimeoutMinutes] = useState("");
   const [retryCount, setRetryCount] = useState("");
   const [envVariables, setEnvVariables] = useState("");
@@ -54,12 +54,14 @@ export default function NewTest() {
   const removeLabel = (labelToRemove: string) => {
     setLabels(labels.filter(label => label !== labelToRemove));
   };
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setUploadedFile(file);
-    }
-  };
+  // Mock previously uploaded APK files
+  const uploadedApks = [
+    { id: "1", name: "MyShoppingApp_v2.1.apk", size: "45.2 MB", uploadTime: "2024-01-15", version: "2.1.0" },
+    { id: "2", name: "SocialMedia_v1.8.apk", size: "62.8 MB", uploadTime: "2024-01-12", version: "1.8.3" },
+    { id: "3", name: "BankingApp_v3.0.apk", size: "38.9 MB", uploadTime: "2024-01-10", version: "3.0.1" },
+    { id: "4", name: "GameCenter_v4.2.apk", size: "125.6 MB", uploadTime: "2024-01-08", version: "4.2.5" },
+    { id: "5", name: "NewsReader_v1.5.apk", size: "28.4 MB", uploadTime: "2024-01-05", version: "1.5.2" }
+  ];
   const handleCreateTest = () => {
     setCurrentStep('generating');
     setProgress(0);
@@ -123,7 +125,7 @@ class TestLogin:
         desired_caps = {
             'platformName': '${systemVersion?.includes('ios') ? 'iOS' : 'Android'}',
             'deviceName': '${deviceModel}',
-            'app': '/path/to/${uploadedFile?.name || 'app.apk'}'
+            'app': '/path/to/${uploadedApks.find(apk => apk.id === selectedApk)?.name || 'app.apk'}'
         }
         self.driver = webdriver.Remote('http://localhost:4723/wd/hub', desired_caps)
     
@@ -709,20 +711,39 @@ class TestLogin:
 
               <div>
                 <Label className="text-sm font-medium flex items-center gap-2">
-                  应用包文件 <span className="text-destructive">*</span>
+                  选择APK文件 <span className="text-destructive">*</span>
                 </Label>
-                <div className={`mt-2 border-2 border-dashed rounded-lg p-8 text-center transition-all duration-300 hover:scale-105 cursor-pointer ${uploadedFile ? 'border-green-500 bg-green-500/10' : 'border-muted hover:border-primary/50'}`}>
-                  <input type="file" accept=".apk,.ipa" onChange={handleFileUpload} className="hidden" id="file-upload" />
-                  <label htmlFor="file-upload" className="cursor-pointer">
-                    <Upload className={`h-8 w-8 mx-auto mb-3 ${uploadedFile ? 'text-green-500' : 'text-muted-foreground'}`} />
-                    {uploadedFile ? <div>
-                        <p className="font-medium text-green-600">文件上传成功</p>
-                        <p className="text-sm text-muted-foreground">{uploadedFile.name}</p>
-                      </div> : <div>
-                        <p className="font-medium">点击上传 APK 或 IPA 文件</p>
-                        <p className="text-sm text-muted-foreground">支持 .apk 和 .ipa 格式</p>
-                      </div>}
-                  </label>
+                <div className="mt-2">
+                  <Select value={selectedApk} onValueChange={setSelectedApk}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="请选择已上传的APK文件" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {uploadedApks.map(apk => (
+                        <SelectItem key={apk.id} value={apk.id}>
+                          <div className="flex flex-col">
+                            <span className="font-medium">{apk.name}</span>
+                            <span className="text-sm text-muted-foreground">
+                              {apk.size} • v{apk.version} • {apk.uploadTime}
+                            </span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {selectedApk && (
+                    <div className="mt-2 p-3 bg-muted/50 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline" className="bg-success/10 border-success/20 text-success">
+                          <CheckCircle className="h-3 w-3 mr-1" />
+                          已选择
+                        </Badge>
+                        <span className="text-sm font-medium">
+                          {uploadedApks.find(apk => apk.id === selectedApk)?.name}
+                        </span>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -775,7 +796,7 @@ class TestLogin:
               取消
             </Button>
             
-            <Button onClick={handleCreateTest} className="bg-gradient-primary hover:shadow-glow transition-all duration-300 hover:scale-105" disabled={!testName.trim() || !testDescription.trim() || !trainingMode || !uploadedFile}>
+            <Button onClick={handleCreateTest} className="bg-gradient-primary hover:shadow-glow transition-all duration-300 hover:scale-105" disabled={!testName.trim() || !testDescription.trim() || !trainingMode || !selectedApk}>
               <Play className="h-4 w-4 mr-2" />
               创建测试
             </Button>
