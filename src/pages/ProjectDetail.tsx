@@ -7,8 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { StatCard } from "@/components/StatCard";
-import { ArrowLeft, Settings, TestTube, FileText, BarChart3, Users, Calendar, TrendingUp, AlertTriangle, CheckCircle, Clock, Plus, ChevronDown } from "lucide-react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { ArrowLeft, Settings, TestTube, FileText, BarChart3, Users, Calendar, TrendingUp, AlertTriangle, CheckCircle, Clock, Plus } from "lucide-react";
 interface ProjectData {
   id: string;
   name: string;
@@ -42,15 +41,6 @@ export default function ProjectDetail() {
     id
   } = useParams();
   const navigate = useNavigate();
-
-  // 模拟其他项目数据
-  const otherProjects = [
-    { id: "1", name: "电商平台测试" },
-    { id: "2", name: "移动端App测试" },
-    { id: "3", name: "API接口测试" },
-    { id: "4", name: "Web前端测试" },
-    { id: "5", name: "数据库测试" }
-  ];
 
   // 模拟项目数据
   const [project] = useState<ProjectData>({
@@ -127,26 +117,9 @@ export default function ProjectDetail() {
           
           <div>
             <div className="flex items-center gap-3">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button className="flex items-center gap-2 text-3xl font-bold tracking-tight text-foreground hover:text-foreground/80 transition-colors">
-                    {project.name}
-                    <ChevronDown className="h-5 w-5" />
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-64">
-                  {otherProjects.map((proj) => (
-                    <DropdownMenuItem 
-                      key={proj.id}
-                      onClick={() => navigate(`/projects/${proj.id}`)}
-                      className={proj.id === project.id ? "bg-accent" : ""}
-                    >
-                      {proj.name}
-                      {proj.id === project.id && <span className="ml-auto text-xs text-muted-foreground">当前</span>}
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <h2 className="text-3xl font-bold tracking-tight text-foreground">
+                {project.name}
+              </h2>
               <Badge className="bg-green-100 text-green-800 hover:bg-green-200">
                 活跃
               </Badge>
@@ -368,7 +341,7 @@ export default function ProjectDetail() {
                             <span className="text-xs text-muted-foreground">
                               {activity.user}
                             </span>
-                            <span className="text-xs text-muted-foreground">•</span>
+                            
                             <span className="text-xs text-muted-foreground">
                               {formatTimestamp(activity.timestamp)}
                             </span>
