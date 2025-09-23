@@ -54,74 +54,84 @@ export default function NewProject() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid gap-6 lg:grid-cols-3">
-          {/* Main Form */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Basic Information */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <FolderPlus className="h-5 w-5" />
-                  基本信息
-                </CardTitle>
-                <CardDescription>
-                  设置项目的基本信息
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="project-name">项目名称 *</Label>
-                  <Input id="project-name" placeholder="输入项目名称" value={formData.name} onChange={e => handleInputChange('name', e.target.value)} required />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="project-description">项目描述</Label>
-                  <Textarea id="project-description" placeholder="描述项目的目标和范围" value={formData.description} onChange={e => handleInputChange('description', e.target.value)} rows={4} />
-                </div>
+        {/* Main Form */}
+        <div className="max-w-4xl space-y-6">
+          {/* Basic Information */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FolderPlus className="h-5 w-5" />
+                基本信息
+              </CardTitle>
+              <CardDescription>
+                设置项目的基本信息
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="project-name">项目名称 *</Label>
+                <Input 
+                  id="project-name" 
+                  placeholder="输入项目名称" 
+                  value={formData.name} 
+                  onChange={e => handleInputChange('name', e.target.value)} 
+                  required 
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="project-description">项目描述</Label>
+                <Textarea 
+                  id="project-description" 
+                  placeholder="描述项目的目标和范围" 
+                  value={formData.description} 
+                  onChange={e => handleInputChange('description', e.target.value)} 
+                  rows={4} 
+                />
+              </div>
 
-                <div className="space-y-2">
-                  <Label>APK文件上传 *</Label>
-                  <div className="border border-dashed border-border rounded-lg p-4">
-                    {!showAPKUploader ? (
-                      <Button 
-                        type="button" 
-                        variant="outline" 
-                        className="w-full gap-2" 
-                        onClick={() => setShowAPKUploader(true)}
-                      >
-                        <Upload className="h-4 w-4" />
-                        上传APK文件
-                      </Button>
-                    ) : (
-                      <APKUploader onComplete={(projectId) => {
-                        setApkUploaded(true);
-                        navigate(`/projects/${projectId}`);
-                      }} />
-                    )}
-                  </div>
+              <div className="space-y-2">
+                <Label>APK文件上传 *</Label>
+                <div className="border border-dashed border-border rounded-lg p-4">
+                  {!showAPKUploader ? (
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      className="w-full gap-2" 
+                      onClick={() => setShowAPKUploader(true)}
+                    >
+                      <Upload className="h-4 w-4" />
+                      上传APK文件
+                    </Button>
+                  ) : (
+                    <APKUploader onComplete={(projectId) => {
+                      setApkUploaded(true);
+                      navigate(`/projects/${projectId}`);
+                    }} />
+                  )}
                 </div>
-              </CardContent>
-            </Card>
-          </div>
+              </div>
 
-          {/* Sidebar */}
-          <div className="space-y-6">
-            {/* Actions */}
-            <Card>
-              <CardHeader>
-                <CardTitle>操作</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <Button type="submit" className="w-full gap-2">
+              {/* Action Buttons */}
+              <div className="flex gap-3 pt-4">
+                <Button 
+                  type="submit" 
+                  className="gap-2" 
+                  disabled={!apkUploaded}
+                >
                   <Save className="h-4 w-4" />
                   创建项目
                 </Button>
-                <Button type="button" variant="outline" className="w-full" onClick={() => navigate('/projects')}>
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={() => navigate('/projects')}
+                >
                   取消
                 </Button>
-              </CardContent>
-            </Card>
-          </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </form>
     </div>;
