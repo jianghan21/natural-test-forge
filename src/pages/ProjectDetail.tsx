@@ -1,95 +1,78 @@
-import { useState } from "react"
-import { useNavigate, useParams } from "react-router-dom"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Progress } from "@/components/ui/progress"
-import { Separator } from "@/components/ui/separator"
-import { StatCard } from "@/components/StatCard"
-import { 
-  ArrowLeft, 
-  Settings, 
-  TestTube, 
-  FileText, 
-  BarChart3, 
-  Users, 
-  Calendar,
-  TrendingUp,
-  AlertTriangle,
-  CheckCircle,
-  Clock,
-  Plus
-} from "lucide-react"
-
+import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Progress } from "@/components/ui/progress";
+import { Separator } from "@/components/ui/separator";
+import { StatCard } from "@/components/StatCard";
+import { ArrowLeft, Settings, TestTube, FileText, BarChart3, Users, Calendar, TrendingUp, AlertTriangle, CheckCircle, Clock, Plus } from "lucide-react";
 interface ProjectData {
-  id: string
-  name: string
-  description: string
-  createdAt: string
-  updatedAt: string
-  creator: string
-  status: 'active' | 'archived'
-  testCount: number
-  planCount: number
-  memberCount: number
+  id: string;
+  name: string;
+  description: string;
+  createdAt: string;
+  updatedAt: string;
+  creator: string;
+  status: 'active' | 'archived';
+  testCount: number;
+  planCount: number;
+  memberCount: number;
   recentActivity: Array<{
-    id: string
-    type: 'test_created' | 'plan_executed' | 'member_added'
-    description: string
-    timestamp: string
-    user: string
-  }>
+    id: string;
+    type: 'test_created' | 'plan_executed' | 'member_added';
+    description: string;
+    timestamp: string;
+    user: string;
+  }>;
   stats: {
-    totalTests: number
-    passedTests: number
-    failedTests: number
-    pendingTests: number
-    passRate: number
-    executionTime: number
-    coverage: number
-  }
+    totalTests: number;
+    passedTests: number;
+    failedTests: number;
+    pendingTests: number;
+    passRate: number;
+    executionTime: number;
+    coverage: number;
+  };
 }
-
 export default function ProjectDetail() {
-  const { id } = useParams()
-  const navigate = useNavigate()
-  
+  const {
+    id
+  } = useParams();
+  const navigate = useNavigate();
+
   // 模拟项目数据
   const [project] = useState<ProjectData>({
     id: id || "1",
     name: "电商平台测试",
     description: "主要电商平台的功能测试项目，包括用户注册、登录、购物车、支付等核心流程",
     createdAt: "2024-01-15",
-    updatedAt: "2024-03-10", 
+    updatedAt: "2024-03-10",
     creator: "张三",
     status: "active",
     testCount: 45,
     planCount: 12,
     memberCount: 8,
-    recentActivity: [
-      {
-        id: "1",
-        type: "test_created",
-        description: "创建了新的支付流程测试用例",
-        timestamp: "2024-03-10T10:30:00Z",
-        user: "李四"
-      },
-      {
-        id: "2", 
-        type: "plan_executed",
-        description: "执行了用户注册测试计划",
-        timestamp: "2024-03-09T16:45:00Z",
-        user: "王五"
-      },
-      {
-        id: "3",
-        type: "member_added",
-        description: "邀请了新成员加入项目",
-        timestamp: "2024-03-08T14:20:00Z",
-        user: "张三"
-      }
-    ],
+    recentActivity: [{
+      id: "1",
+      type: "test_created",
+      description: "创建了新的支付流程测试用例",
+      timestamp: "2024-03-10T10:30:00Z",
+      user: "李四"
+    }, {
+      id: "2",
+      type: "plan_executed",
+      description: "执行了用户注册测试计划",
+      timestamp: "2024-03-09T16:45:00Z",
+      user: "王五"
+    }, {
+      id: "3",
+      type: "member_added",
+      description: "邀请了新成员加入项目",
+      timestamp: "2024-03-08T14:20:00Z",
+      user: "张三"
+    }],
     stats: {
       totalTests: 45,
       passedTests: 38,
@@ -99,46 +82,39 @@ export default function ProjectDetail() {
       executionTime: 1240,
       coverage: 78.5
     }
-  })
-
+  });
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('zh-CN', {
       year: 'numeric',
       month: 'short',
       day: 'numeric'
-    })
-  }
-
+    });
+  };
   const formatTimestamp = (timestamp: string) => {
     return new Date(timestamp).toLocaleString('zh-CN', {
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
-    })
-  }
-
+    });
+  };
   const getActivityIcon = (type: string) => {
     switch (type) {
       case 'test_created':
-        return TestTube
+        return TestTube;
       case 'plan_executed':
-        return FileText
+        return FileText;
       case 'member_added':
-        return Users
+        return Users;
       default:
-        return Clock
+        return Clock;
     }
-  }
-
-  return (
-    <div className="flex-1 space-y-6 p-8 pt-6">
+  };
+  return <div className="flex-1 space-y-6 p-8 pt-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={() => navigate('/projects')}>
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
+          
           <div>
             <div className="flex items-center gap-3">
               <h2 className="text-3xl font-bold tracking-tight text-foreground">
@@ -298,11 +274,7 @@ export default function ProjectDetail() {
                 </CardHeader>
                 <CardContent>
                   <div className="grid gap-3 sm:grid-cols-2">
-                    <Button 
-                      variant="outline" 
-                      className="h-auto p-4 justify-start"
-                      onClick={() => navigate(`/projects/${id}/tests/new`)}
-                    >
+                    <Button variant="outline" className="h-auto p-4 justify-start" onClick={() => navigate(`/projects/${id}/tests/new`)}>
                       <div className="flex items-center gap-3">
                         <TestTube className="h-5 w-5 text-blue-500" />
                         <div className="text-left">
@@ -312,11 +284,7 @@ export default function ProjectDetail() {
                       </div>
                     </Button>
                     
-                    <Button 
-                      variant="outline" 
-                      className="h-auto p-4 justify-start"
-                      onClick={() => navigate(`/projects/${id}/plans/new`)}
-                    >
+                    <Button variant="outline" className="h-auto p-4 justify-start" onClick={() => navigate(`/projects/${id}/plans/new`)}>
                       <div className="flex items-center gap-3">
                         <FileText className="h-5 w-5 text-green-500" />
                         <div className="text-left">
@@ -326,11 +294,7 @@ export default function ProjectDetail() {
                       </div>
                     </Button>
                     
-                    <Button 
-                      variant="outline" 
-                      className="h-auto p-4 justify-start"
-                      onClick={() => navigate(`/projects/${id}/results`)}
-                    >
+                    <Button variant="outline" className="h-auto p-4 justify-start" onClick={() => navigate(`/projects/${id}/results`)}>
                       <div className="flex items-center gap-3">
                         <BarChart3 className="h-5 w-5 text-purple-500" />
                         <div className="text-left">
@@ -340,11 +304,7 @@ export default function ProjectDetail() {
                       </div>
                     </Button>
                     
-                    <Button 
-                      variant="outline" 
-                      className="h-auto p-4 justify-start"
-                      onClick={() => navigate(`/projects/${id}/team`)}
-                    >
+                    <Button variant="outline" className="h-auto p-4 justify-start" onClick={() => navigate(`/projects/${id}/team`)}>
                       <div className="flex items-center gap-3">
                         <Users className="h-5 w-5 text-orange-500" />
                         <div className="text-left">
@@ -369,13 +329,12 @@ export default function ProjectDetail() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {project.recentActivity.map((activity, index) => (
-                    <div key={activity.id}>
+                  {project.recentActivity.map((activity, index) => <div key={activity.id}>
                       <div className="flex items-start gap-3">
                         {(() => {
-                          const IconComponent = getActivityIcon(activity.type)
-                          return <IconComponent className="h-4 w-4 text-blue-500" />
-                        })()}
+                      const IconComponent = getActivityIcon(activity.type);
+                      return <IconComponent className="h-4 w-4 text-blue-500" />;
+                    })()}
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium">{activity.description}</p>
                           <div className="flex items-center gap-2 mt-1">
@@ -389,11 +348,8 @@ export default function ProjectDetail() {
                           </div>
                         </div>
                       </div>
-                      {index < project.recentActivity.length - 1 && (
-                        <Separator className="mt-4" />
-                      )}
-                    </div>
-                  ))}
+                      {index < project.recentActivity.length - 1 && <Separator className="mt-4" />}
+                    </div>)}
                 </CardContent>
               </Card>
 
@@ -493,6 +449,5 @@ export default function ProjectDetail() {
           </Card>
         </TabsContent>
       </Tabs>
-    </div>
-  )
+    </div>;
 }
