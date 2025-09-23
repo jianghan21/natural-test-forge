@@ -162,34 +162,6 @@ export function AppSidebar() {
         </button>
       </div>
 
-      {/* Project Selector */}
-      {!collapsed && (currentProjectId || selectedProject) && (
-        <div className="p-4 border-b">
-          <div className="space-y-2">
-            <label className="text-xs font-medium text-muted-foreground">当前项目</label>
-            <Select value={currentProjectId || selectedProject} onValueChange={setSelectedProject}>
-              <SelectTrigger className="w-full">
-                <SelectValue>
-                  <div className="flex items-center gap-2">
-                    <Building2 className="h-4 w-4" />
-                    <span className="truncate">{currentProject?.name}</span>
-                  </div>
-                </SelectValue>
-              </SelectTrigger>
-              <SelectContent>
-                {projects.map((project) => (
-                  <SelectItem key={project.id} value={project.id}>
-                    <div className="flex items-center gap-2">
-                      <Building2 className="h-4 w-4" />
-                      {project.name}
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-      )}
 
       <SidebarContent className="px-2 py-4">
         {/* Main Navigation */}
