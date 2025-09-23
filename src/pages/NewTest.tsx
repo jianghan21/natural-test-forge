@@ -796,7 +796,7 @@ class TestLogin:
               取消
             </Button>
             
-            <Button onClick={handleCreateTest} className="bg-gradient-primary hover:shadow-glow transition-all duration-300 hover:scale-105" disabled={!testName.trim() || !testDescription.trim() || !trainingMode || !selectedApk}>
+            <Button onClick={handleCreateTest} className="bg-gradient-primary hover:shadow-glow transition-all duration-300 hover:scale-105" disabled={!testName.trim() || !testDescription.trim() || !selectedApk || !deviceModel || !systemVersion}>
               <Play className="h-4 w-4 mr-2" />
               创建测试
             </Button>
