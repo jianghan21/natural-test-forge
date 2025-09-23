@@ -5,18 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, Save, Users, Settings, FolderPlus, Smartphone, Globe, Cloud, Zap, Shield, Wrench, Upload } from "lucide-react";
+import { ArrowLeft, Save, FolderPlus, Upload } from "lucide-react";
 import { APKUploader } from "@/components/APKUploader";
 export default function NewProject() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
-    description: "",
-    template: "",
-    visibility: "private",
-    members: [] as string[]
+    description: ""
   });
   const [showAPKUploader, setShowAPKUploader] = useState(false);
   const handleInputChange = (field: string, value: string) => {
@@ -24,13 +19,6 @@ export default function NewProject() {
       ...prev,
       [field]: value
     }));
-    
-    // Show APK uploader for APK-based templates
-    if (field === 'template' && ['mobile-app', 'mobile-apk-upload'].includes(value)) {
-      setShowAPKUploader(true);
-    } else if (field === 'template') {
-      setShowAPKUploader(false);
-    }
   };
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,48 +29,6 @@ export default function NewProject() {
     // 跳转到项目详情页
     navigate('/projects/new-project-id');
   };
-  const projectTemplates = [{
-    value: "mobile-apk-upload",
-    label: "APK智能测试",
-    description: "上传APK文件，AI自动分析并生成测试方案",
-    icon: Upload,
-    featured: true
-  }, {
-    value: "web-app",
-    label: "Web应用测试", 
-    description: "适用于网站和Web应用的功能测试",
-    icon: Globe
-  }, {
-    value: "mobile-app",
-    label: "移动应用测试",
-    description: "iOS和Android应用的兼容性测试",
-    icon: Smartphone
-  }, {
-    value: "api-testing",
-    label: "API接口测试",
-    description: "后端接口的功能和性能测试",
-    icon: Cloud
-  }, {
-    value: "e2e-testing", 
-    label: "端到端测试",
-    description: "完整业务流程的自动化测试",
-    icon: Zap
-  }, {
-    value: "performance",
-    label: "性能测试", 
-    description: "系统性能和负载测试",
-    icon: Zap
-  }, {
-    value: "security",
-    label: "安全测试",
-    description: "应用安全漏洞检测测试", 
-    icon: Shield
-  }, {
-    value: "custom",
-    label: "自定义项目",
-    description: "根据需求自定义测试项目",
-    icon: Wrench
-  }];
   return <div className="flex-1 space-y-6 p-8 pt-6">
       {/* Header */}
       <div className="flex items-center gap-4">
@@ -120,98 +66,24 @@ export default function NewProject() {
                   <Label htmlFor="project-description">项目描述</Label>
                   <Textarea id="project-description" placeholder="描述项目的目标和范围" value={formData.description} onChange={e => handleInputChange('description', e.target.value)} rows={4} />
                 </div>
-              </CardContent>
-            </Card>
 
-            {/* Project Template */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Settings className="h-5 w-5" />
-                  选择项目模板
-                </CardTitle>
-                <CardDescription>
-                  选择适合您项目的测试模板
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {projectTemplates.map((template) => (
-                    <div
-                      key={template.value}
-                      className={`relative p-4 border-2 rounded-lg cursor-pointer transition-all duration-300 hover:scale-105 ${
-                        formData.template === template.value
-                          ? 'border-primary bg-primary/5 shadow-lg'
-                          : 'border-muted hover:border-primary/50'
-                      } ${template.featured ? 'ring-2 ring-primary/30 bg-gradient-to-br from-primary/5 to-transparent' : ''}`}
-                      onClick={() => handleInputChange('template', template.value)}
-                    >
-                      {template.featured && (
-                        <div className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full font-medium">
-                          推荐
-                        </div>
-                      )}
-                      <div className="flex items-start gap-3">
-                        <div className={`p-2 rounded-lg ${
-                          formData.template === template.value 
-                            ? 'bg-primary text-primary-foreground' 
-                            : 'bg-muted text-muted-foreground'
-                        } transition-colors`}>
-                          <template.icon className="h-5 w-5" />
-                        </div>
-                        <div className="flex-1">
-                          <h4 className="font-medium mb-1">{template.label}</h4>
-                          <p className="text-sm text-muted-foreground">{template.description}</p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* APK Upload Section */}
-            {showAPKUploader && (
-              <Card className="border-primary/30 bg-gradient-to-br from-primary/5 to-transparent">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-primary">
-                    <Upload className="h-5 w-5" />
-                    APK文件上传
-                  </CardTitle>
-                  <CardDescription>
-                    上传您的APK文件，AI将自动分析应用结构并生成测试方案
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <APKUploader onComplete={(projectId) => navigate(`/projects/${projectId}`)} />
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Project Settings */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Settings className="h-5 w-5" />
-                  项目设置
-                </CardTitle>
-                <CardDescription>
-                  配置项目的访问权限和其他设置
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="visibility">项目可见性</Label>
-                  <Select value={formData.visibility} onValueChange={value => handleInputChange('visibility', value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="选择可见性" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="private">私有 - 仅团队成员可见</SelectItem>
-                      <SelectItem value="internal">内部 - 组织内部可见</SelectItem>
-                      <SelectItem value="public">公开 - 所有人可见</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <Label>APK文件上传</Label>
+                  <div className="border border-dashed border-border rounded-lg p-4">
+                    {!showAPKUploader ? (
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        className="w-full gap-2" 
+                        onClick={() => setShowAPKUploader(true)}
+                      >
+                        <Upload className="h-4 w-4" />
+                        上传APK文件
+                      </Button>
+                    ) : (
+                      <APKUploader onComplete={(projectId) => navigate(`/projects/${projectId}`)} />
+                    )}
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -234,46 +106,6 @@ export default function NewProject() {
                 </Button>
               </CardContent>
             </Card>
-
-            {/* Team Members */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Users className="h-5 w-5" />
-                  团队成员
-                </CardTitle>
-                <CardDescription>
-                  项目创建后可以邀请团队成员
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-sm text-muted-foreground">
-                  你将自动成为项目创建者和管理员。创建项目后，可以通过项目设置页面邀请其他成员。
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Template Info */}
-            {formData.template && <Card>
-                <CardHeader>
-                  <CardTitle>模板说明</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-sm text-muted-foreground">
-                    {projectTemplates.find(t => t.value === formData.template)?.description}
-                  </div>
-                  <Separator className="my-3" />
-                  <div className="text-sm">
-                    <div className="font-medium mb-2">该模板将包含:</div>
-                    <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-                      <li>预设的测试用例模板</li>
-                      <li>常用的测试计划配置</li>
-                      <li>推荐的测试工具集成</li>
-                      <li>最佳实践指导</li>
-                    </ul>
-                  </div>
-                </CardContent>
-              </Card>}
           </div>
         </div>
       </form>
