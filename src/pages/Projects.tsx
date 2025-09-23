@@ -163,7 +163,7 @@ export default function Projects() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <FolderOpen className="h-5 w-5" />
-            活跃项目
+            项目列表
           </CardTitle>
           <CardDescription>
             当前正在进行的测试项目
