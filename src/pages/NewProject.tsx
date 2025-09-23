@@ -94,7 +94,7 @@ export default function NewProject() {
               <p className="text-muted-foreground">上传你的Android应用程序包，我们将为其生成智能测试方案</p>
             </div>
             <div className="border-2 border-dashed border-border rounded-xl p-12 bg-muted/30 hover:bg-muted/50 transition-colors">
-              {!showAPKUploader ? (
+              {!showAPKUploader && !apkUploaded ? (
                 <div className="text-center">
                   <Button 
                     type="button" 
@@ -108,10 +108,32 @@ export default function NewProject() {
                   </Button>
                   <p className="text-muted-foreground mt-4">支持.apk格式文件</p>
                 </div>
+              ) : !showAPKUploader && apkUploaded ? (
+                <div className="text-center">
+                  <div className="flex items-center justify-center gap-3 mb-4">
+                    <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
+                      <Save className="h-6 w-6 text-green-600" />
+                    </div>
+                  </div>
+                  <h4 className="text-xl font-semibold text-green-600 mb-2">APK文件已上传完成</h4>
+                  <p className="text-muted-foreground mb-4">
+                    AI已完成应用分析和云真机模拟，现在可以创建项目了
+                  </p>
+                  <Button 
+                    type="button" 
+                    variant="outline"
+                    onClick={() => setShowAPKUploader(true)}
+                    className="gap-2"
+                  >
+                    <Upload className="h-4 w-4" />
+                    重新上传APK
+                  </Button>
+                </div>
               ) : (
                 <APKUploader onComplete={(projectId) => {
                   setApkUploaded(true);
-                  navigate(`/projects/${projectId}`);
+                  // Don't navigate immediately, let user complete the form
+                  setShowAPKUploader(false);
                 }} />
               )}
             </div>
