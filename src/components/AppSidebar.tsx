@@ -66,25 +66,7 @@ const getMainItems = (projectId?: string) => [
   ] : [])
 ]
 
-const getAnalysisItems = (projectId?: string) => [
-  ...(projectId ? [
-    {
-      title: "测试洞察",
-      url: `/projects/${projectId}/insights`,
-      icon: TrendingUp,
-    },
-    {
-      title: "覆盖率分析",
-      url: `/projects/${projectId}/coverage`,
-      icon: Shield,
-    },
-    {
-      title: "测试配置",
-      url: `/projects/${projectId}/configuration`,
-      icon: Wrench,
-    },
-  ] : [])
-]
+const getAnalysisItems = (projectId?: string) => []
 
 const settingsItems = [
   {
