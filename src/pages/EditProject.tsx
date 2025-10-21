@@ -167,12 +167,17 @@ export default function EditProject() {
                     <Upload className="h-4 w-4" />
                     重新上传APK
                   </Button>
-                </div> : showAPKUploader ? <APKUploader onComplete={projectId => {
-              setApkUploaded(true);
-              setShowAPKUploader(false);
-              setCurrentApkName(`updated_v${formData.version}.apk`);
-              // APK上传完成后，显示分析按钮
-            }} /> : null}
+                </div> : showAPKUploader ? <APKUploader 
+                onComplete={projectId => {
+                  setApkUploaded(true);
+                  setShowAPKUploader(false);
+                  setCurrentApkName(`updated_v${formData.version}.apk`);
+                }}
+                onAnalysisStart={() => {
+                  setShowAPKUploader(false);
+                  setShowModuleSelection(true);
+                }}
+              /> : null}
             </div>
 
             {/* 显示分析按钮 */}
