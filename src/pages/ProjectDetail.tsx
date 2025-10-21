@@ -168,9 +168,9 @@ export default function ProjectDetail() {
         </div>
         
         <div className="flex items-center gap-3">
-          <Button variant="outline" onClick={() => navigate(`/projects/${id}/settings`)}>
+          <Button variant="outline" onClick={() => navigate(`/projects/${id}/edit`)}>
             <Settings className="h-4 w-4 mr-2" />
-            项目设置
+            修改项目
           </Button>
           <Button onClick={() => navigate(`/projects/${id}/tests/new`)}>
             <Plus className="h-4 w-4 mr-2" />

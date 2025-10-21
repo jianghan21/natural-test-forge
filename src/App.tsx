@@ -9,6 +9,7 @@ import APKUpload from "./pages/APKUpload";
 import Dashboard from "./pages/Dashboard";
 import Projects from "./pages/Projects";
 import NewProject from "./pages/NewProject";
+import EditProject from "./pages/EditProject";
 import ProjectDetail from "./pages/ProjectDetail";
 import NewTest from "./pages/NewTest";
 import Results from "./pages/Results";
@@ -44,6 +45,7 @@ const App = () => (
           <Route path="/projects" element={<Layout><Projects /></Layout>} />
           <Route path="/projects/new" element={<Layout><NewProject /></Layout>} />
           <Route path="/projects/:id" element={<Layout><ProjectDetail /></Layout>} />
+          <Route path="/projects/:id/edit" element={<Layout><EditProject /></Layout>} />
           
           {/* Project-scoped routes */}
           <Route path="/projects/:projectId/tests" element={<Layout><Tests /></Layout>} />
