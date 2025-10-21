@@ -5,8 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Save, Upload } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { ArrowLeft, Save, Upload, CheckCircle2, Circle, BarChart3 } from "lucide-react";
 import { APKUploader } from "@/components/APKUploader";
+
+interface AppModule {
+  id: string;
+  name: string;
+  description: string;
+}
 
 export default function EditProject() {
   const { id } = useParams();
@@ -19,6 +26,9 @@ export default function EditProject() {
   const [showAPKUploader, setShowAPKUploader] = useState(false);
   const [apkUploaded, setApkUploaded] = useState(false);
   const [currentApkName, setCurrentApkName] = useState("");
+  const [showModuleSelection, setShowModuleSelection] = useState(false);
+  const [selectedModules, setSelectedModules] = useState<string[]>([]);
+  const [availableModules, setAvailableModules] = useState<AppModule[]>([]);
 
   useEffect(() => {
     // 模拟加载项目数据
@@ -31,6 +41,17 @@ export default function EditProject() {
     setFormData(mockProjectData);
     setCurrentApkName("ecommerce_v1.0.0.apk");
     setApkUploaded(true);
+    
+    // 模拟之前分析过的模块数据
+    const mockModules: AppModule[] = [
+      { id: "1", name: "登录模块", description: "用户登录、注册相关功能" },
+      { id: "2", name: "首页模块", description: "首页展示、商品推荐" },
+      { id: "3", name: "购物车模块", description: "购物车管理功能" },
+      { id: "4", name: "订单模块", description: "订单创建、查看、管理" },
+      { id: "5", name: "支付模块", description: "支付流程及支付方式" },
+      { id: "6", name: "个人中心模块", description: "用户信息管理" }
+    ];
+    setAvailableModules(mockModules);
   }, [id]);
 
   const handleInputChange = (field: string, value: string) => {
@@ -38,6 +59,18 @@ export default function EditProject() {
       ...prev,
       [field]: value
     }));
+  };
+
+  const toggleModuleSelection = (moduleId: string) => {
+    setSelectedModules(prev => 
+      prev.includes(moduleId) 
+        ? prev.filter(id => id !== moduleId)
+        : [...prev, moduleId]
+    );
+  };
+
+  const handleAnalyzeNewVersion = () => {
+    setShowModuleSelection(true);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -54,8 +87,14 @@ export default function EditProject() {
       return;
     }
 
+    if (showModuleSelection && selectedModules.length === 0) {
+      alert('请至少选择一个本次更新的模块');
+      return;
+    }
+
     // 模拟更新项目
     console.log('更新项目:', formData);
+    console.log('选中的更新模块:', selectedModules);
 
     // 跳转回项目详情页
     navigate(`/projects/${id}`);
@@ -131,7 +170,7 @@ export default function EditProject() {
               <p className="text-muted-foreground">上传新版本的APK文件以更新测试应用</p>
             </div>
             <div className="border-2 border-dashed border-border rounded-xl p-12 bg-muted/30 hover:bg-muted/50 transition-colors">
-              {!showAPKUploader ? (
+              {!showAPKUploader && !showModuleSelection ? (
                 <div className="text-center">
                   <div className="flex items-center justify-center gap-3 mb-4">
                     <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
@@ -152,14 +191,97 @@ export default function EditProject() {
                     重新上传APK
                   </Button>
                 </div>
-              ) : (
+              ) : showAPKUploader ? (
                 <APKUploader onComplete={(projectId) => {
                   setApkUploaded(true);
                   setShowAPKUploader(false);
                   setCurrentApkName(`updated_v${formData.version}.apk`);
+                  // APK上传完成后，显示分析按钮
                 }} />
-              )}
+              ) : null}
             </div>
+
+            {/* 显示分析按钮 */}
+            {!showAPKUploader && !showModuleSelection && apkUploaded && (
+              <div className="text-center">
+                <Button 
+                  type="button" 
+                  onClick={handleAnalyzeNewVersion}
+                  className="gap-2 bg-gradient-primary hover:shadow-glow transition-all duration-300"
+                >
+                  <BarChart3 className="h-4 w-4" />
+                  分析新版本APK
+                </Button>
+              </div>
+            )}
+
+            {/* 模块选择界面 */}
+            {showModuleSelection && (
+              <Card className="mt-6">
+                <CardHeader>
+                  <CardTitle>选择本次更新的模块</CardTitle>
+                  <CardDescription className="text-base">
+                    <span className="text-primary font-medium">提示：只需要点击本次更新的模块</span>
+                    <br />
+                    选择本次版本更新涉及的功能模块，系统将重点分析这些模块的变化
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid gap-3 md:grid-cols-2">
+                    {availableModules.map((module) => {
+                      const isSelected = selectedModules.includes(module.id);
+                      return (
+                        <div
+                          key={module.id}
+                          onClick={() => toggleModuleSelection(module.id)}
+                          className={`
+                            flex items-start gap-3 p-4 rounded-lg border-2 cursor-pointer transition-all
+                            ${isSelected 
+                              ? 'border-primary bg-primary/5 shadow-md' 
+                              : 'border-border hover:border-primary/50 hover:bg-muted/50'
+                            }
+                          `}
+                        >
+                          <div className="mt-0.5">
+                            {isSelected ? (
+                              <CheckCircle2 className="h-5 w-5 text-primary" />
+                            ) : (
+                              <Circle className="h-5 w-5 text-muted-foreground" />
+                            )}
+                          </div>
+                          <div className="flex-1">
+                            <div className="font-semibold text-foreground mb-1">
+                              {module.name}
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                              {module.description}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  
+                  {selectedModules.length > 0 && (
+                    <div className="mt-4 p-3 bg-primary/10 rounded-lg border border-primary/20">
+                      <div className="text-sm font-medium text-foreground mb-2">
+                        已选择 {selectedModules.length} 个模块：
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedModules.map(moduleId => {
+                          const module = availableModules.find(m => m.id === moduleId);
+                          return module ? (
+                            <Badge key={moduleId} variant="secondary" className="bg-primary/20">
+                              {module.name}
+                            </Badge>
+                          ) : null;
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
           </div>
 
           {/* Action Buttons */}
