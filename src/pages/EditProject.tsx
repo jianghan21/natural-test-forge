@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Save, Upload, CheckCircle2, Circle, BarChart3 } from "lucide-react";
+import { ArrowLeft, Save, Upload, CheckCircle2, Circle, BarChart3, Brain } from "lucide-react";
 import { APKUploader } from "@/components/APKUploader";
 interface AppModule {
   id: string;
@@ -29,6 +29,7 @@ export default function EditProject() {
   const [showModuleSelection, setShowModuleSelection] = useState(false);
   const [selectedModules, setSelectedModules] = useState<string[]>([]);
   const [availableModules, setAvailableModules] = useState<AppModule[]>([]);
+  const [startAnalysis, setStartAnalysis] = useState(false);
   useEffect(() => {
     // 模拟加载项目数据
     // 在实际应用中，这里应该从 API 获取项目数据
@@ -80,6 +81,14 @@ export default function EditProject() {
   };
   const handleAnalyzeNewVersion = () => {
     setShowModuleSelection(true);
+  };
+
+  const handleStartAnalysis = () => {
+    if (selectedModules.length === 0) {
+      alert('请至少选择一个本次更新的模块');
+      return;
+    }
+    setStartAnalysis(true);
   };
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -186,7 +195,7 @@ export default function EditProject() {
               </div>}
 
             {/* 模块选择界面 */}
-            {showModuleSelection && <Card className="mt-6">
+            {showModuleSelection && !startAnalysis && <Card className="mt-6">
                 <CardHeader>
                   <CardTitle>选择本次更新的模块</CardTitle>
                   <CardDescription className="text-base">
@@ -231,20 +240,43 @@ export default function EditProject() {
                   })}
                       </div>
                     </div>}
+
+                  {/* 开始智能分析按钮 */}
+                  <div className="mt-6 flex justify-center">
+                    <Button 
+                      onClick={handleStartAnalysis}
+                      disabled={selectedModules.length === 0}
+                      size="lg"
+                      className="gap-3 px-12 h-14 text-lg font-medium bg-gradient-primary hover:opacity-90"
+                    >
+                      <Brain className="h-5 w-5" />
+                      开始智能分析
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>}
+
+            {/* 分析过程界面 */}
+            {startAnalysis && <div className="mt-6">
+                <APKUploader 
+                  onComplete={projectId => {
+                    // 分析完成后的处理
+                    navigate(`/projects/${id}`);
+                  }}
+                />
+              </div>}
           </div>
 
           {/* Action Buttons */}
-          <div className="flex justify-center gap-6 pt-8 pb-12">
+          {!startAnalysis && <div className="flex justify-center gap-6 pt-8 pb-12">
             <Button type="button" variant="outline" size="lg" className="px-8 h-14 text-lg" onClick={() => navigate(`/projects/${id}`)}>
               取消
             </Button>
-            <Button type="submit" size="lg" className="gap-3 px-12 h-14 text-lg font-medium">
+            {!showModuleSelection && <Button type="submit" size="lg" className="gap-3 px-12 h-14 text-lg font-medium">
               <Save className="h-5 w-5" />
               保存更改
-            </Button>
-          </div>
+            </Button>}
+          </div>}
         </form>
       </div>
     </div>;
