@@ -244,6 +244,71 @@ export default function ProjectDetail() {
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
+          {/* Version Management - Prominent Section */}
+          <Card 
+            className="border-primary bg-gradient-to-br from-primary/10 via-primary/5 to-background hover:shadow-2xl transition-all cursor-pointer group relative overflow-hidden"
+            onClick={() => navigate(`/projects/${id}/versions`)}
+          >
+            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:scale-110 transition-transform" />
+            <CardHeader className="relative pb-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 bg-primary/10 rounded-xl group-hover:bg-primary/20 transition-colors">
+                    <Package className="h-8 w-8 text-primary" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-2xl text-primary mb-1">项目版本管理</CardTitle>
+                    <CardDescription className="text-base">
+                      上传新版本APK，管理历史版本并查看详细测试报告
+                    </CardDescription>
+                  </div>
+                </div>
+                <Button 
+                  size="lg"
+                  className="gap-2"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/projects/${id}/versions`);
+                  }}
+                >
+                  <Plus className="h-5 w-5" />
+                  管理版本
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="relative">
+              <div className="grid grid-cols-3 gap-6">
+                <div className="flex items-center gap-4 p-4 bg-background/50 rounded-lg border">
+                  <div className="p-2 bg-primary/10 rounded-lg">
+                    <Package className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <div className="text-sm text-muted-foreground mb-1">当前版本</div>
+                    <Badge variant="secondary" className="text-base px-3 py-1">v1.2.3</Badge>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4 p-4 bg-background/50 rounded-lg border">
+                  <div className="p-2 bg-blue-500/10 rounded-lg">
+                    <Clock className="h-6 w-6 text-blue-600" />
+                  </div>
+                  <div>
+                    <div className="text-sm text-muted-foreground mb-1">历史版本</div>
+                    <div className="text-2xl font-bold">2</div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4 p-4 bg-background/50 rounded-lg border">
+                  <div className="p-2 bg-green-500/10 rounded-lg">
+                    <FileText className="h-6 w-6 text-green-600" />
+                  </div>
+                  <div>
+                    <div className="text-sm text-muted-foreground mb-1">测试报告</div>
+                    <div className="text-2xl font-bold">5</div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           <div className="grid gap-6 lg:grid-cols-3">
             {/* Main Content */}
             <div className="lg:col-span-2 space-y-6">
@@ -424,42 +489,6 @@ export default function ProjectDetail() {
                       </div>
                       {index < project.recentActivity.length - 1 && <Separator className="mt-4" />}
                     </div>)}
-                </CardContent>
-              </Card>
-
-              {/* Version Management */}
-              <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10 hover:shadow-lg transition-all cursor-pointer"
-                onClick={() => navigate(`/projects/${id}/versions`)}>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-primary">
-                    <Package className="h-5 w-5" />
-                    项目版本管理
-                  </CardTitle>
-                  <CardDescription>
-                    管理APK版本和查看测试报告
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">当前版本</span>
-                      <Badge variant="secondary">v1.2.3</Badge>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">历史版本</span>
-                      <span className="font-medium">2个</span>
-                    </div>
-                    <Button 
-                      variant="outline" 
-                      className="w-full mt-2"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigate(`/projects/${id}/versions`);
-                      }}
-                    >
-                      查看所有版本
-                    </Button>
-                  </div>
                 </CardContent>
               </Card>
 
