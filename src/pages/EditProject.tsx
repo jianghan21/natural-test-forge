@@ -7,15 +7,16 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, Save, Upload } from "lucide-react";
 import { APKUploader } from "@/components/APKUploader";
+import { Badge } from "@/components/ui/badge";
 
 export default function EditProject() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
-    description: "",
-    version: ""
+    description: ""
   });
+  const [appVersion, setAppVersion] = useState("");
   const [showAPKUploader, setShowAPKUploader] = useState(false);
   const [apkUploaded, setApkUploaded] = useState(false);
   const [currentApkName, setCurrentApkName] = useState("");
@@ -25,10 +26,10 @@ export default function EditProject() {
     // 在实际应用中，这里应该从 API 获取项目数据
     const mockProjectData = {
       name: "电商平台测试",
-      description: "主要电商平台的功能测试项目，包括用户注册、登录、购物车、支付等核心流程",
-      version: "1.0.0"
+      description: "主要电商平台的功能测试项目，包括用户注册、登录、购物车、支付等核心流程"
     };
     setFormData(mockProjectData);
+    setAppVersion("1.0.0");
     setCurrentApkName("ecommerce_v1.0.0.apk");
     setApkUploaded(true);
   }, [id]);
@@ -46,11 +47,6 @@ export default function EditProject() {
     // 验证必填项
     if (!formData.name.trim()) {
       alert('请输入项目名称');
-      return;
-    }
-    
-    if (!formData.version.trim()) {
-      alert('请输入版本号');
       return;
     }
 
@@ -108,21 +104,20 @@ export default function EditProject() {
             />
           </div>
 
-          {/* Version Number */}
-          <div className="space-y-4">
-            <div>
-              <h3 className="text-2xl font-semibold text-foreground mb-2">版本号</h3>
-              <p className="text-muted-foreground">更新应用的版本号，例如：1.0.1、2.0.0</p>
+          {/* Version Display */}
+          {appVersion && (
+            <div className="space-y-4">
+              <div>
+                <h3 className="text-2xl font-semibold text-foreground mb-2">应用版本</h3>
+                <p className="text-muted-foreground">当前应用的版本号</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <Badge variant="secondary" className="text-lg px-4 py-2">
+                  版本 {appVersion}
+                </Badge>
+              </div>
             </div>
-            <Input 
-              id="project-version" 
-              placeholder="例如：1.0.0" 
-              value={formData.version} 
-              onChange={e => handleInputChange('version', e.target.value)} 
-              required 
-              className="text-lg h-14 text-foreground placeholder:text-muted-foreground"
-            />
-          </div>
+          )}
 
           {/* APK Upload */}
           <div className="space-y-4">
@@ -155,8 +150,11 @@ export default function EditProject() {
               ) : (
                 <APKUploader onComplete={(projectId) => {
                   setApkUploaded(true);
+                  // Simulate extracting new version from APK
+                  const newVersion = "1.2.4";
+                  setAppVersion(newVersion);
                   setShowAPKUploader(false);
-                  setCurrentApkName(`updated_v${formData.version}.apk`);
+                  setCurrentApkName(`updated_v${newVersion}.apk`);
                 }} />
               )}
             </div>

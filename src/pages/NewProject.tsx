@@ -7,13 +7,14 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, Save, FolderPlus, Upload } from "lucide-react";
 import { APKUploader } from "@/components/APKUploader";
+import { Badge } from "@/components/ui/badge";
 export default function NewProject() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
-    description: "",
-    version: ""
+    description: ""
   });
+  const [appVersion, setAppVersion] = useState("");
   const [showAPKUploader, setShowAPKUploader] = useState(false);
   const [apkUploaded, setApkUploaded] = useState(false);
   const handleInputChange = (field: string, value: string) => {
@@ -28,11 +29,6 @@ export default function NewProject() {
     // 验证必填项
     if (!formData.name.trim()) {
       alert('请输入项目名称');
-      return;
-    }
-    
-    if (!formData.version.trim()) {
-      alert('请输入版本号');
       return;
     }
     
@@ -93,21 +89,20 @@ export default function NewProject() {
             />
           </div>
 
-          {/* Version Number */}
-          <div className="space-y-4">
-            <div>
-              <h3 className="text-2xl font-semibold text-foreground mb-2">版本号</h3>
-              <p className="text-muted-foreground">设置应用的版本号，例如：1.0.0</p>
+          {/* Version Display */}
+          {apkUploaded && appVersion && (
+            <div className="space-y-4">
+              <div>
+                <h3 className="text-2xl font-semibold text-foreground mb-2">应用版本</h3>
+                <p className="text-muted-foreground">从APK文件中自动识别的版本号</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <Badge variant="secondary" className="text-lg px-4 py-2">
+                  版本 {appVersion}
+                </Badge>
+              </div>
             </div>
-            <Input 
-              id="project-version" 
-              placeholder="例如：1.0.0" 
-              value={formData.version} 
-              onChange={e => handleInputChange('version', e.target.value)} 
-              required 
-              className="text-lg h-14 text-foreground placeholder:text-muted-foreground"
-            />
-          </div>
+          )}
 
           {/* APK Upload */}
           <div className="space-y-4">
@@ -154,7 +149,8 @@ export default function NewProject() {
               ) : (
                 <APKUploader onComplete={(projectId) => {
                   setApkUploaded(true);
-                  // Don't navigate immediately, let user complete the form
+                  // Simulate extracting version from APK
+                  setAppVersion("1.2.3");
                   setShowAPKUploader(false);
                 }} />
               )}
