@@ -11,6 +11,7 @@ import Projects from "./pages/Projects";
 import NewProject from "./pages/NewProject";
 import EditProject from "./pages/EditProject";
 import ProjectDetail from "./pages/ProjectDetail";
+import ProjectVersionManagement from "./pages/ProjectVersionManagement";
 import NewTest from "./pages/NewTest";
 import Results from "./pages/Results";
 import ResultDetail from "./pages/ResultDetail";
@@ -46,6 +47,7 @@ const App = () => (
           <Route path="/projects/new" element={<Layout><NewProject /></Layout>} />
           <Route path="/projects/:id" element={<Layout><ProjectDetail /></Layout>} />
           <Route path="/projects/:id/edit" element={<Layout><EditProject /></Layout>} />
+          <Route path="/projects/:id/versions" element={<Layout><ProjectVersionManagement /></Layout>} />
           
           {/* Project-scoped routes */}
           <Route path="/projects/:projectId/tests" element={<Layout><Tests /></Layout>} />

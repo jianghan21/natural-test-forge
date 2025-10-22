@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { StatCard } from "@/components/StatCard";
-import { ArrowLeft, Settings, TestTube, FileText, BarChart3, Users, Calendar, TrendingUp, AlertTriangle, CheckCircle, Clock, Plus, ChevronDown } from "lucide-react";
+import { ArrowLeft, Settings, TestTube, FileText, BarChart3, Users, Calendar, TrendingUp, AlertTriangle, CheckCircle, Clock, Plus, ChevronDown, Package } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 interface ProjectData {
   id: string;
@@ -424,6 +424,42 @@ export default function ProjectDetail() {
                       </div>
                       {index < project.recentActivity.length - 1 && <Separator className="mt-4" />}
                     </div>)}
+                </CardContent>
+              </Card>
+
+              {/* Version Management */}
+              <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10 hover:shadow-lg transition-all cursor-pointer"
+                onClick={() => navigate(`/projects/${id}/versions`)}>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-primary">
+                    <Package className="h-5 w-5" />
+                    项目版本管理
+                  </CardTitle>
+                  <CardDescription>
+                    管理APK版本和查看测试报告
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">当前版本</span>
+                      <Badge variant="secondary">v1.2.3</Badge>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">历史版本</span>
+                      <span className="font-medium">2个</span>
+                    </div>
+                    <Button 
+                      variant="outline" 
+                      className="w-full mt-2"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/projects/${id}/versions`);
+                      }}
+                    >
+                      查看所有版本
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
 
