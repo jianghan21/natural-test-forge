@@ -44,13 +44,23 @@ export default function ProjectDetail() {
   const navigate = useNavigate();
 
   // 模拟其他项目数据用于下拉选择
-  const availableProjects = [
-    { id: "1", name: "电商平台测试", status: "active" },
-    { id: "2", name: "移动应用测试", status: "active" },
-    { id: "3", name: "API接口测试", status: "active" },
-    { id: "4", name: "性能测试项目", status: "archived" }
-  ];
-
+  const availableProjects = [{
+    id: "1",
+    name: "电商平台测试",
+    status: "active"
+  }, {
+    id: "2",
+    name: "移动应用测试",
+    status: "active"
+  }, {
+    id: "3",
+    name: "API接口测试",
+    status: "active"
+  }, {
+    id: "4",
+    name: "性能测试项目",
+    status: "archived"
+  }];
   const handleProjectSwitch = (projectId: string) => {
     navigate(`/projects/${projectId}`);
   };
@@ -138,18 +148,10 @@ export default function ProjectDetail() {
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56 bg-background border shadow-lg" align="start">
-                  {availableProjects.map((proj) => (
-                    <DropdownMenuItem 
-                      key={proj.id}
-                      onClick={() => handleProjectSwitch(proj.id)}
-                      className="flex items-center justify-between cursor-pointer"
-                    >
+                  {availableProjects.map(proj => <DropdownMenuItem key={proj.id} onClick={() => handleProjectSwitch(proj.id)} className="flex items-center justify-between cursor-pointer">
                       <span>{proj.name}</span>
-                      {proj.id === project.id && (
-                        <CheckCircle className="h-4 w-4 text-primary" />
-                      )}
-                    </DropdownMenuItem>
-                  ))}
+                      {proj.id === project.id && <CheckCircle className="h-4 w-4 text-primary" />}
+                    </DropdownMenuItem>)}
                 </DropdownMenuContent>
               </DropdownMenu>
               <Badge className="bg-green-100 text-green-800 hover:bg-green-200">
@@ -245,10 +247,7 @@ export default function ProjectDetail() {
 
         <TabsContent value="overview" className="space-y-6">
           {/* Version Management - Prominent Section */}
-          <Card 
-            className="border-primary bg-gradient-to-br from-primary/10 via-primary/5 to-background hover:shadow-2xl transition-all cursor-pointer group relative overflow-hidden"
-            onClick={() => navigate(`/projects/${id}/versions`)}
-          >
+          <Card className="border-primary bg-gradient-to-br from-primary/10 via-primary/5 to-background hover:shadow-2xl transition-all cursor-pointer group relative overflow-hidden" onClick={() => navigate(`/projects/${id}/versions`)}>
             <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:scale-110 transition-transform" />
             <CardHeader className="relative pb-4">
               <div className="flex items-center justify-between">
@@ -263,14 +262,10 @@ export default function ProjectDetail() {
                     </CardDescription>
                   </div>
                 </div>
-                <Button 
-                  size="lg"
-                  className="gap-2"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navigate(`/projects/${id}/versions`);
-                  }}
-                >
+                <Button size="lg" className="gap-2" onClick={e => {
+                e.stopPropagation();
+                navigate(`/projects/${id}/versions`);
+              }}>
                   <Plus className="h-5 w-5" />
                   管理版本
                 </Button>
@@ -296,15 +291,7 @@ export default function ProjectDetail() {
                     <div className="text-2xl font-bold">2</div>
                   </div>
                 </div>
-                <div className="flex items-center gap-4 p-4 bg-background/50 rounded-lg border">
-                  <div className="p-2 bg-green-500/10 rounded-lg">
-                    <FileText className="h-6 w-6 text-green-600" />
-                  </div>
-                  <div>
-                    <div className="text-sm text-muted-foreground mb-1">测试报告</div>
-                    <div className="text-2xl font-bold">5</div>
-                  </div>
-                </div>
+                
               </div>
             </CardContent>
           </Card>
@@ -378,17 +365,14 @@ export default function ProjectDetail() {
                         <span className="text-green-600 font-medium">+12% 通过率</span>
                       </div>
                       <div className="h-[120px] flex items-end justify-between gap-2">
-                        {[65, 72, 68, 85, 90, 88, 92].map((value, index) => (
-                          <div key={index} className="flex flex-col items-center gap-1">
-                            <div 
-                              className="w-8 bg-primary/80 rounded-t-sm"
-                              style={{ height: `${value}px` }}
-                            />
+                        {[65, 72, 68, 85, 90, 88, 92].map((value, index) => <div key={index} className="flex flex-col items-center gap-1">
+                            <div className="w-8 bg-primary/80 rounded-t-sm" style={{
+                          height: `${value}px`
+                        }} />
                             <span className="text-xs text-muted-foreground">
                               {new Date(Date.now() - (6 - index) * 24 * 60 * 60 * 1000).getDate()}
                             </span>
-                          </div>
-                        ))}
+                          </div>)}
                       </div>
                     </div>
                   </CardContent>
@@ -429,27 +413,18 @@ export default function ProjectDetail() {
                       </div>
                       
                       <div className="relative h-16 flex items-end gap-1">
-                        <div 
-                          className="bg-green-500 rounded-t-sm"
-                          style={{ 
-                            width: `${(project.stats.passedTests / project.stats.totalTests) * 100}%`,
-                            height: '100%'
-                          }}
-                        />
-                        <div 
-                          className="bg-red-500 rounded-t-sm"
-                          style={{ 
-                            width: `${(project.stats.failedTests / project.stats.totalTests) * 100}%`,
-                            height: '70%'
-                          }}
-                        />
-                        <div 
-                          className="bg-yellow-500 rounded-t-sm"
-                          style={{ 
-                            width: `${(project.stats.pendingTests / project.stats.totalTests) * 100}%`,
-                            height: '40%'
-                          }}
-                        />
+                        <div className="bg-green-500 rounded-t-sm" style={{
+                        width: `${project.stats.passedTests / project.stats.totalTests * 100}%`,
+                        height: '100%'
+                      }} />
+                        <div className="bg-red-500 rounded-t-sm" style={{
+                        width: `${project.stats.failedTests / project.stats.totalTests * 100}%`,
+                        height: '70%'
+                      }} />
+                        <div className="bg-yellow-500 rounded-t-sm" style={{
+                        width: `${project.stats.pendingTests / project.stats.totalTests * 100}%`,
+                        height: '40%'
+                      }} />
                       </div>
                     </div>
                   </CardContent>
