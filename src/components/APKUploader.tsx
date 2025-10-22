@@ -154,14 +154,16 @@ export const APKUploader = ({ onComplete }: APKUploaderProps) => {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div 
-            className="border-2 border-dashed border-muted-foreground/25 rounded-xl p-8 text-center hover:border-primary/50 transition-colors cursor-pointer group"
-            onClick={() => fileInputRef.current?.click()}
-          >
-            <Upload className="h-12 w-12 mx-auto mb-4 text-muted-foreground group-hover:text-primary transition-colors" />
-            <p className="text-lg font-medium mb-2">点击选择APK文件</p>
-            <p className="text-sm text-muted-foreground">或拖拽文件到此区域</p>
-          </div>
+          {!uploadedFile && (
+            <div 
+              className="border-2 border-dashed border-muted-foreground/25 rounded-xl p-8 text-center hover:border-primary/50 transition-colors cursor-pointer group"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <Upload className="h-12 w-12 mx-auto mb-4 text-muted-foreground group-hover:text-primary transition-colors" />
+              <p className="text-lg font-medium mb-2">点击选择APK文件</p>
+              <p className="text-sm text-muted-foreground">或拖拽文件到此区域</p>
+            </div>
+          )}
           
           <input
             ref={fileInputRef}
