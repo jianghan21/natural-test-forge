@@ -8,10 +8,9 @@ import { Upload, FileCheck, Smartphone, Brain, Network, CheckCircle, Clock, Aler
 
 interface APKUploaderProps {
   onComplete: (projectId: string) => void
-  onAnalysisStart?: () => void
 }
 
-export const APKUploader = ({ onComplete, onAnalysisStart }: APKUploaderProps) => {
+export const APKUploader = ({ onComplete }: APKUploaderProps) => {
   const { toast } = useToast()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [uploadedFile, setUploadedFile] = useState<File | null>(null)
@@ -64,13 +63,6 @@ export const APKUploader = ({ onComplete, onAnalysisStart }: APKUploaderProps) =
 
   const startAnalysis = async () => {
     if (!uploadedFile) return
-
-    // If onAnalysisStart callback exists, call it and return
-    // This is used in EditProject to show module selection
-    if (onAnalysisStart) {
-      onAnalysisStart()
-      return
-    }
 
     setAnalysisStep('analyzing')
     setProgress(0)
