@@ -144,15 +144,17 @@ export const APKUploader = ({ onComplete }: APKUploaderProps) => {
   if (analysisStep === 'upload') {
     return (
       <Card className="bg-gradient-card shadow-elevated border-0">
-        <CardHeader className="pb-4">
-          <CardTitle className="flex items-center gap-3 text-xl">
-            <Upload className="h-6 w-6 text-primary" />
-            上传APK文件
-          </CardTitle>
-          <CardDescription>
-            支持的格式: .apk | 最大文件大小: 500MB
-          </CardDescription>
-        </CardHeader>
+        {!uploadedFile && (
+          <CardHeader className="pb-4">
+            <CardTitle className="flex items-center gap-3 text-xl">
+              <Upload className="h-6 w-6 text-primary" />
+              上传APK文件
+            </CardTitle>
+            <CardDescription>
+              支持的格式: .apk | 最大文件大小: 500MB
+            </CardDescription>
+          </CardHeader>
+        )}
         <CardContent className="space-y-6">
           {!uploadedFile && (
             <div 
