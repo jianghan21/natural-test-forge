@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Bot, Smartphone, Brain, ArrowRight, Zap, Eye, Network, Sparkles, CircuitBoard, Cpu, Rocket, Shield, Target } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import Header from "@/components/Header";
 export default function Home() {
   const navigate = useNavigate();
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -57,6 +58,7 @@ export default function Home() {
     description: "生成完整的用户体验流程图，可视化应用的页面跳转和交互关系"
   }];
   return <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-950 via-blue-950 to-indigo-950">
+      <Header />
       {/* Animated Background */}
       <div className="absolute inset-0">
         {/* Dynamic Grid */}
@@ -96,7 +98,7 @@ export default function Home() {
 
       {/* Hero Section */}
       <div className="relative z-10 overflow-hidden">
-        <div className="relative max-w-7xl mx-auto px-6 py-20">
+        <div className="relative max-w-7xl mx-auto px-6 py-32 pt-40">
           <div className="text-center space-y-8">
             <div className="space-y-6">
               {/* AI Badge */}
