@@ -123,32 +123,6 @@ export default function Home() {
               </p>
             </div>
 
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 animate-fade-in" style={{ animationDelay: '0.6s' }}>
-              <Button 
-                size="lg" 
-                className="h-16 px-12 text-lg font-semibold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 hover:from-blue-500 hover:via-purple-500 hover:to-blue-500 transition-all duration-500 shadow-2xl shadow-blue-500/50 hover:shadow-purple-500/50 border-0 hover:scale-110 group rounded-xl" 
-                onClick={() => navigate('/upload')}
-              >
-                <div className="flex items-center gap-3">
-                  <Rocket className="h-6 w-6 group-hover:-translate-y-1 transition-transform duration-300" />
-                  立即开始测试
-                  <ArrowRight className="h-5 w-5 group-hover:translate-x-2 transition-transform duration-300" />
-                </div>
-              </Button>
-              
-              <Button 
-                size="lg" 
-                variant="outline"
-                className="h-16 px-12 text-lg font-semibold bg-white/10 backdrop-blur-lg border-2 border-white/30 text-white hover:bg-white/20 hover:border-white/50 transition-all duration-500 hover:scale-110 rounded-xl shadow-xl"
-                onClick={() => navigate('/projects')}
-              >
-                <div className="flex items-center gap-3">
-                  <Target className="h-6 w-6" />
-                  查看项目
-                </div>
-              </Button>
-            </div>
 
             {/* Stats */}
             <div className="grid grid-cols-3 gap-8 max-w-3xl mx-auto mt-16 animate-fade-in" style={{ animationDelay: '0.8s' }}>
