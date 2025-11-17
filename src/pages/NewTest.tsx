@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Send, Bot, User, CheckCircle, XCircle, Clock, Play, Loader2 } from "lucide-react";
+import { Send, Bot, User, CheckCircle, XCircle, Clock, Play, Loader2, Paperclip, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface Message {
@@ -48,7 +48,9 @@ export default function NewTest() {
   const [isLoading, setIsLoading] = useState(false);
   const [testCases, setTestCases] = useState<TestCase[]>([]);
   const [testResults, setTestResults] = useState<TestResult[]>([]);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   const scrollToBottom = () => {
@@ -263,6 +265,22 @@ export default function NewTest() {
     });
   };
 
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files) {
+      const newFiles = Array.from(files);
+      setSelectedFiles(prev => [...prev, ...newFiles]);
+      toast({
+        title: "文件已选择",
+        description: `已添加 ${newFiles.length} 个文件`,
+      });
+    }
+  };
+
+  const handleRemoveFile = (index: number) => {
+    setSelectedFiles(prev => prev.filter((_, i) => i !== index));
+  };
+
   const handleRestart = () => {
     setPhase('chat');
     setMessages([
@@ -275,6 +293,7 @@ export default function NewTest() {
     ]);
     setTestCases([]);
     setTestResults([]);
+    setSelectedFiles([]);
   };
 
   const getPriorityColor = (priority: string) => {
@@ -465,18 +484,57 @@ export default function NewTest() {
         {/* Input Area - Fixed at bottom */}
         {phase !== 'executing' && phase !== 'completed' && (
           <div className="p-4 border-t border-border bg-card">
+            {/* Selected Files Display */}
+            {selectedFiles.length > 0 && (
+              <div className="mb-3 flex flex-wrap gap-2">
+                {selectedFiles.map((file, index) => (
+                  <Badge 
+                    key={index} 
+                    variant="secondary" 
+                    className="pl-3 pr-1 py-1.5 flex items-center gap-2"
+                  >
+                    <span className="text-sm">{file.name}</span>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-5 w-5 rounded-full hover:bg-muted"
+                      onClick={() => handleRemoveFile(index)}
+                    >
+                      <X className="h-3 w-3" />
+                    </Button>
+                  </Badge>
+                ))}
+              </div>
+            )}
+            
             <div className="relative flex items-center bg-background border border-input rounded-3xl shadow-sm hover:shadow-md transition-shadow">
+              <input
+                ref={fileInputRef}
+                type="file"
+                multiple
+                onChange={handleFileSelect}
+                className="hidden"
+              />
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => fileInputRef.current?.click()}
+                className="ml-2 h-9 w-9 rounded-full hover:bg-muted"
+                disabled={isLoading}
+              >
+                <Paperclip className="h-4 w-4" />
+              </Button>
               <Input
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && !e.shiftKey && handleSendMessage()}
                 placeholder={phase === 'review' ? "对测试用例有什么修改意见吗？" : "请输入需求文档或回答问题..."}
-                className="flex-1 border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 px-5 py-4 text-[15px] placeholder:text-muted-foreground"
+                className="flex-1 border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 px-3 py-4 text-[15px] placeholder:text-muted-foreground"
                 disabled={isLoading}
               />
               <Button
                 onClick={handleSendMessage}
-                disabled={isLoading || !inputValue.trim()}
+                disabled={isLoading || (!inputValue.trim() && selectedFiles.length === 0)}
                 size="icon"
                 className="mr-2 rounded-full h-9 w-9 bg-primary hover:bg-primary/90 disabled:opacity-50"
               >
