@@ -336,25 +336,23 @@ export default function NewTest() {
           {/* Input Area - ChatGPT style */}
           {phase !== 'executing' && phase !== 'completed' && (
             <div className="p-4 border-t border-border bg-card">
-              <div className="max-w-3xl mx-auto">
-                <div className="relative flex items-center bg-background border border-input rounded-3xl shadow-sm hover:shadow-md transition-shadow">
-                  <Input
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && !e.shiftKey && handleSendMessage()}
-                    placeholder={phase === 'review' ? "对测试用例有什么修改意见吗？" : "请输入需求文档或回答问题..."}
-                    className="flex-1 border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 px-5 py-4 text-[15px] placeholder:text-muted-foreground"
-                    disabled={isLoading}
-                  />
-                  <Button
-                    onClick={handleSendMessage}
-                    disabled={isLoading || !inputValue.trim()}
-                    size="icon"
-                    className="mr-2 rounded-full h-9 w-9 bg-primary hover:bg-primary/90 disabled:opacity-50"
-                  >
-                    <Send className="h-4 w-4" />
-                  </Button>
-                </div>
+              <div className="relative flex items-center bg-background border border-input rounded-3xl shadow-sm hover:shadow-md transition-shadow">
+                <Input
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && !e.shiftKey && handleSendMessage()}
+                  placeholder={phase === 'review' ? "对测试用例有什么修改意见吗？" : "请输入需求文档或回答问题..."}
+                  className="flex-1 border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 px-5 py-4 text-[15px] placeholder:text-muted-foreground"
+                  disabled={isLoading}
+                />
+                <Button
+                  onClick={handleSendMessage}
+                  disabled={isLoading || !inputValue.trim()}
+                  size="icon"
+                  className="mr-2 rounded-full h-9 w-9 bg-primary hover:bg-primary/90 disabled:opacity-50"
+                >
+                  <Send className="h-4 w-4" />
+                </Button>
               </div>
             </div>
           )}
