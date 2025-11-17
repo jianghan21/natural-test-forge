@@ -91,6 +91,16 @@ export default function NewTest() {
 
   const generateAgentResponse = (userInput: string, conversationRound: number): string => {
     // Mock AI logic - replace with actual AI integration
+    
+    // If in review phase and user wants modifications
+    if (phase === 'review') {
+      setTimeout(() => {
+        // Regenerate test cases with modifications
+        generateTestCases();
+      }, 2000);
+      return '好的，我已根据您的反馈重新调整了测试用例。请查看更新后的内容。';
+    }
+    
     const responses = [
       '感谢您提供的信息。请问这个功能的主要使用场景是什么？',
       '我需要了解一下，这个功能是否需要考虑异常情况处理？',
@@ -324,7 +334,7 @@ export default function NewTest() {
           </div>
 
           {/* Input Area - ChatGPT style */}
-          {phase === 'chat' && (
+          {phase !== 'executing' && phase !== 'completed' && (
             <div className="p-4 border-t border-border bg-card">
               <div className="max-w-3xl mx-auto">
                 <div className="relative flex items-center bg-background border border-input rounded-3xl shadow-sm hover:shadow-md transition-shadow">
@@ -332,7 +342,7 @@ export default function NewTest() {
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && !e.shiftKey && handleSendMessage()}
-                    placeholder="请输入需求文档或回答问题..."
+                    placeholder={phase === 'review' ? "对测试用例有什么修改意见吗？" : "请输入需求文档或回答问题..."}
                     className="flex-1 border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 px-5 py-4 text-[15px] placeholder:text-muted-foreground"
                     disabled={isLoading}
                   />
