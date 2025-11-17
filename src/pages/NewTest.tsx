@@ -70,8 +70,34 @@ export default function NewTest() {
     };
 
     setMessages(prev => [...prev, userMessage]);
+    const currentInput = inputValue;
     setInputValue('');
     setIsLoading(true);
+
+    // Check if user wants to start execution in review phase
+    if (phase === 'review' && (
+      currentInput.includes('开始执行') || 
+      currentInput.includes('执行测试') ||
+      currentInput.includes('开始测试') ||
+      currentInput.toLowerCase().includes('start')
+    )) {
+      setTimeout(() => {
+        const agentMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          role: 'agent',
+          content: '好的，我现在开始执行这些测试用例...',
+          timestamp: new Date()
+        };
+        setMessages(prev => [...prev, agentMessage]);
+        setIsLoading(false);
+        
+        // Start execution after a short delay
+        setTimeout(() => {
+          handleStartExecution();
+        }, 1000);
+      }, 1000);
+      return;
+    }
 
     // Calculate conversation round (count user messages)
     const userMessageCount = messages.filter(m => m.role === 'user').length;
@@ -81,7 +107,7 @@ export default function NewTest() {
       const agentMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'agent',
-        content: generateAgentResponse(userMessage.content, userMessageCount),
+        content: generateAgentResponse(currentInput, userMessageCount),
         timestamp: new Date()
       };
       setMessages(prev => [...prev, agentMessage]);
@@ -179,7 +205,7 @@ export default function NewTest() {
     const finalMessage: Message = {
       id: Date.now().toString(),
       role: 'agent',
-      content: '我已经为您生成了测试用例。请查看下方的测试用例表格，确认无误后点击"开始执行测试"按钮。',
+      content: '我已经为您生成了测试用例。请查看下方的测试用例表格。\n\n如果测试用例生成的满意的话，您可以说"开始执行"，我立即帮您执行这些测试用例。如果还有需要修改的地方，告诉我具体的修改意见，我会继续调整。',
       timestamp: new Date()
     };
     setMessages(prev => [...prev, finalMessage]);
@@ -336,15 +362,6 @@ export default function NewTest() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-xl font-semibold text-foreground">测试用例</h2>
-                  {phase === 'review' && (
-                    <Button
-                      onClick={handleStartExecution}
-                      className="bg-success hover:bg-success/90 text-success-foreground"
-                    >
-                      <Play className="h-4 w-4 mr-2" />
-                      开始执行测试
-                    </Button>
-                  )}
                   {phase === 'completed' && (
                     <Button
                       onClick={handleRestart}
