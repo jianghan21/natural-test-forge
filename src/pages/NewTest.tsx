@@ -487,40 +487,191 @@ export default function NewTest() {
 
         {/* Messages and Test Cases Area - Scrollable */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
-          {/* Messages */}
-          {messages.map((message) => (
-            <div
-              key={message.id}
-              className={`flex gap-4 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-            >
-              {message.role === 'agent' && (
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary flex items-center justify-center">
-                  <Bot className="h-5 w-5 text-primary-foreground" />
+          {/* Messages and Test Cases (interleaved) */}
+          {messages.map((message, index) => {
+            // Find if test cases should be shown after this message
+            const showTestCasesAfterThisMessage = 
+              (phase === 'review' || phase === 'executing' || phase === 'completed') && 
+              testCases.length > 0 && 
+              message.content.includes('我已经为您生成了测试用例') &&
+              index === messages.findIndex(m => m.content.includes('我已经为您生成了测试用例'));
+            
+            return (
+              <div key={message.id}>
+                {/* Render the message */}
+                <div className={`flex gap-4 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                  {message.role === 'agent' && (
+                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+                      <Bot className="h-5 w-5 text-primary-foreground" />
+                    </div>
+                  )}
+                  <div
+                    className={`${
+                      message.role === 'agent' && isPageSelectionMessage(message.content) 
+                        ? 'max-w-full' 
+                        : 'max-w-[80%]'
+                    } rounded-2xl px-4 py-3 ${
+                      message.role === 'user'
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-muted text-foreground'
+                    }`}
+                  >
+                    {message.role === 'agent' && isPageSelectionMessage(message.content) 
+                      ? renderPageSelectionMessage(message.content)
+                      : <p className="whitespace-pre-wrap text-[15px] leading-relaxed">{message.content}</p>
+                    }
+                  </div>
+                  {message.role === 'user' && (
+                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-muted flex items-center justify-center">
+                      <User className="h-5 w-5 text-foreground" />
+                    </div>
+                  )}
                 </div>
-              )}
-              <div
-                className={`${
-                  message.role === 'agent' && isPageSelectionMessage(message.content) 
-                    ? 'max-w-full' 
-                    : 'max-w-[80%]'
-                } rounded-2xl px-4 py-3 ${
-                  message.role === 'user'
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-muted text-foreground'
-                }`}
-              >
-                {message.role === 'agent' && isPageSelectionMessage(message.content) 
-                  ? renderPageSelectionMessage(message.content)
-                  : <p className="whitespace-pre-wrap text-[15px] leading-relaxed">{message.content}</p>
-                }
+                
+                {/* Render test cases table right after the generation message */}
+                {showTestCasesAfterThisMessage && (
+                  <Card className="shadow-card border-border mt-6">
+                    <CardContent className="p-6">
+                      <div className="flex items-center justify-between mb-6">
+                        <h2 className="text-xl font-semibold text-foreground">测试用例</h2>
+                        <div className="flex gap-2">
+                          {phase === 'review' && (
+                            <Button
+                              onClick={handleAddTestCase}
+                              variant="outline"
+                              size="sm"
+                            >
+                              <Plus className="h-4 w-4 mr-2" />
+                              添加用例
+                            </Button>
+                          )}
+                          {phase === 'completed' && (
+                            <Button
+                              onClick={handleRestart}
+                              variant="outline"
+                            >
+                              创建新测试
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="overflow-x-auto">
+                        <Table>
+                          <TableHeader>
+                            <TableRow className="border-border hover:bg-muted/50">
+                              <TableHead className="text-muted-foreground font-medium">用例编号</TableHead>
+                              <TableHead className="text-muted-foreground font-medium">模块</TableHead>
+                              <TableHead className="text-muted-foreground font-medium">测试标题</TableHead>
+                              <TableHead className="text-muted-foreground font-medium">测试步骤</TableHead>
+                              <TableHead className="text-muted-foreground font-medium">预期结果</TableHead>
+                              <TableHead className="text-muted-foreground font-medium">优先级</TableHead>
+                              <TableHead className="text-muted-foreground font-medium">类型</TableHead>
+                              {(phase === 'executing' || phase === 'completed') && (
+                                <TableHead className="text-muted-foreground font-medium">状态</TableHead>
+                              )}
+                              {phase === 'review' && (
+                                <TableHead className="text-muted-foreground font-medium">操作</TableHead>
+                              )}
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {testCases.map((testCase) => {
+                              const result = testResults.find(r => r.caseId === testCase.id);
+                              return (
+                                <TableRow key={testCase.id} className="border-border hover:bg-muted/50">
+                                  <TableCell className="font-mono text-foreground">{testCase.caseNumber}</TableCell>
+                                  <TableCell className="text-foreground">{testCase.module}</TableCell>
+                                  <TableCell className="text-foreground">{testCase.title}</TableCell>
+                                  <TableCell className="text-foreground max-w-xs">
+                                    <div className="whitespace-pre-wrap text-sm">{testCase.steps}</div>
+                                  </TableCell>
+                                  <TableCell className="text-foreground max-w-xs">
+                                    <div className="text-sm">{testCase.expected}</div>
+                                  </TableCell>
+                                  <TableCell>
+                                    <Badge className={`${getPriorityColor(testCase.priority)} text-white border-0`}>
+                                      {testCase.priority}
+                                    </Badge>
+                                  </TableCell>
+                                  <TableCell className="text-foreground">{testCase.testType}</TableCell>
+                                  {(phase === 'executing' || phase === 'completed') && result && (
+                                    <TableCell>
+                                      <div className="flex items-center gap-2">
+                                        {getStatusIcon(result.status)}
+                                        {result.duration && (
+                                          <span className="text-xs text-muted-foreground">{result.duration}</span>
+                                        )}
+                                      </div>
+                                      {result.error && (
+                                        <p className="text-xs text-destructive mt-1">{result.error}</p>
+                                      )}
+                                    </TableCell>
+                                  )}
+                                  {phase === 'review' && (
+                                    <TableCell>
+                                      <div className="flex gap-2">
+                                        <Button
+                                          variant="ghost"
+                                          size="icon"
+                                          onClick={() => handleEditTestCase(testCase)}
+                                          className="h-8 w-8"
+                                        >
+                                          <Pencil className="h-4 w-4" />
+                                        </Button>
+                                        <Button
+                                          variant="ghost"
+                                          size="icon"
+                                          onClick={() => handleDeleteTestCase(testCase.id)}
+                                          className="h-8 w-8 text-destructive hover:text-destructive"
+                                        >
+                                          <Trash2 className="h-4 w-4" />
+                                        </Button>
+                                      </div>
+                                    </TableCell>
+                                  )}
+                                </TableRow>
+                              );
+                            })}
+                          </TableBody>
+                        </Table>
+                      </div>
+
+                      {phase === 'completed' && (
+                        <div className="mt-6 grid grid-cols-3 gap-4">
+                          <Card className="bg-muted border-border">
+                            <CardContent className="p-4">
+                              <div className="text-center">
+                                <p className="text-muted-foreground text-sm mb-1">总用例数</p>
+                                <p className="text-3xl font-bold text-foreground">{testCases.length}</p>
+                              </div>
+                            </CardContent>
+                          </Card>
+                          <Card className="bg-success/10 border-success">
+                            <CardContent className="p-4">
+                              <div className="text-center">
+                                <p className="text-success text-sm mb-1">通过</p>
+                                <p className="text-3xl font-bold text-success">{passedCount}</p>
+                              </div>
+                            </CardContent>
+                          </Card>
+                          <Card className="bg-destructive/10 border-destructive">
+                            <CardContent className="p-4">
+                              <div className="text-center">
+                                <p className="text-destructive text-sm mb-1">失败</p>
+                                <p className="text-3xl font-bold text-destructive">{failedCount}</p>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                )}
               </div>
-              {message.role === 'user' && (
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-muted flex items-center justify-center">
-                  <User className="h-5 w-5 text-foreground" />
-                </div>
-              )}
-            </div>
-          ))}
+            );
+          })}
+          
           {isLoading && (
             <div className="flex gap-4 justify-start">
               <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary flex items-center justify-center">
@@ -535,147 +686,7 @@ export default function NewTest() {
               </div>
             </div>
           )}
-
-          {/* Test Cases Table */}
-          {(phase === 'review' || phase === 'executing' || phase === 'completed') && testCases.length > 0 && (
-            <Card className="shadow-card border-border">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl font-semibold text-foreground">测试用例</h2>
-                  <div className="flex gap-2">
-                    {phase === 'review' && (
-                      <Button
-                        onClick={handleAddTestCase}
-                        variant="outline"
-                        size="sm"
-                      >
-                        <Plus className="h-4 w-4 mr-2" />
-                        添加用例
-                      </Button>
-                    )}
-                    {phase === 'completed' && (
-                      <Button
-                        onClick={handleRestart}
-                        variant="outline"
-                      >
-                        创建新测试
-                      </Button>
-                    )}
-                  </div>
-                </div>
-
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow className="border-border hover:bg-muted/50">
-                        <TableHead className="text-muted-foreground font-medium">用例编号</TableHead>
-                        <TableHead className="text-muted-foreground font-medium">模块</TableHead>
-                        <TableHead className="text-muted-foreground font-medium">测试标题</TableHead>
-                        <TableHead className="text-muted-foreground font-medium">测试步骤</TableHead>
-                        <TableHead className="text-muted-foreground font-medium">预期结果</TableHead>
-                        <TableHead className="text-muted-foreground font-medium">优先级</TableHead>
-                        <TableHead className="text-muted-foreground font-medium">类型</TableHead>
-                        {(phase === 'executing' || phase === 'completed') && (
-                          <TableHead className="text-muted-foreground font-medium">状态</TableHead>
-                        )}
-                        {phase === 'review' && (
-                          <TableHead className="text-muted-foreground font-medium">操作</TableHead>
-                        )}
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {testCases.map((testCase) => {
-                        const result = testResults.find(r => r.caseId === testCase.id);
-                        return (
-                          <TableRow key={testCase.id} className="border-border hover:bg-muted/50">
-                            <TableCell className="font-mono text-foreground">{testCase.caseNumber}</TableCell>
-                            <TableCell className="text-foreground">{testCase.module}</TableCell>
-                            <TableCell className="text-foreground">{testCase.title}</TableCell>
-                            <TableCell className="text-foreground max-w-xs">
-                              <div className="whitespace-pre-wrap text-sm">{testCase.steps}</div>
-                            </TableCell>
-                            <TableCell className="text-foreground max-w-xs">
-                              <div className="text-sm">{testCase.expected}</div>
-                            </TableCell>
-                            <TableCell>
-                              <Badge className={`${getPriorityColor(testCase.priority)} text-white border-0`}>
-                                {testCase.priority}
-                              </Badge>
-                            </TableCell>
-                            <TableCell className="text-foreground">{testCase.testType}</TableCell>
-                            {(phase === 'executing' || phase === 'completed') && result && (
-                              <TableCell>
-                                <div className="flex items-center gap-2">
-                                  {getStatusIcon(result.status)}
-                                  {result.duration && (
-                                    <span className="text-xs text-muted-foreground">{result.duration}</span>
-                                  )}
-                                </div>
-                                {result.error && (
-                                  <p className="text-xs text-destructive mt-1">{result.error}</p>
-                                )}
-                              </TableCell>
-                            )}
-                            {phase === 'review' && (
-                              <TableCell>
-                                <div className="flex gap-2">
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={() => handleEditTestCase(testCase)}
-                                    className="h-8 w-8"
-                                  >
-                                    <Pencil className="h-4 w-4" />
-                                  </Button>
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={() => handleDeleteTestCase(testCase.id)}
-                                    className="h-8 w-8 text-destructive hover:text-destructive"
-                                  >
-                                    <Trash2 className="h-4 w-4" />
-                                  </Button>
-                                </div>
-                              </TableCell>
-                            )}
-                          </TableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                </div>
-
-                {phase === 'completed' && (
-                  <div className="mt-6 grid grid-cols-3 gap-4">
-                    <Card className="bg-muted border-border">
-                      <CardContent className="p-4">
-                        <div className="text-center">
-                          <p className="text-muted-foreground text-sm mb-1">总用例数</p>
-                          <p className="text-3xl font-bold text-foreground">{testCases.length}</p>
-                        </div>
-                      </CardContent>
-                    </Card>
-                    <Card className="bg-success/10 border-success">
-                      <CardContent className="p-4">
-                        <div className="text-center">
-                          <p className="text-success text-sm mb-1">通过</p>
-                          <p className="text-3xl font-bold text-success">{passedCount}</p>
-                        </div>
-                      </CardContent>
-                    </Card>
-                    <Card className="bg-destructive/10 border-destructive">
-                      <CardContent className="p-4">
-                        <div className="text-center">
-                          <p className="text-destructive text-sm mb-1">失败</p>
-                          <p className="text-3xl font-bold text-destructive">{failedCount}</p>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          )}
+          
           <div ref={messagesEndRef} />
         </div>
 
