@@ -129,22 +129,59 @@ export default function NewTest() {
       return '好的，我已根据您的反馈重新调整了测试用例。请查看更新后的内容。';
     }
     
-    const responses = [
-      '感谢您提供的信息。请问这个功能的主要使用场景是什么？',
-      '我需要了解一下，这个功能是否需要考虑异常情况处理？',
-      '明白了。还有一个问题，这个功能是否涉及用户权限控制？',
-      '好的，信息已经足够了。让我为您生成测试用例...'
-    ];
+    // Diverse question pools for different conversation rounds
+    const questionPools = {
+      round1: [
+        '感谢您提供的信息。请问这个功能的主要使用场景是什么？',
+        '收到！能详细说明一下这个功能的目标用户群体吗？',
+        '好的，我了解了基本情况。请问这个功能的核心价值是什么？',
+        '明白了。能说说这个功能最重要的业务流程是什么吗？',
+        '谢谢分享。这个功能预计会有多少并发用户使用？'
+      ],
+      round2: [
+        '我需要了解一下，这个功能是否需要考虑异常情况处理？',
+        '请问在使用这个功能时，是否有特殊的性能要求？',
+        '这个功能是否需要支持多语言或国际化？',
+        '能告诉我这个功能的数据量级大概是多少吗？',
+        '这个功能是否需要与第三方系统集成？',
+        '请问是否需要考虑移动端和PC端的兼容性？'
+      ],
+      round3: [
+        '明白了。还有一个问题，这个功能是否涉及用户权限控制？',
+        '最后确认一下，这个功能是否需要审计日志记录？',
+        '请问这个功能的数据安全等级要求如何？',
+        '能说说这个功能的容错机制需要达到什么程度吗？',
+        '这个功能是否需要支持数据备份和恢复？'
+      ],
+      pageSelection: '我注意到应用中有多个页面。为了更准确地生成测试用例，请帮我确认一下哪个是主页面：\n\n1️⃣ 登录页面 - 用户身份验证入口\n2️⃣ 仪表盘页面 - 数据展示和操作中心\n3️⃣ 用户管理页面 - 用户信息管理\n\n请告诉我您选择的页面编号（1、2 或 3）。'
+    };
+    
+    // Special case: Sometimes ask for page selection (20% chance in round 2)
+    if (conversationRound === 1 && Math.random() < 0.2) {
+      return questionPools.pageSelection;
+    }
     
     // After 3 rounds of conversation, generate test cases
     if (conversationRound >= 3) {
       setTimeout(() => {
         generateTestCases();
       }, 2000);
-      return responses[3];
+      return '好的，信息已经足够了。让我为您生成测试用例...';
     }
     
-    return responses[conversationRound];
+    // Select random question from the appropriate pool
+    let pool: string[];
+    if (conversationRound === 0) {
+      pool = questionPools.round1;
+    } else if (conversationRound === 1) {
+      pool = questionPools.round2;
+    } else {
+      pool = questionPools.round3;
+    }
+    
+    // Return a random question from the pool
+    const randomIndex = Math.floor(Math.random() * pool.length);
+    return pool[randomIndex];
   };
 
   const generateTestCases = () => {
