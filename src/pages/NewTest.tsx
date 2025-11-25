@@ -4,7 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Send, Bot, User, CheckCircle, XCircle, Clock, Play, Loader2, Paperclip, X } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Send, Bot, User, CheckCircle, XCircle, Clock, Play, Loader2, Paperclip, X, Pencil, Trash2, Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface Message {
@@ -49,6 +53,8 @@ export default function NewTest() {
   const [testCases, setTestCases] = useState<TestCase[]>([]);
   const [testResults, setTestResults] = useState<TestResult[]>([]);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [editingCase, setEditingCase] = useState<TestCase | null>(null);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
@@ -318,6 +324,56 @@ export default function NewTest() {
     setSelectedFiles(prev => prev.filter((_, i) => i !== index));
   };
 
+  const handleAddTestCase = () => {
+    const newCase: TestCase = {
+      id: Date.now().toString(),
+      caseNumber: `TC${String(testCases.length + 1).padStart(3, '0')}`,
+      module: '新模块',
+      title: '新测试用例',
+      steps: '1. 步骤1\n2. 步骤2',
+      expected: '预期结果',
+      priority: 'P1',
+      testType: '功能测试'
+    };
+    setTestCases(prev => [...prev, newCase]);
+    toast({
+      title: "测试用例已添加",
+      description: "您可以点击编辑按钮修改详细信息",
+    });
+  };
+
+  const handleEditTestCase = (testCase: TestCase) => {
+    setEditingCase({ ...testCase });
+    setIsEditDialogOpen(true);
+  };
+
+  const handleSaveTestCase = () => {
+    if (!editingCase) return;
+    
+    setTestCases(prev => prev.map(tc => 
+      tc.id === editingCase.id ? editingCase : tc
+    ));
+    setIsEditDialogOpen(false);
+    setEditingCase(null);
+    toast({
+      title: "测试用例已更新",
+      description: "修改已保存",
+    });
+  };
+
+  const handleDeleteTestCase = (id: string) => {
+    setTestCases(prev => prev.filter(tc => tc.id !== id));
+    toast({
+      title: "测试用例已删除",
+      variant: "destructive",
+    });
+  };
+
+  const updateEditingCase = (field: keyof TestCase, value: string) => {
+    if (!editingCase) return;
+    setEditingCase(prev => prev ? { ...prev, [field]: value } : null);
+  };
+
   const handleRestart = () => {
     setPhase('chat');
     setMessages([
@@ -418,14 +474,26 @@ export default function NewTest() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-xl font-semibold text-foreground">测试用例</h2>
-                  {phase === 'completed' && (
-                    <Button
-                      onClick={handleRestart}
-                      variant="outline"
-                    >
-                      创建新测试
-                    </Button>
-                  )}
+                  <div className="flex gap-2">
+                    {phase === 'review' && (
+                      <Button
+                        onClick={handleAddTestCase}
+                        variant="outline"
+                        size="sm"
+                      >
+                        <Plus className="h-4 w-4 mr-2" />
+                        添加用例
+                      </Button>
+                    )}
+                    {phase === 'completed' && (
+                      <Button
+                        onClick={handleRestart}
+                        variant="outline"
+                      >
+                        创建新测试
+                      </Button>
+                    )}
+                  </div>
                 </div>
 
                 <div className="overflow-x-auto">
@@ -441,6 +509,9 @@ export default function NewTest() {
                         <TableHead className="text-muted-foreground font-medium">类型</TableHead>
                         {(phase === 'executing' || phase === 'completed') && (
                           <TableHead className="text-muted-foreground font-medium">状态</TableHead>
+                        )}
+                        {phase === 'review' && (
+                          <TableHead className="text-muted-foreground font-medium">操作</TableHead>
                         )}
                       </TableRow>
                     </TableHeader>
@@ -475,6 +546,28 @@ export default function NewTest() {
                                 {result.error && (
                                   <p className="text-xs text-destructive mt-1">{result.error}</p>
                                 )}
+                              </TableCell>
+                            )}
+                            {phase === 'review' && (
+                              <TableCell>
+                                <div className="flex gap-2">
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => handleEditTestCase(testCase)}
+                                    className="h-8 w-8"
+                                  >
+                                    <Pencil className="h-4 w-4" />
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => handleDeleteTestCase(testCase.id)}
+                                    className="h-8 w-8 text-destructive hover:text-destructive"
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </div>
                               </TableCell>
                             )}
                           </TableRow>
@@ -581,6 +674,112 @@ export default function NewTest() {
           </div>
         )}
       </div>
+
+      {/* Edit Test Case Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>编辑测试用例</DialogTitle>
+          </DialogHeader>
+          {editingCase && (
+            <div className="space-y-4 py-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="caseNumber">用例编号</Label>
+                  <Input
+                    id="caseNumber"
+                    value={editingCase.caseNumber}
+                    onChange={(e) => updateEditingCase('caseNumber', e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="module">模块</Label>
+                  <Input
+                    id="module"
+                    value={editingCase.module}
+                    onChange={(e) => updateEditingCase('module', e.target.value)}
+                  />
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="title">测试标题</Label>
+                <Input
+                  id="title"
+                  value={editingCase.title}
+                  onChange={(e) => updateEditingCase('title', e.target.value)}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="steps">测试步骤</Label>
+                <Textarea
+                  id="steps"
+                  value={editingCase.steps}
+                  onChange={(e) => updateEditingCase('steps', e.target.value)}
+                  rows={4}
+                  placeholder="1. 步骤1&#10;2. 步骤2"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="expected">预期结果</Label>
+                <Textarea
+                  id="expected"
+                  value={editingCase.expected}
+                  onChange={(e) => updateEditingCase('expected', e.target.value)}
+                  rows={3}
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="priority">优先级</Label>
+                  <Select
+                    value={editingCase.priority}
+                    onValueChange={(value) => updateEditingCase('priority', value)}
+                  >
+                    <SelectTrigger id="priority">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="P0">P0</SelectItem>
+                      <SelectItem value="P1">P1</SelectItem>
+                      <SelectItem value="P2">P2</SelectItem>
+                      <SelectItem value="P3">P3</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="testType">测试类型</Label>
+                  <Select
+                    value={editingCase.testType}
+                    onValueChange={(value) => updateEditingCase('testType', value)}
+                  >
+                    <SelectTrigger id="testType">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="功能测试">功能测试</SelectItem>
+                      <SelectItem value="性能测试">性能测试</SelectItem>
+                      <SelectItem value="界面测试">界面测试</SelectItem>
+                      <SelectItem value="兼容性测试">兼容性测试</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+              取消
+            </Button>
+            <Button onClick={handleSaveTestCase}>
+              保存
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
