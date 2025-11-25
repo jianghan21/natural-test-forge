@@ -141,7 +141,7 @@ export default function TestExecution() {
   const getStatusIcon = (status: TestResult['status']) => {
     switch (status) {
       case 'passed':
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
+        return <CheckCircle className="h-4 w-4 text-emerald-500 fill-emerald-500/20" />;
       case 'failed':
         return <XCircle className="h-4 w-4 text-red-500" />;
       case 'running':
