@@ -395,11 +395,12 @@ export default function TestExecution() {
                           </div>
                           <Badge 
                             variant={
-                              result?.status === 'passed' ? 'default' :
                               result?.status === 'failed' ? 'destructive' :
                               result?.status === 'running' ? 'default' : 'outline'
                             }
-                            className="flex-shrink-0"
+                            className={`flex-shrink-0 ${
+                              result?.status === 'passed' ? 'bg-emerald-500 hover:bg-emerald-600 text-white border-transparent' : ''
+                            }`}
                           >
                             {statusText}
                           </Badge>
