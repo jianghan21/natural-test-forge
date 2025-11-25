@@ -20,6 +20,7 @@ import NewPlan from "./pages/NewPlan";
 import PlanDetail from "./pages/PlanDetail";
 import Tests from "./pages/Tests";
 import TestDetail from "./pages/TestDetail";
+import TestExecution from "./pages/TestExecution";
 import Insights from "./pages/Insights";
 import Coverage from "./pages/Coverage";
 import Configuration from "./pages/Configuration";
@@ -52,6 +53,7 @@ const App = () => (
           {/* Project-scoped routes */}
           <Route path="/projects/:projectId/tests" element={<Layout><Tests /></Layout>} />
           <Route path="/projects/:projectId/tests/new" element={<Layout><NewTest /></Layout>} />
+          <Route path="/projects/:projectId/tests/execution" element={<TestExecution />} />
           <Route path="/projects/:projectId/tests/:id" element={<Layout><TestDetail /></Layout>} />
           <Route path="/projects/:projectId/tests/:id/edit" element={<Layout><NewTest /></Layout>} />
           
@@ -77,6 +79,7 @@ const App = () => (
           <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
           <Route path="/tests" element={<Layout><Tests /></Layout>} />
           <Route path="/new-test" element={<Layout><NewTest /></Layout>} />
+          <Route path="/test-execution" element={<TestExecution />} />
           <Route path="/results" element={<Layout><Results /></Layout>} />
           <Route path="/results/:id" element={<Layout><ResultDetail /></Layout>} />
           <Route path="/plans" element={<Layout><Plans /></Layout>} />

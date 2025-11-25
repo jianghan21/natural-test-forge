@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -42,6 +43,7 @@ interface TestResult {
 type Phase = 'chat' | 'review' | 'executing' | 'completed';
 
 export default function NewTest() {
+  const navigate = useNavigate();
   const [phase, setPhase] = useState<Phase>('chat');
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -96,15 +98,15 @@ export default function NewTest() {
         const agentMessage: Message = {
           id: (Date.now() + 1).toString(),
           role: 'agent',
-          content: '好的，我现在开始执行这些测试用例...',
+          content: '好的，正在准备执行环境...',
           timestamp: new Date()
         };
         setMessages(prev => [...prev, agentMessage]);
         setIsLoading(false);
         
-        // Start execution after a short delay
+        // Navigate to execution page
         setTimeout(() => {
-          handleStartExecution();
+          navigate('/test-execution', { state: { testCases } });
         }, 1000);
       }, 1000);
       return;
