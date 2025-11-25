@@ -10,6 +10,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Send, Bot, User, CheckCircle, XCircle, Clock, Play, Loader2, Paperclip, X, Pencil, Trash2, Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import appScreen1 from "@/assets/app-screen-1.jpg";
+import appScreen2 from "@/assets/app-screen-2.jpg";
+import appScreenshot1 from "@/assets/app-screenshot-1.jpg";
 
 interface Message {
   id: string;
@@ -159,12 +162,21 @@ export default function NewTest() {
         '能说说这个功能的容错机制需要达到什么程度吗？',
         '这个功能是否需要支持数据备份和恢复？'
       ],
-      pageSelection: '我注意到应用中有多个页面。为了更准确地生成测试用例，请帮我确认一下哪个是主页面：\n\n1️⃣ 登录页面 - 用户身份验证入口\n2️⃣ 仪表盘页面 - 数据展示和操作中心\n3️⃣ 用户管理页面 - 用户信息管理\n\n请告诉我您选择的页面编号（1、2 或 3）。'
+      pageSelection: {
+        text: '我注意到应用中有多个页面。为了更准确地生成测试用例，请帮我确认一下哪个是主页面：',
+        images: [
+          { id: 1, label: '登录页面', description: '用户身份验证入口' },
+          { id: 2, label: '仪表盘页面', description: '数据展示和操作中心' },
+          { id: 3, label: '用户管理页面', description: '用户信息管理' }
+        ]
+      }
     };
     
     // Special case: Always ask for page selection in round 2
     if (conversationRound === 1) {
-      return questionPools.pageSelection;
+      return typeof questionPools.pageSelection === 'string' 
+        ? questionPools.pageSelection 
+        : JSON.stringify(questionPools.pageSelection);
     }
     
     // After 3 rounds of conversation, generate test cases
@@ -389,6 +401,53 @@ export default function NewTest() {
     setSelectedFiles([]);
   };
 
+  const isPageSelectionMessage = (content: string) => {
+    try {
+      const parsed = JSON.parse(content);
+      return parsed.text && parsed.images && Array.isArray(parsed.images);
+    } catch {
+      return false;
+    }
+  };
+
+  const renderPageSelectionMessage = (content: string) => {
+    try {
+      const data = JSON.parse(content);
+      const pageImages = [appScreen1, appScreen2, appScreenshot1];
+      
+      return (
+        <div className="space-y-4">
+          <p className="text-[15px] leading-relaxed">{data.text}</p>
+          <div className="grid grid-cols-3 gap-3">
+            {data.images.map((page: any, index: number) => (
+              <div 
+                key={page.id}
+                className="group cursor-pointer rounded-lg border-2 border-border hover:border-primary transition-all overflow-hidden"
+                onClick={() => {
+                  setInputValue(`我选择 ${page.id}`);
+                }}
+              >
+                <div className="aspect-[3/4] overflow-hidden bg-muted">
+                  <img 
+                    src={pageImages[index]} 
+                    alt={page.label}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                  />
+                </div>
+                <div className="p-3 bg-card">
+                  <p className="font-medium text-sm text-foreground mb-1">{page.label}</p>
+                  <p className="text-xs text-muted-foreground">{page.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    } catch {
+      return <p className="whitespace-pre-wrap text-[15px] leading-relaxed">{content}</p>;
+    }
+  };
+
   const getPriorityColor = (priority: string) => {
     const colors = {
       'P0': 'bg-red-500',
@@ -438,13 +497,20 @@ export default function NewTest() {
                 </div>
               )}
               <div
-                className={`max-w-[80%] rounded-2xl px-4 py-3 ${
+                className={`${
+                  message.role === 'agent' && isPageSelectionMessage(message.content) 
+                    ? 'max-w-full' 
+                    : 'max-w-[80%]'
+                } rounded-2xl px-4 py-3 ${
                   message.role === 'user'
                     ? 'bg-primary text-primary-foreground'
                     : 'bg-muted text-foreground'
                 }`}
               >
-                <p className="whitespace-pre-wrap text-[15px] leading-relaxed">{message.content}</p>
+                {message.role === 'agent' && isPageSelectionMessage(message.content) 
+                  ? renderPageSelectionMessage(message.content)
+                  : <p className="whitespace-pre-wrap text-[15px] leading-relaxed">{message.content}</p>
+                }
               </div>
               {message.role === 'user' && (
                 <div className="flex-shrink-0 w-8 h-8 rounded-full bg-muted flex items-center justify-center">
