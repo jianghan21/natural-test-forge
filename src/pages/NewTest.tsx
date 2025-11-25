@@ -162,8 +162,8 @@ export default function NewTest() {
       pageSelection: '我注意到应用中有多个页面。为了更准确地生成测试用例，请帮我确认一下哪个是主页面：\n\n1️⃣ 登录页面 - 用户身份验证入口\n2️⃣ 仪表盘页面 - 数据展示和操作中心\n3️⃣ 用户管理页面 - 用户信息管理\n\n请告诉我您选择的页面编号（1、2 或 3）。'
     };
     
-    // Special case: Sometimes ask for page selection (20% chance in round 2)
-    if (conversationRound === 1 && Math.random() < 0.2) {
+    // Special case: Always ask for page selection in round 2
+    if (conversationRound === 1) {
       return questionPools.pageSelection;
     }
     
