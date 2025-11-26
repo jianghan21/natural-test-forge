@@ -332,10 +332,13 @@ export default function TestExecution() {
                     <video 
                       src={testExecutionVideo}
                       autoPlay
-                      loop
                       muted
                       playsInline
                       className="w-full h-full object-cover"
+                      onLoadedMetadata={(e) => {
+                        const video = e.currentTarget;
+                        console.log('Video duration:', video.duration);
+                      }}
                     />
                   </div>
                 </div>
