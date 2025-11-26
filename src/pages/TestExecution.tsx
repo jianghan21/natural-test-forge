@@ -7,7 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { CheckCircle, XCircle, Clock, Loader2, AlertCircle, FileText, ArrowLeft, Smartphone } from "lucide-react";
-import mobileAppUI from "@/assets/mobile-app-ui.jpg";
+import testExecutionVideo from "@/assets/test-execution-video.mp4";
 
 interface TestCase {
   id: string;
@@ -326,12 +326,15 @@ export default function TestExecution() {
             <CardContent className="flex items-center justify-center">
               <div className="relative">
                 {/* Phone Frame */}
-                <div className="w-[240px] h-[480px] bg-gray-900 rounded-[2.5rem] border-[8px] border-gray-800 shadow-2xl overflow-hidden">
+                <div className="w-[280px] h-[560px] bg-gray-900 rounded-[2.5rem] border-[8px] border-gray-800 shadow-2xl overflow-hidden">
                   {/* Screen */}
-                  <div className="w-full h-full bg-white relative overflow-hidden">
-                    <img 
-                      src={mobileAppUI} 
-                      alt="App Screen" 
+                  <div className="w-full h-full bg-black relative overflow-hidden">
+                    <video 
+                      src={testExecutionVideo}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
                       className="w-full h-full object-cover"
                     />
                   </div>
