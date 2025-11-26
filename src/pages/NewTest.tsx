@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Send, Bot, User, CheckCircle, XCircle, Clock, Play, Loader2, Paperclip, X, Pencil, Trash2, Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import appScreen1 from "@/assets/app-screen-1.jpg";
+import loginPage from "@/assets/login-page.jpg";
 import appScreen2 from "@/assets/app-screen-2.jpg";
 import appScreenshot1 from "@/assets/app-screenshot-1.jpg";
 
@@ -415,7 +415,7 @@ export default function NewTest() {
   const renderPageSelectionMessage = (content: string) => {
     try {
       const data = JSON.parse(content);
-      const pageImages = [appScreen1, appScreen2, appScreenshot1];
+      const pageImages = [loginPage, appScreen2, appScreenshot1];
       
       return (
         <div className="space-y-4">
