@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Send, Bot, User, CheckCircle, XCircle, Clock, Play, Loader2, Paperclip, X, Pencil, Trash2, Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import loginPage from "@/assets/login-page.jpg";
-import appScreen2 from "@/assets/app-screen-2.jpg";
+import appHome from "@/assets/app-home.jpg";
 import appScreenshot1 from "@/assets/app-screenshot-1.jpg";
 
 interface Message {
@@ -168,7 +168,7 @@ export default function NewTest() {
         text: '我注意到应用中有多个页面。为了更准确地生成测试用例，请帮我确认一下哪个是主页面：',
         images: [
           { id: 1, label: '登录页面', description: '用户身份验证入口' },
-          { id: 2, label: '仪表盘页面', description: '数据展示和操作中心' },
+          { id: 2, label: 'app首页', description: '数据展示和操作中心' },
           { id: 3, label: '用户管理页面', description: '用户信息管理' }
         ]
       }
@@ -415,7 +415,7 @@ export default function NewTest() {
   const renderPageSelectionMessage = (content: string) => {
     try {
       const data = JSON.parse(content);
-      const pageImages = [loginPage, appScreen2, appScreenshot1];
+      const pageImages = [loginPage, appHome, appScreenshot1];
       
       return (
         <div className="space-y-4">
