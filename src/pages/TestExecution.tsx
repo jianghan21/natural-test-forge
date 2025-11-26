@@ -79,7 +79,18 @@ export default function TestExecution() {
   };
 
   const executeTests = () => {
+    // Total execution time: 33 seconds (33000ms)
+    const totalDuration = 33000;
+    const testCount = testCases.length;
+    
+    // Distribute time across all test cases
+    const timePerTest = totalDuration / testCount;
+    const executionTime = timePerTest * 0.7; // 70% for execution
+    const delayBetweenTests = timePerTest * 0.3; // 30% for delay between tests
+    
     testCases.forEach((testCase, index) => {
+      const startTime = index * timePerTest;
+      
       setTimeout(() => {
         // Update to running
         setTestResults(prev => prev.map(result => 
@@ -96,16 +107,17 @@ export default function TestExecution() {
 
         // Simulate test execution steps
         const steps = testCase.steps.split('\n');
+        const stepDelay = executionTime / (steps.length + 1);
         steps.forEach((step, stepIndex) => {
           setTimeout(() => {
             addLog('info', step.trim());
-          }, stepIndex * 800);
+          }, stepIndex * stepDelay);
         });
 
-        // Complete after delay
+        // Complete after execution time
         setTimeout(() => {
           const passed = Math.random() > 0.25; // 75% pass rate
-          const duration = `${Math.floor(Math.random() * 10 + 5)}s`;
+          const duration = `${(executionTime / 1000).toFixed(1)}s`;
           
           setTestResults(prev => prev.map(result => 
             result.caseId === testCase.id 
@@ -131,10 +143,10 @@ export default function TestExecution() {
             setTimeout(() => {
               setIsCompleted(true);
               addLog('info', '所有测试用例执行完成');
-            }, 1000);
+            }, 500);
           }
-        }, 4000 + Math.random() * 2000);
-      }, index * 6000);
+        }, executionTime);
+      }, startTime);
     });
   };
 
