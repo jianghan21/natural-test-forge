@@ -13,7 +13,7 @@ import { Send, Bot, User, CheckCircle, XCircle, Clock, Play, Loader2, Paperclip,
 import { useToast } from "@/hooks/use-toast";
 import loginPage from "@/assets/login-page.jpg";
 import appHome from "@/assets/app-home.jpg";
-import appScreenshot1 from "@/assets/app-screenshot-1.jpg";
+import userCenter from "@/assets/user-center.jpg";
 
 interface Message {
   id: string;
@@ -415,7 +415,7 @@ export default function NewTest() {
   const renderPageSelectionMessage = (content: string) => {
     try {
       const data = JSON.parse(content);
-      const pageImages = [loginPage, appHome, appScreenshot1];
+      const pageImages = [loginPage, appHome, userCenter];
       
       return (
         <div className="space-y-4">
