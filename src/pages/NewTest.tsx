@@ -9,11 +9,36 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Send, Bot, User, CheckCircle, XCircle, Clock, Play, Loader2, Paperclip, X, Pencil, Trash2, Plus } from "lucide-react";
+import { Send, Bot, User, CheckCircle, XCircle, Clock, Play, Loader2, Paperclip, X, Pencil, Trash2, Plus, Check } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import loginPage from "@/assets/login-page.jpg";
 import appHome from "@/assets/app-home.jpg";
 import userCenter from "@/assets/user-center.jpg";
+import appScreen1 from "@/assets/app-screen-1.jpg";
+import appScreen2 from "@/assets/app-screen-2.jpg";
+import mobileAppUi from "@/assets/mobile-app-ui.jpg";
+
+// Mock app pages data
+interface AppPage {
+  id: string;
+  name: string;
+  image: string;
+  isMainPage: boolean;
+}
+
+const mockAppPages: AppPage[] = [
+  { id: '1', name: 'Explore Page with Creation Menu', image: loginPage, isMainPage: false },
+  { id: '2', name: "whh's OC Management Page", image: appHome, isMainPage: false },
+  { id: '3', name: 'RP Card Page', image: userCenter, isMainPage: false },
+  { id: '4', name: 'RPCard Page', image: appScreen1, isMainPage: false },
+  { id: '5', name: 'RPCard Page', image: appScreen2, isMainPage: false },
+  { id: '6', name: 'Partner OC Configuration Page', image: mobileAppUi, isMainPage: false },
+  { id: '7', name: 'Introduction Page', image: loginPage, isMainPage: false },
+  { id: '8', name: 'Rating Settings Page', image: appHome, isMainPage: false },
+  { id: '9', name: 'Rating Settings Page 2', image: userCenter, isMainPage: false },
+  { id: '10', name: 'Main Explore Page', image: appScreen1, isMainPage: true },
+];
 
 interface Message {
   id: string;
@@ -60,6 +85,10 @@ export default function NewTest() {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [editingCase, setEditingCase] = useState<TestCase | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isPageSelectionDialogOpen, setIsPageSelectionDialogOpen] = useState(false);
+  const [appPages, setAppPages] = useState<AppPage[]>(mockAppPages);
+  const [selectedPageIds, setSelectedPageIds] = useState<string[]>([]);
+  const [pendingUserMessage, setPendingUserMessage] = useState<string>('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
@@ -82,10 +111,12 @@ export default function NewTest() {
       timestamp: new Date()
     };
 
+    // Calculate conversation round (count user messages) before adding the new one
+    const userMessageCount = messages.filter(m => m.role === 'user').length;
+
     setMessages(prev => [...prev, userMessage]);
     const currentInput = inputValue;
     setInputValue('');
-    setIsLoading(true);
 
     // Check if user wants to start execution in review phase
     if (phase === 'review' && (
@@ -94,6 +125,7 @@ export default function NewTest() {
       currentInput.includes('开始测试') ||
       currentInput.toLowerCase().includes('start')
     )) {
+      setIsLoading(true);
       setTimeout(() => {
         const agentMessage: Message = {
           id: (Date.now() + 1).toString(),
@@ -112,9 +144,14 @@ export default function NewTest() {
       return;
     }
 
-    // Calculate conversation round (count user messages)
-    const userMessageCount = messages.filter(m => m.role === 'user').length;
+    // First user message: show page selection dialog before asking questions
+    if (userMessageCount === 0) {
+      setPendingUserMessage(currentInput);
+      setIsPageSelectionDialogOpen(true);
+      return;
+    }
 
+    setIsLoading(true);
     // Simulate AI response (replace with actual AI integration)
     setTimeout(() => {
       const agentMessage: Message = {
@@ -125,6 +162,51 @@ export default function NewTest() {
       };
       setMessages(prev => [...prev, agentMessage]);
       setIsLoading(false);
+    }, 1500);
+  };
+
+  const handlePageSelect = (pageId: string) => {
+    setSelectedPageIds(prev => 
+      prev.includes(pageId) 
+        ? prev.filter(id => id !== pageId) 
+        : [...prev, pageId]
+    );
+  };
+
+  const handleSetMainPage = (pageId: string) => {
+    setAppPages(prev => prev.map(page => ({
+      ...page,
+      isMainPage: page.id === pageId
+    })));
+    toast({
+      title: "已设置主页面",
+      description: "主页面设置成功",
+    });
+  };
+
+  const handleConfirmPageSelection = () => {
+    setIsPageSelectionDialogOpen(false);
+    setIsLoading(true);
+    
+    // Continue with the conversation
+    const userMessageCount = messages.filter(m => m.role === 'user').length;
+    
+    setTimeout(() => {
+      const selectedPagesText = selectedPageIds.length > 0 
+        ? `\n\n已选择 ${selectedPageIds.length} 个测试页面。` 
+        : '';
+      const mainPage = appPages.find(p => p.isMainPage);
+      const mainPageText = mainPage ? `\n主页面：${mainPage.name}` : '';
+      
+      const agentMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: 'agent',
+        content: `收到您的需求，已记录测试页面配置。${selectedPagesText}${mainPageText}\n\n${generateAgentResponse(pendingUserMessage, userMessageCount)}`,
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, agentMessage]);
+      setIsLoading(false);
+      setPendingUserMessage('');
     }, 1500);
   };
 
@@ -753,6 +835,105 @@ export default function NewTest() {
           </div>
         )}
       </div>
+
+      {/* Page Selection Dialog */}
+      <Dialog open={isPageSelectionDialogOpen} onOpenChange={setIsPageSelectionDialogOpen}>
+        <DialogContent className="max-w-6xl max-h-[90vh] overflow-hidden flex flex-col">
+          <DialogHeader className="flex-shrink-0">
+            <div className="flex items-center justify-between">
+              <div>
+                <DialogTitle className="text-xl">测试页面 ({appPages.length})</DialogTitle>
+                <p className="text-sm text-muted-foreground mt-1">点击页面标题下方的按钮设置为主页面</p>
+              </div>
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm">
+                  <Plus className="h-4 w-4 mr-1" />
+                  添加页面
+                </Button>
+                <Button variant="default" size="sm">
+                  <Plus className="h-4 w-4 mr-1" />
+                  批量添加
+                </Button>
+              </div>
+            </div>
+          </DialogHeader>
+          
+          <ScrollArea className="flex-1 pr-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 py-4">
+              {appPages.map((page) => (
+                <div 
+                  key={page.id}
+                  className={`relative group rounded-lg border-2 transition-all overflow-hidden cursor-pointer ${
+                    selectedPageIds.includes(page.id) 
+                      ? 'border-primary ring-2 ring-primary/20' 
+                      : 'border-border hover:border-primary/50'
+                  } ${page.isMainPage ? 'ring-2 ring-primary' : ''}`}
+                  onClick={() => handlePageSelect(page.id)}
+                >
+                  {/* Main page badge */}
+                  {page.isMainPage && (
+                    <div className="absolute top-2 left-2 z-10 bg-primary text-primary-foreground text-xs px-2 py-0.5 rounded">
+                      主页面
+                    </div>
+                  )}
+                  
+                  {/* Selection indicator */}
+                  {selectedPageIds.includes(page.id) && (
+                    <div className="absolute top-2 right-2 z-10 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
+                      <Check className="h-4 w-4 text-primary-foreground" />
+                    </div>
+                  )}
+                  
+                  {/* Close button */}
+                  <button 
+                    className="absolute top-2 right-2 z-10 w-5 h-5 bg-destructive rounded-full items-center justify-center hidden group-hover:flex"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setAppPages(prev => prev.filter(p => p.id !== page.id));
+                    }}
+                  >
+                    <X className="h-3 w-3 text-destructive-foreground" />
+                  </button>
+                  
+                  {/* Page image */}
+                  <div className="aspect-[9/16] overflow-hidden bg-muted">
+                    <img 
+                      src={page.image} 
+                      alt={page.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  
+                  {/* Page info */}
+                  <div className="p-3 bg-card">
+                    <p className="font-medium text-sm text-foreground mb-2 line-clamp-1">{page.name}</p>
+                    <Button 
+                      variant={page.isMainPage ? "secondary" : "outline"}
+                      size="sm" 
+                      className="w-full text-xs"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleSetMainPage(page.id);
+                      }}
+                    >
+                      {page.isMainPage ? '当前主页面' : '设为主页面'}
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </ScrollArea>
+          
+          <DialogFooter className="flex-shrink-0 border-t pt-4">
+            <Button variant="outline" onClick={() => setIsPageSelectionDialogOpen(false)}>
+              取消
+            </Button>
+            <Button onClick={handleConfirmPageSelection}>
+              确认保存
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Edit Test Case Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
